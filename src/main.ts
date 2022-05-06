@@ -4,7 +4,8 @@ import './samples/node-api'
 
 import { createPinia } from 'pinia'
 import { createRouter, createWebHashHistory } from 'vue-router'
-import routes from "./router"
+// import routes from "./router"
+import routes from '~pages'
 
 let app = createApp(App);
 
