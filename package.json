@@ -9,6 +9,8 @@
   "private": true,
   "scripts": {
     "dev": "vite",
+    "test": "vitest",
+    "coverage": "vitest run --coverage",
     "commit": "git-cz -a",
     "release": "standard-version -a",
     "build": "rimraf dist && vite build && electron-builder"
@@ -18,6 +20,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^2.3.1",
+    "c8": "^7.11.2",
     "commitizen": "^4.2.4",
     "cz-conventional-changelog": "^3.3.0",
     "electron": "^18.0.1",
@@ -26,7 +29,8 @@
     "standard-version": "^9.3.2",
     "typescript": "^4.6.3",
     "vite": "^2.9.1",
-    "vite-plugin-electron": "^0.4.2"
+    "vite-plugin-electron": "^0.4.2",
+    "vitest": "^0.10.4"
   },
   "keywords": [
     "vite",
