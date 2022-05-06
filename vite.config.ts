@@ -1,3 +1,4 @@
+import path from 'path'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import electron from 'vite-plugin-electron'
@@ -17,4 +18,9 @@ export default defineConfig({
   build: {
     emptyOutDir: false,
   },
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+    }
+  }
 })
