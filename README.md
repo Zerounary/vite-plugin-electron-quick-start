@@ -2,6 +2,9 @@ Boilerplate for [vite-plugin-electron](https://www.npmjs.com/package/vite-plugin
 
 ![screenshort.png](https://github.com/electron-vite/vite-plugin-electron-quick-start/blob/main/public/screenshort.png?raw=true)
 
+## instructions
+
+Vue3 + Vite + electron18 + vite-plugin-electron + vitest + pinia + commitizen
 
 ## Installation
 
