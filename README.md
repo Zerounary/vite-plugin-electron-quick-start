@@ -4,7 +4,9 @@ Boilerplate for [vite-plugin-electron](https://www.npmjs.com/package/vite-plugin
 
 ## Instructions
 
-Vue3 + Vite + electron18 + vite-plugin-electron + vitest + pinia + commitizen
+Vue3 + Vite + electron18 + vitest + pinia + vue-router4 + commitizen
+
+Plugins: vite-plugin-electron + vite-plugin
 
 ## Installation
 
@@ -18,11 +20,14 @@ if you haven't installed pnpm yet, you should install it first.
 npm i -g pnpm
 ```
 
-## configurate
+##  Router
 
-https://www.electron.build/configuration/configuration
+use vite-plugin-pages for router.
 
-you can use `electron-builder.json` to configurate `electron-builder`
+more usecase take this
+
+https://github.com/hannoeru/vite-plugin-pages/tree/main/examples/vue
+
 
 
 ## Test
@@ -39,6 +44,17 @@ npm test
 
 ```shell
 npm run commit
+```
+
+## configurate
+
+https://www.electron.build/configuration/configuration
+
+you can use `electron-builder.json` to configurate `electron-builder`
+
+## Build
+```shell
+yarn build
 ```
 
 ## Release
