@@ -2,6 +2,12 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import './samples/node-api'
 
-createApp(App)
-  .mount('#app')
+import { createPinia } from 'pinia'
+
+
+let app = createApp(App);
+
+app.use(createPinia());
+
+app.mount('#app')
   .$nextTick(window.removeLoading)

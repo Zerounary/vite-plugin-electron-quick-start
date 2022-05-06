@@ -16,6 +16,7 @@
     "build": "rimraf dist && vite build && electron-builder"
   },
   "dependencies": {
+    "pinia": "^2.0.14",
     "vue": "^3.2.31"
   },
   "devDependencies": {
