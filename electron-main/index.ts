@@ -24,7 +24,7 @@ function createWindow() {
   } else {
     // 🚧 Use ['ENV_NAME'] avoid vite:define plugin
     const url = `http://${process.env['VITE_DEV_SERVER_HOST']}:${process.env['VITE_DEV_SERVER_PORT']}`
-
+    win.webContents.openDevTools({ mode: "detach" });
     win.loadURL(url)
   }
 }
