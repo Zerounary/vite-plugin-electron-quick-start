@@ -22,4 +22,26 @@ https://www.electron.build/configuration/configuration
 you can use `electron-builder.json` to configurate `electron-builder`
 
 
+## Test
 
+https://cn.vitest.dev/guide
+
+use `vitest` to test this project.
+
+```shell
+npm test
+```
+
+## Commit
+
+```shell
+npm run commit
+```
+
+## Release
+
+```shell
+npm run release
+```
+
+auto update CHAGNELOG.md.
