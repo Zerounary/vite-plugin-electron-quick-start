@@ -49,8 +49,11 @@ export function useLoading() {
       document.body.appendChild(oDiv)
     },
     removeLoading() {
-      document.head.removeChild(oStyle)
-      document.body.removeChild(oDiv)
+      if(!global.isRemoved){
+        document.head.removeChild(oStyle)
+        document.body.removeChild(oDiv)
+      }
+      global.isRemoved = true
     },
   }
 }
