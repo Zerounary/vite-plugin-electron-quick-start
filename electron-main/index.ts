@@ -1,5 +1,6 @@
 import path from 'path'
 import { app, BrowserWindow } from 'electron'
+import mainEvents from './events'
 
 let win: BrowserWindow
 
@@ -16,7 +17,7 @@ function createWindow() {
 
   // Test active push message to Renderer-process.
   win.webContents.on('did-finish-load', () => {
-    win?.webContents.send('main-process-message', (new Date).toLocaleString())
+    mainEvents(win);
   })
 
   if (app.isPackaged) {

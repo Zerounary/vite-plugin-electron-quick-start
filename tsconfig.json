@@ -16,9 +16,9 @@
         "src/*"
       ],
       "~/*": [
-        "src/*"
+        "./*"
       ]
     }
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*.ts", "electron-main/**/*.ts", "electron-preload/**/*.ts"]
 }

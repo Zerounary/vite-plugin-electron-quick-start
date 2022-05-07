@@ -16,6 +16,8 @@
     "build": "rimraf dist && vite build && electron-builder"
   },
   "dependencies": {
+    "electron-log": "^4.4.7",
+    "electron-store": "^8.0.1",
     "pinia": "^2.0.14",
     "vue": "^3.2.31",
     "vue-router": "^4.0.15"
