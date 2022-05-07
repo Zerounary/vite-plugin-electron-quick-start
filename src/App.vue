@@ -5,7 +5,7 @@
 
 <template>
   <img height="124" :src="'./logo.svg'" />
-  <p>
+  <p class="text-indigo-500 ">
     <router-link to="/">Home</router-link>
     |
     <router-link to="/about">About</router-link>

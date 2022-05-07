@@ -4,9 +4,9 @@ Boilerplate for [vite-plugin-electron](https://www.npmjs.com/package/vite-plugin
 
 ## Instructions
 
-Vue3 + Vite + electron18 + vitest + pinia + vue-router4 + commitizen
+Vue3 + Vite + electron18 + vitest + pinia + vue-router4 + commitizen + windicss
 
-Plugins: vite-plugin-electron + vite-plugin
+Plugins: vite-plugin-electron + vite-plugin-pages + vite-plugin-windicss
 
 ## Installation
 
