@@ -1,8 +1,11 @@
 import log from 'electron-log'
+import { app } from 'electron'
+import {mainSend, mainOn} from "../common/ipcMain"
 import ipcNames from "../common/ipcNames"
 
 export default (win) => {
-  log.info(ipcNames.Test);
-  log.info(typeof ipcNames.Test);
-  win?.webContents.send(ipcNames.Test, (new Date).toLocaleString())
+  mainSend(win, ipcNames.Test,(new Date).toLocaleString())
+  mainOn(ipcNames.quit, (event, message) => {
+    app.quit()
+  }) 
 }

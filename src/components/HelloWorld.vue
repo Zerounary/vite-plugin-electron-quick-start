@@ -1,11 +1,17 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useCounterStore } from "../stores/app"
+import { useAppStore } from "../stores/app"
 // import { storeToRefs } from "pinia"
+import { rendererSend } from '~/electron-main/common/ipcRender'
+import ipcNames from '~/electron-main/common/ipcNames';
 
 defineProps<{ msg: string }>()
 
-const counterStore =  useCounterStore();
+const counterStore =  useAppStore();
+
+let quit = () => {
+  rendererSend(ipcNames.quit, null)
+}
 
 </script>
 
@@ -30,6 +36,7 @@ const counterStore =  useCounterStore();
   </p>
 
   <button type="button" @click="counterStore.increment()">count is: {{ counterStore.count }}</button>
+  <button type="button" @click="quit">quit</button>
   <p>
     Edit
     <code>components/HelloWorld.vue</code> to test hot module replacement.

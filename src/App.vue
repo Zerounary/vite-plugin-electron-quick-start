@@ -1,11 +1,62 @@
 <script setup lang="ts">
-// This starter template is using Vue 3 <script setup> SFCs
+// starter template is using Vue 3 <script setup> SFCs
 // Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
+
+import { rendererOn } from "~/electron-main/common/ipcRender";
+// import { ipcRenderer } from "electron"
+import ipcNames from "~/electron-main/common/ipcNames";
+import { useAppStore } from "./stores/app";
+
+let appStore = useAppStore();
+rendererOn(ipcNames.update_available, (e, info) => {
+  appStore.$patch({
+    version: {
+      isDownloading: true,
+      newVersion: info,
+    },
+  });
+});
+
+rendererOn(ipcNames.update_error, () => {
+  appStore.$patch({
+    version: {
+      isError: true,
+    },
+  });
+});
+
+rendererOn(ipcNames.update_progress, (event, progress) => {
+  appStore.$patch({
+    version: {
+      downloadProgress: progress,
+    },
+  });
+});
+rendererOn(ipcNames.update_downloaded, () => {
+  // console.log(info)
+  appStore.$patch({
+    version: {
+      isDownloaded: true,
+    },
+  });
+
+});
+
+rendererOn(ipcNames.update_not_available, (event, info) => {
+    appStore.$patch({
+    version: {
+      isLatestVer: true,
+      newVersion: info,
+    },
+  });
+});
 </script>
 
 <template>
   <img height="124" :src="'./logo.svg'" />
-  <p class="text-indigo-500 ">
+  <span>{{appStore.getUpdateVersion}}</span>
+  <span>{{appStore.version}}</span>
+  <p class="text-indigo-500">
     <router-link to="/">Home</router-link>
     |
     <router-link to="/about">About</router-link>

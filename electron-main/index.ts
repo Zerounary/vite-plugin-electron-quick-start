@@ -1,8 +1,13 @@
 import path from 'path'
 import { app, BrowserWindow } from 'electron'
+import log from 'electron-log'
 import mainEvents from './events'
+import autoUpdate from './autoUpdate'
 
-let win: BrowserWindow
+log.transports.file.resolvePath = () => "./logs/main.log";
+
+global.modules = {};
+let win: BrowserWindow = global.modules.mainWindow;
 
 function createWindow() {
   win = new BrowserWindow({
@@ -18,6 +23,7 @@ function createWindow() {
   // Test active push message to Renderer-process.
   win.webContents.on('did-finish-load', () => {
     mainEvents(win);
+    autoUpdate(win);
   })
 
   if (app.isPackaged) {
