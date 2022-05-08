@@ -21,7 +21,7 @@ export const useAppStore = defineStore("counter", {
     };
   },
   getters: {
-    getUpdateVersion(state) {
+    getUpdateStatus(state) {
       if (state.version.isDownloading) {
         if (state.version.isDownloaded) {
           return "点击更新";

@@ -54,7 +54,7 @@ rendererOn(ipcNames.update_not_available, (event, info) => {
 
 <template>
   <img height="124" :src="'./logo.svg'" />
-  <span>{{appStore.getUpdateVersion}}</span>
+  <span>{{appStore.getUpdateStatus}}</span>
   <span>{{appStore.version}}</span>
   <p class="text-indigo-500">
     <router-link to="/">Home</router-link>
