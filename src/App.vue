@@ -28,10 +28,11 @@ rendererOn(ipcNames.update_error, () => {
 rendererOn(ipcNames.update_progress, (event, progress) => {
   appStore.$patch({
     version: {
-      downloadProgress: progress,
+      downloadProgress: Object.assign({}, progress), // 复制，避免不更新
     },
   });
 });
+
 rendererOn(ipcNames.update_downloaded, () => {
   // console.log(info)
   appStore.$patch({
