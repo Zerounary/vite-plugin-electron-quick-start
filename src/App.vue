@@ -2,9 +2,8 @@
 // starter template is using Vue 3 <script setup> SFCs
 // Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
 
-import { rendererOn } from "~/electron-main/common/ipcRender";
-// import { ipcRenderer } from "electron"
-import ipcNames from "~/electron-main/common/ipcNames";
+import ipcNames from "../electron-main/common/ipcNames";
+import { rendererOn } from "../electron-main/common/ipcRender";
 import { useAppStore } from "./stores/app";
 
 let appStore = useAppStore();
