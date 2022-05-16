@@ -5,6 +5,7 @@
 import ipcNames from "../electron-main/common/ipcNames";
 import { rendererOn } from "../electron-main/common/ipcRender";
 import { useAppStore } from "./stores/app";
+import { Icon } from "@iconify/vue";
 
 let appStore = useAppStore();
 rendererOn(ipcNames.update_available, (e, info) => {
@@ -39,11 +40,10 @@ rendererOn(ipcNames.update_downloaded, () => {
       isDownloaded: true,
     },
   });
-
 });
 
 rendererOn(ipcNames.update_not_available, (event, info) => {
-    appStore.$patch({
+  appStore.$patch({
     version: {
       isLatestVer: true,
       newVersion: info,
@@ -54,12 +54,14 @@ rendererOn(ipcNames.update_not_available, (event, info) => {
 
 <template>
   <img height="124" :src="'./logo.svg'" />
-  <span>{{appStore.getUpdateStatus}}</span>
-  <span>{{appStore.version}}</span>
+  <span>{{ appStore.getUpdateStatus }}</span>
+  <span>{{ appStore.version }}</span>
   <p class="text-indigo-500">
-    <router-link to="/">Home</router-link>
+    <router-link to="/"
+      ><Icon icon="ant-design:home-outlined" />Home</router-link
+    >
     |
-    <router-link to="/about">About</router-link>
+    <router-link to="/about"><Icon icon="flat-color-icons:about" />About</router-link>
   </p>
   <router-view></router-view>
 </template>
