@@ -1,10 +1,13 @@
 <template>
   <div class="space-y-3">
     <StoreHeader />
-    <div class="w-full flex justify-center">
-      <DateNav />
+    <div class="center">
+      <DateNav class="" />
     </div>
-    <ObjectGrid :value="grid" />
+
+    <div class="center">
+      <ObjectGrid :value="grid" />
+    </div>
   </div>
 </template>
 
@@ -28,4 +31,8 @@ const grid = {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+  .center {
+    @apply w-full flex justify-center;
+  }
+</style>
