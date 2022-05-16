@@ -11,6 +11,7 @@ specifiers:
   electron-log: ^4.4.7
   electron-store: ^8.0.1
   electron-updater: ^5.0.1
+  moment: ^2.29.3
   pinia: ^2.0.14
   rimraf: ^3.0.2
   standard-version: ^9.3.2
@@ -28,6 +29,7 @@ dependencies:
   electron-log: 4.4.7
   electron-store: 8.0.1
   electron-updater: 5.0.1
+  moment: 2.29.3
   pinia: 2.0.14_typescript@4.6.4+vue@3.2.33
   vue: 3.2.33
   vue-router: 4.0.15_vue@3.2.33
@@ -3356,6 +3358,10 @@ packages:
     resolution: {integrity: sha512-xV2bxeN6F7oYjZWTe/YPAy6MN2M+sL4u/Rlm2AHCIVGfo2p1yGmBHQ6vHehl4bRTZBdHu3TSkWdYgkwpYzAGSw==}
     engines: {node: '>=0.10.0'}
     dev: true
+
+  /moment/2.29.3:
+    resolution: {integrity: sha512-c6YRvhEo//6T2Jz/vVtYzqBzwvPT95JBQ+smCytzf7c50oMZRsR/a4w88aD34I+/QVSfnoAnSBFPJHItlOMJVw==}
+    dev: false
 
   /ms/2.0.0:
     resolution: {integrity: sha1-VgiurfwAvmwpAd9fmGF4jeDVl8g=}
