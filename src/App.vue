@@ -40,11 +40,10 @@ rendererOn(ipcNames.update_downloaded, () => {
       isDownloaded: true,
     },
   });
-
 });
 
 rendererOn(ipcNames.update_not_available, (event, info) => {
-    appStore.$patch({
+  appStore.$patch({
     version: {
       isLatestVer: true,
       newVersion: info,
@@ -54,8 +53,10 @@ rendererOn(ipcNames.update_not_available, (event, info) => {
 </script>
 
 <template>
-  <PosHeader />
-  <router-view></router-view>
+  <div class="space-y-3">
+    <PosHeader />
+    <router-view></router-view>
+  </div>
 </template>
 
 <style>

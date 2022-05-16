@@ -1,7 +1,9 @@
 <template>
-  <StoreHeader />
-  <div class="w-full flex justify-center">
-    <DateNav />
+  <div class="space-y-3">
+    <StoreHeader />
+    <div class="w-full flex justify-center">
+      <DateNav />
+    </div>
   </div>
 </template>
 
