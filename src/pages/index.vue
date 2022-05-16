@@ -1,9 +1,9 @@
 <template>
-  <div>
-  </div>
+  <StoreHeader />
 </template>
 
 <script setup lang="ts">
+import StoreHeader from '../components/StoreHeader.vue';
 
 </script>
 
