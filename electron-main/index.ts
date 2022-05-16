@@ -11,6 +11,7 @@ let win: BrowserWindow = global.modules.mainWindow;
 
 function createWindow() {
   win = new BrowserWindow({
+    minWidth: 1300,
     frame: false,
     transparent: true,
     webPreferences: {
