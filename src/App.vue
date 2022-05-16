@@ -64,7 +64,6 @@ rendererOn(ipcNames.update_not_available, (event, info) => {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
   margin-top: 24px;
   width: 100%;
