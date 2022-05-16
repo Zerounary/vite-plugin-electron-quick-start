@@ -5,6 +5,7 @@
 import ipcNames from "../electron-main/common/ipcNames";
 import { rendererOn } from "../electron-main/common/ipcRender";
 import { useAppStore } from "./stores/app";
+import PosHeader from "./components/PosHeader.vue";
 
 let appStore = useAppStore();
 rendererOn(ipcNames.update_available, (e, info) => {
@@ -53,14 +54,7 @@ rendererOn(ipcNames.update_not_available, (event, info) => {
 </script>
 
 <template>
-  <img height="124" :src="'./logo.svg'" />
-  <span>{{appStore.getUpdateStatus}}</span>
-  <span>{{appStore.version}}</span>
-  <p class="text-indigo-500">
-    <router-link to="/">Home</router-link>
-    |
-    <router-link to="/about">About</router-link>
-  </p>
+  <PosHeader />
   <router-view></router-view>
 </template>
 
@@ -71,6 +65,7 @@ rendererOn(ipcNames.update_not_available, (event, info) => {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin-top: 24px;
+  width: 100%;
 }
 </style>
