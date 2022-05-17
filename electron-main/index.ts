@@ -13,6 +13,7 @@ function createWindow() {
   win = new BrowserWindow({
     minWidth: 1300,
     frame: false,
+    fullscreen: app.isPackaged,
     // transparent: true,
     webPreferences: {
       contextIsolation: false,
