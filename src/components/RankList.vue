@@ -1,5 +1,5 @@
 <template>
-  <div class="w-min-300px bg-white h-400px p-3 rounded shadow space-y-3">
+  <div class="w-min-400px bg-white h-400px p-5 rounded shadow space-y-3">
     <div class="font-bold">{{title}}</div>
     <table class="w-full">
       <thead class="w-full">
@@ -21,13 +21,18 @@
         </template>
       </tbody>
     </table>
-    <div class="h-30px text-14px text-blue-500 font-bold text-center">
+    <div class="text-center text-gray-500 text-13px " v-if="noData">
+      没有数据
+    </div>
+    <div class="h-30px text-14px text-blue-500 font-bold text-center" v-if="!noData" >
       查看更多
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue"
+
 interface Head {
 
 }
@@ -43,6 +48,10 @@ const props = withDefaults(defineProps<Props>(), {
   title: '',
   heads: () => [],
   data: () => []
+})
+
+const noData = computed(() => {
+  return props.data.length === 0
 })
 
 </script>
