@@ -67,5 +67,8 @@ rendererOn(ipcNames.update_not_available, (event, info) => {
   color: #2c3e50;
   margin-top: 24px;
   width: 100%;
+
+  @apply
+    bg-blue-50
 }
 </style>

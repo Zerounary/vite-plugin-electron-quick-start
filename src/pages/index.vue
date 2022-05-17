@@ -1,23 +1,26 @@
 <template>
   <div class="space-y-3">
     <StoreHeader />
-    <div class="center">
-      <DateNav class="" />
-    </div>
-
-    <div class="center">
-      <ObjectGrid :value="grid" />
-    </div>
-
-    <div class="center">
-      <div class=" grid gap-20 grid-cols-3">
-        <RankList title="商品销售排行" :heads="heads" :data="data" />
-        <RankList title="导购业绩" />
-        <RankList title="会员销售排行" />
+    <div class="m-auto space-y-3">
+      <div class="center">
+        <DateNav class="" />
       </div>
+
+      <div class="center">
+        <ObjectGrid :value="grid" />
+      </div>
+      <div class="center">
+        <div class="flex space-x-8">
+          <RankList title="商品销售排行" :heads="heads" :data="data" />
+          <RankList title="导购业绩" />
+          <RankList title="会员销售排行" />
+        </div>
+      </div>
+      <div
+        ref="retailChart"
+        class="w-1200px h-500px mt-10 m-auto shadow p-5 border bg-white rounded"
+      ></div>
     </div>
-<div ref="retailChart" class="w-1000px h-500px mt-10 m-auto shadow p-5 border"></div>
-    
   </div>
 </template>
 
