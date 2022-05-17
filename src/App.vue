@@ -65,7 +65,7 @@ rendererOn(ipcNames.update_not_available, (event, info) => {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
-  margin-top: 24px;
+  //margin-top: 24px;
   width: 100%;
 }
 </style>
