@@ -16,6 +16,7 @@
     "build": "rimraf dist && vite build && electron-builder"
   },
   "dependencies": {
+    "echarts": "^5.3.2",
     "electron-log": "^4.4.7",
     "electron-store": "^8.0.1",
     "electron-updater": "^5.0.1",

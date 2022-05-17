@@ -1,5 +1,5 @@
 <template>
-  <div class="w-min-300px bg-white h-400px p-3 rounded shadow-xl space-y-3">
+  <div class="w-min-300px bg-white h-400px p-3 rounded shadow space-y-3">
     <div class="font-bold">{{title}}</div>
     <table class="w-full">
       <thead class="w-full">

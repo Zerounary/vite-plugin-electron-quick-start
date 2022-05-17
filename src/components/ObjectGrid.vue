@@ -32,6 +32,6 @@ let cells = computed(() => {
 <style scoped>
 .box {
   @apply
-    px-2 py-1 border rounded bg-white text-center shadow-xl w-min-100px space-y-1
+    px-2 py-1 border rounded bg-white text-center shadow w-min-100px space-y-1
 }
 </style>
