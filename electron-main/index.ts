@@ -13,7 +13,7 @@ function createWindow() {
   win = new BrowserWindow({
     minWidth: 1300,
     frame: false,
-    transparent: true,
+    // transparent: true,
     webPreferences: {
       contextIsolation: false,
       nodeIntegration: true,
