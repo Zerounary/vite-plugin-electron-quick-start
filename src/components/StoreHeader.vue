@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="grid grid-cols-2 items-center h-50px shadow-xl bg-blue-500 text-white px-3">
+    <div class="grid grid-cols-2 items-center h-50px shadow bg-blue-500 text-white px-3">
       <div class="text-left flex items-center ">
         <div class="text-2xl">{{storeStore.name}}</div>
       </div>
