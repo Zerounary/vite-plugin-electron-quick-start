@@ -21,6 +21,7 @@ export default defineConfig({
   ],
   build: {
     emptyOutDir: false,
+    cssCodeSplit: false
   },
   resolve: {
     alias: {
