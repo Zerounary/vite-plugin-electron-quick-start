@@ -7,8 +7,9 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 // import routes from "./router"
 import routes from '~pages'
 
-import 'virtual:windi-components.css'
-import 'virtual:windi-utilities.css'
+import './styles/base.css';
+import 'virtual:windi.css';
+import 'virtual:windi-devtools';
 
 let app = createApp(App);
 
