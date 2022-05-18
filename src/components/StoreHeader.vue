@@ -5,8 +5,8 @@
         <div class="text-xl font-bold">{{storeStore.name}}</div>
       </div>
       <div class="flex items-center justify-end space-x-3 ">
-        <div class="store-sum-colls" >库存总量：{{storeStore.storageQty}}</div>
-        <div class="store-sum-colls" >会员总数：{{storeStore.vipNum}}</div>
+        <div class="text-gray-500" >库存总量：{{storeStore.storageQty}}</div>
+        <div class="text-gray-500" >会员总数：{{storeStore.vipNum}}</div>
       </div>
     </div>
   </div>
@@ -20,9 +20,4 @@ const storeStore = userStoreStore();
 </script>
 
 <style scoped>
-.store-sum-cols {
-  @apply
-    text-gray-500;
-}
-
 </style>

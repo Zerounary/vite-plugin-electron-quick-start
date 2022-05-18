@@ -127,7 +127,4 @@ for (let i = 0; i < 4; i++) {
 </script>
 
 <style scoped>
-.center {
-  @apply w-full flex justify-center;
-}
 </style>

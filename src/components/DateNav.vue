@@ -20,11 +20,6 @@ const click = (tag) => {
 
 </script>
 
-<style scoped>
-.box {
-  @apply px-3 py-1 border rounded-sm bg-white;
-}
-.active {
-  @apply bg-blue-500 text-white;
-}
+<style>
+
 </style>
