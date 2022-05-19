@@ -1,12 +1,9 @@
 <template>
-  <div class="px-3 space-y-3">
+  <div class="px-3 space-y-3 text-13px">
     <div
-      class="space-x-3 text-xs h-80px w-full flex items-center px-3 py-5 bg-white shadow rounded"
+      class="space-x-3 h-80px w-full flex items-center px-3 py-5 bg-white shadow rounded"
     >
-      <input
-        class="border h-full rounded px-2 w-240px"
-        placeholder="请输入会员卡号或者手机号"
-      />
+      <input placeholder="请输入会员卡号或者手机号" />
       <button class="btn">查询</button>
       <button class="btn">新增VIP</button>
       <div class="circle !ml-24"></div>
@@ -23,7 +20,10 @@
         class="col-span-2 h-full flex flex-col divide-y bg-white rounded shadow"
       >
         <div class="flex-grow"></div>
-        <div class="h-80px"></div>
+        <div class="h-80px px-3 py-5 space-x-3">
+          <input placeholder="请输入条码" />
+          <button class="btn">查询</button>
+        </div>
       </div>
       <div class="h-full bg-white rounded shadow"></div>
     </div>
@@ -33,6 +33,9 @@
 <script setup lang="ts"></script>
 
 <style scoped>
+input {
+  @apply border h-full rounded px-2 w-240px;
+}
 .btn {
   @apply w-80px border px-2 h-full rounded text-sm;
 }
