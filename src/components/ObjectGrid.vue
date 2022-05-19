@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center space-x-2 bg-white rounded shadow h-100px">
+  <div class="w-full flex items-center justify-center space-x-2 bg-white rounded shadow h-100px">
     <div class="box" v-for="cell in cells" :key="cell.title">
       <div class="font-bold text-16px text-gray-600 h-30px leading-30px">{{cell.title}}</div>
       <div class="text-red-500 font-bold h-20px leading-20px">{{toLocaleString(cell.value)}}</div>
