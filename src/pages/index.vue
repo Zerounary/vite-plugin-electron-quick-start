@@ -12,10 +12,10 @@
       <div>储值：2</div>
     </div>
     <div
-      class="grid grid-cols-3 gap-3 h-[calc(100vh-60px-0.75rem-80px-0.75rem-0.75rem)]"
+      class="flex space-x-3 h-[calc(100vh-60px-0.75rem-80px-0.75rem-0.75rem)]"
     >
       <div
-        class="col-span-2 h-full flex flex-col divide-y bg-white rounded shadow"
+        class="flex-grow h-full flex flex-col divide-y bg-white rounded shadow"
       >
         <div class="flex-grow"></div>
         <div class="box space-x-3">
@@ -121,7 +121,7 @@
 
 <style scoped>
 .box {
-  @apply h-80px px-2 py-5;
+  @apply h-80px px-5 py-5;
 }
 
 input {
