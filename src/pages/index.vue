@@ -17,7 +17,38 @@
       <div
         class="flex-grow h-full flex flex-col divide-y bg-white rounded shadow"
       >
-        <div class="flex-grow"></div>
+        <div class="flex-grow w-full p-5">
+          <table class="w-full">
+            <thead class="text-gray-600">
+              <tr>
+                <th>款号</th>
+                <th>品名</th>
+                <th>销售属性</th>
+                <th>数量</th>
+                <th>原价</th>
+                <th>成交价</th>
+                <th>折扣</th>
+                <th>成交金额</th>
+                <th>库存</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody class="h-300px overflow-auto divide-y">
+              <tr v-for="n in 100" :key="n">
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
         <div class="box space-x-3">
           <input placeholder="请输入条码" />
           <button class="btn">查询</button>
@@ -110,7 +141,9 @@
             <div class="text-red-500">￥2400.00</div>
           </div>
 
-          <button class="h-50px w-120px border rounded bg-blue-500 text-white">付款</button>
+          <button class="h-50px w-120px border rounded bg-blue-500 text-white">
+            付款
+          </button>
         </div>
       </div>
     </div>
@@ -120,6 +153,17 @@
 <script setup lang="ts"></script>
 
 <style scoped>
+table thead,
+table tbody {
+  @apply w-full float-left;
+}
+table tr {
+  @apply h-40px w-full table text-left;
+}
+table th,
+table td {
+  width: 10%;
+}
 .box {
   @apply h-80px px-5 py-5;
 }
