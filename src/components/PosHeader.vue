@@ -7,7 +7,9 @@
         <div class="text-gray-500">会员总数：{{ toLocaleString(storeStore.vipNum) }}</div>
       </div>
     </div>
-    <div class="flex items-center justify-end">
+    <div class="flex items-center justify-end space-x-3">
+      <Icon icon="bxs:home" width="24" height="24" />
+      <router-link class="no-drag" to="/home" >首页</router-link>
       <Icon icon="bxs:user" width="24" height="24" />
       <div>系统管理员</div>
       <Icon

@@ -20,6 +20,11 @@ const click = (tag) => {
 
 </script>
 
-<style>
-
+<style spced>
+.box {
+  @apply px-3 py-1 rounded-sm bg-white;
+}
+.active {
+  @apply bg-blue-500 text-white;
+}
 </style>
