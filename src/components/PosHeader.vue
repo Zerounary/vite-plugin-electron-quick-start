@@ -1,5 +1,5 @@
 <template>
-  <div class="drag grid grid-cols-2 items-center h-50px shadow bg-white px-3">
+  <div class="drag grid grid-cols-2 items-center h-60px shadow bg-white px-3">
     <div class="text-left flex items-end space-x-3">
       <div class="text-xl font-bold">{{ storeStore.name }}</div>
       <div class="flex text-sm space-x-3">
