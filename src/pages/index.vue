@@ -7,7 +7,7 @@
         <div class="flex-grow">
 
         </div>
-        <div class="h-60px"></div>
+        <div class="h-80px"></div>
       </div>
       <div class=" h-full bg-white rounded shadow">
       </div>
