@@ -33,7 +33,7 @@
                 <th>操作</th>
               </tr>
             </thead>
-            <tbody class="h-300px overflow-auto divide-y">
+            <tbody class=" h-[calc(100vh-350px)] overflow-auto divide-y">
               <tr v-for="n in 100" :key="n">
                 <td>1</td>
                 <td>1</td>
