@@ -55,11 +55,11 @@
           </div>
         </div>
         <!-- 备注 -->
-        <div class="box">
+        <div class="box !mt-10">
           <input placeholder="请输入备注" />
         </div>
 
-        <div class="space-y-10 !mt-20 flex-grow">
+        <div class="space-y-10 !mt-10 flex-grow">
           <div class="flex items-center">
             <div class="flex-grow text-16px">优惠券</div>
             <div class="w-120px text-right">
@@ -88,7 +88,7 @@
         </div>
 
         <div
-          class="flex items-center justify-center text-16px space-x-5 !mt-20"
+          class="flex items-center justify-center text-16px space-x-16 !mt-20"
         >
           <div class="flex flex-col items-center space-y-1">
             <div class="font-bold">2900.00</div>
