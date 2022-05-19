@@ -1,6 +1,5 @@
 <template>
   <div class="space-y-3">
-    <StoreHeader />
     <div class="m-auto space-y-3">
       <div class="center">
         <DateNav class="" />
@@ -26,7 +25,6 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import StoreHeader from "../components/StoreHeader.vue";
 import DateNav from "../components/DateNav.vue";
 import ObjectGrid from "../components/ObjectGrid.vue";
 import RankList from "../components/RankList.vue";

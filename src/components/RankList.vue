@@ -14,7 +14,7 @@
           <tr class="h-30px">
             <template v-for="head in heads" :key="head">
               <td>
-                  {{item[head.prop]}}
+                  {{toLocaleString(item[head.prop])}}
               </td>
             </template>     
           </tr>
@@ -32,6 +32,7 @@
 
 <script setup lang="ts">
 import { computed } from "vue"
+import { toLocaleString } from "@/util/format";
 
 interface Head {
 
