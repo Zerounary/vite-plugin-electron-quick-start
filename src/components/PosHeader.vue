@@ -3,15 +3,24 @@
     <div class="text-left flex items-end space-x-3">
       <div class="text-xl font-bold">{{ storeStore.name }}</div>
       <div class="flex text-sm space-x-3">
-        <div class="text-gray-500">库存总量：{{ toLocaleString(storeStore.storageQty)}}</div>
-        <div class="text-gray-500">会员总数：{{ toLocaleString(storeStore.vipNum) }}</div>
+        <div class="text-gray-500">
+          库存总量：{{ toLocaleString(storeStore.storageQty) }}
+        </div>
+        <div class="text-gray-500">
+          会员总数：{{ toLocaleString(storeStore.vipNum) }}
+        </div>
       </div>
     </div>
     <div class="flex items-center justify-end space-x-3">
-      <Icon icon="bxs:home" width="24" height="24" />
-      <router-link class="no-drag" to="/home" >首页</router-link>
+      <router-link class="no-drag flex items-end" to="/">
+        <Icon icon="bxs:home" width="24" height="24" />
+        <span class="text-16px">首页</span>
+      </router-link>
+      <router-link class="no-drag flex items-end" to="/pos">
+        <Icon icon="mdi:network-pos" width="24" height="24" />
+        <span class="text-16px">POS</span>
+      </router-link>
       <Icon icon="bxs:user" width="24" height="24" />
-      <div>系统管理员</div>
       <Icon
         icon="ant-design:logout-outlined"
         class="cursor-pointer no-drag"
@@ -31,12 +40,23 @@ import { rendererSend } from "~/electron-main/common/ipcRender";
 import ipcNames from "~/electron-main/common/ipcNames";
 import { toLocaleString } from "@/util/format";
 import { userStoreStore } from "../stores/store";
+import { computed } from "vue";
 
 const storeStore = userStoreStore();
 
 let quit = () => {
   rendererSend(ipcNames.quit, null);
 };
+
+const isInPos = computed(() => {
+  return router.path == "/pos";
+});
+
+const isInHome = computed(() => {
+  console.log(router);
+
+  return router.path == "/";
+});
 </script>
 
 <style scoped>
