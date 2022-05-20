@@ -54,7 +54,7 @@
           <button class="btn">查询</button>
         </div>
       </div>
-      <div class="h-full flex flex-col bg-white rounded shadow space-y-3 px-5">
+      <div class="h-full overflow-auto flex flex-col bg-white rounded shadow space-y-3 px-5">
         <div class="grid grid-cols-3 gap-3 mt-10">
           <div class="flex flex-col items-center space-y-2">
             <div class="square"></div>
