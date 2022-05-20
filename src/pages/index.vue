@@ -86,8 +86,8 @@
           </div>
         </div>
         <!-- 备注 -->
-        <div class="box !mt-10">
-          <input placeholder="请输入备注" />
+        <div class="!mt-10">
+          <input class="!h-40px" placeholder="请输入备注" />
         </div>
 
         <div class="space-y-10 !mt-10 flex-grow">
