@@ -8,6 +8,7 @@ type AppModules = {
 declare global {
   interface Window {
     removeLoading: () => void
+    router: Router
     modules: AppModules
   }
 }
