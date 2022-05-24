@@ -5,7 +5,6 @@
 import ipcNames from "../electron-main/common/ipcNames";
 import { rendererOn } from "../electron-main/common/ipcRender";
 import { useAppStore } from "./stores/app";
-import PosHeader from "./components/PosHeader.vue";
 
 let appStore = useAppStore();
 rendererOn(ipcNames.update_available, (e, info) => {
@@ -54,7 +53,6 @@ rendererOn(ipcNames.update_not_available, (event, info) => {
 
 <template>
   <div class="space-y-3">
-    <PosHeader />
     <router-view></router-view>
   </div>
 </template>
