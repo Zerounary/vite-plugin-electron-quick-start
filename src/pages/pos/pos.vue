@@ -1,7 +1,7 @@
 <template>
   <div class="px-3 space-y-3 text-13px">
     <div class="box space-x-3 w-full flex items-center bg-white shadow rounded">
-      <input placeholder="请输入会员卡号或者手机号" v-model="vipKeyword" />
+      <input placeholder="请输入会员卡号或者手机号" v-model="vipKeyWord" />
       <button class="btn" @click="query">查询</button>
       <button class="btn">新增VIP</button>
       <div class="circle !ml-24"></div>
@@ -159,7 +159,7 @@ const vipStore = useVipStore();
 let vipKeyWord = ref('');
 
 let query = () => {
-  vipStore.fetchVip(vipKeyWord);
+  vipStore.fetchVip(vipKeyWord.value);
 }
 
 </script>
