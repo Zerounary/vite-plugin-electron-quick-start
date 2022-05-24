@@ -60,10 +60,5 @@ const isInHome = computed(() => {
 </script>
 
 <style scoped>
-.drag {
-  -webkit-app-region: drag;
-}
-.no-drag {
-  -webkit-app-region: no-drag;
-}
+
 </style>
