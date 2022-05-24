@@ -1,10 +1,7 @@
-export default [
-  {
-    path: '/',
-    component: () => import('@/pages/index.vue'),
-  },
-  {
-    path: '/about',
-    component: () => import('@/pages/about/index.vue'),
-  }
-]
+import { createRouter, createWebHashHistory } from "vue-router";
+import routes from "~pages";
+
+export default createRouter({
+  history: createWebHashHistory(),
+  routes,
+});
