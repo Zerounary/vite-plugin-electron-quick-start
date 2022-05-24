@@ -5,11 +5,11 @@
       <button class="btn" @click="query">查询</button>
       <button class="btn">新增VIP</button>
       <div class="circle !ml-24"></div>
-      <div>158****8833</div>
+      <div>{{ mobil }}</div>
       <div>白金卡</div>
-      <div>券：2</div>
-      <div>积分：2</div>
-      <div>储值：2</div>
+      <div>券：{{tickets}}</div>
+      <div>积分：{{integral}}</div>
+      <div>储值：{{amount}}</div>
     </div>
     <div
       class="flex space-x-3 h-[calc(100vh-60px-0.75rem-80px-0.75rem-0.75rem)]"
@@ -151,11 +151,35 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue"
+import { computed, ref } from "vue"
 import {useVipStore} from '@/stores/vip'
 
 const vipStore = useVipStore();
 
+// 手机号
+const mobil = computed(() => {
+  return vipStore.vip?.mobil || '-';
+});
+
+// 会员类型
+const vipType = computed(() => {
+  return vipStore.vip?.vipType || '无';
+});
+
+// 积分
+const integral = computed(() => {
+  return vipStore.vip?.integral || 0;
+});
+
+// 储值
+const amount = computed(() => {
+  return vipStore.vip?.amount || 0;
+});
+
+// 优惠券
+const tickets = computed(() => {
+  return vipStore.vip?.tickets || 0;
+});
 let vipKeyWord = ref('');
 
 let query = () => {
