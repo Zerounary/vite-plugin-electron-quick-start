@@ -7,17 +7,17 @@ let router = createRouter({
   routes,
 });
 
-// router.beforeEach((to, from) => {
-//   const authStore = useAuthStore();
-//   if (authStore.isLogin) {
-//     return true;
-//   } else {
-//     if (to.path === "/login") {
-//       return true;
-//     } else {
-//       router.push("/login");
-//     }
-//   }
-// });
+router.beforeEach((to, from) => {
+  const authStore = useAuthStore();
+  if (authStore.isLogin) {
+    return true;
+  } else {
+    if (to.path === "/login") {
+      return true;
+    } else {
+      router.push("/login");
+    }
+  }
+});
 
 export default router;

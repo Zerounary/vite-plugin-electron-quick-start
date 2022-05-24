@@ -39,18 +39,22 @@ import { Icon } from "@iconify/vue";
 import { rendererSend } from "~/electron-main/common/ipcRender";
 import ipcNames from "~/electron-main/common/ipcNames";
 import { toLocaleString } from "@/util/format";
-import { userStoreStore } from "../stores/store";
+import { userStoreStore } from "@/stores/store";
 import { computed } from "vue";
+import { useAuthStore } from "@/stores/auth";
 
 const storeStore = userStoreStore();
+const authStore = useAuthStore();
 
 let quit = () => {
-  // rendererSend(ipcNames.quit, null);
-  router.push('/login');
+  authStore.logout();
 };
 
 const isInPos = computed(() => {
-  console.log("🚀 ~ file: PosHeader.vue ~ line 53 ~ isInPos ~ router", router.currentRoute.value.path);
+  console.log(
+    "🚀 ~ file: PosHeader.vue ~ line 53 ~ isInPos ~ router",
+    router.currentRoute.value.path
+  );
   return router.currentRoute.value.path == "/pos/pos";
 });
 
@@ -59,6 +63,4 @@ const isInHome = computed(() => {
 });
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

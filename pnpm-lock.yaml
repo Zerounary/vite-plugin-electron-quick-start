@@ -3,6 +3,7 @@ lockfileVersion: 5.3
 specifiers:
   '@iconify/vue': ^3.2.1
   '@vitejs/plugin-vue': ^2.3.1
+  '@windicss/plugin-heropatterns': ^0.0.8
   axios: ^0.27.2
   c8: ^7.11.2
   commitizen: ^4.2.4
@@ -41,6 +42,7 @@ dependencies:
 devDependencies:
   '@iconify/vue': 3.2.1_vue@3.2.33
   '@vitejs/plugin-vue': 2.3.2_vite@2.9.8+vue@3.2.33
+  '@windicss/plugin-heropatterns': 0.0.8
   c8: 7.11.2
   commitizen: 4.2.4
   cz-conventional-changelog: 3.3.0
@@ -521,6 +523,12 @@ packages:
       windicss: 3.5.1
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  /@windicss/plugin-heropatterns/0.0.8:
+    resolution: {integrity: sha512-HaDXY9arOiscyEO6YJl3L/VU8nMHaLxg2nZKfnv+4L+BnSCcaoeAtmI7WbG6YV7amZcN6RZPvXSCHyUh9u+EyA==}
+    dependencies:
+      lodash: 4.17.21
     dev: true
 
   /@windicss/plugin-utils/1.8.4:
