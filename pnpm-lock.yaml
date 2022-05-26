@@ -17,6 +17,7 @@ specifiers:
   element-plus: ^2.2.2
   moment: ^2.29.3
   pinia: ^2.0.14
+  pinia-plugin-persist: ^1.0.0
   rimraf: ^3.0.2
   standard-version: ^9.3.2
   typescript: ^4.6.3
@@ -38,6 +39,7 @@ dependencies:
   element-plus: 2.2.2_vue@3.2.33
   moment: 2.29.3
   pinia: 2.0.14_typescript@4.6.4+vue@3.2.33
+  pinia-plugin-persist: 1.0.0_pinia@2.0.14+vue@3.2.33
   vue: 3.2.33
   vue-router: 4.0.15_vue@3.2.33
 
@@ -3809,6 +3811,21 @@ packages:
     resolution: {integrity: sha1-5aSs0sEB/fPZpNB/DbxNtJ3SgXY=}
     engines: {node: '>=4'}
     dev: true
+
+  /pinia-plugin-persist/1.0.0_pinia@2.0.14+vue@3.2.33:
+    resolution: {integrity: sha512-M4hBBd8fz/GgNmUPaaUsC29y1M09lqbXrMAHcusVoU8xlQi1TqgkWnnhvMikZwr7Le/hVyMx8KUcumGGrR6GVw==}
+    peerDependencies:
+      '@vue/composition-api': ^1.0.0
+      pinia: ^2.0.0
+      vue: ^2.0.0 || >=3.0.0
+    peerDependenciesMeta:
+      '@vue/composition-api':
+        optional: true
+    dependencies:
+      pinia: 2.0.14_typescript@4.6.4+vue@3.2.33
+      vue: 3.2.33
+      vue-demi: 0.12.5_vue@3.2.33
+    dev: false
 
   /pinia/2.0.14_typescript@4.6.4+vue@3.2.33:
     resolution: {integrity: sha512-0nPuZR4TetT/WcLN+feMSjWJku3SQU7dBbXC6uw+R6FLQJCsg+/0pzXyD82T1FmAYe0lsx+jnEDQ1BLgkRKlxA==}

@@ -3,6 +3,7 @@ import App from './App.vue'
 import './samples/node-api'
 
 import { createPinia } from 'pinia'
+import piniaPersist from 'pinia-plugin-persist'
 import router from "./router"
 
 import './styles/base.css';
@@ -14,7 +15,9 @@ import 'element-plus/dist/index.css'
 
 let app = createApp(App);
 
-app.use(createPinia());
+const pinia = createPinia();
+pinia.use(piniaPersist);
+app.use(pinia);
 
 app.use(router)
 
