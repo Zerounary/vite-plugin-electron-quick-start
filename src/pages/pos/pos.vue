@@ -150,8 +150,31 @@
   </div>
   <el-dialog class="no-drag" 
     v-model="vipDialogVisible"
+    title="新增会员"
   >
-    会员新增弹窗
+    <el-form :model="vipForm" :rules="vipRules" ref="vipFormInstance" label-width="80px">
+      <el-form-item label="手机号码" prop="mobile">
+        <el-input v-model="vipForm.mobile" placeholder="请输入手机号码"></el-input>
+      </el-form-item>
+      <el-form-item label="会员姓名" prop="name">
+        <el-input v-model="vipForm.name" placeholder="请输入姓名"></el-input>
+      </el-form-item>
+      <el-form-item label="生日" prop="birthday">
+        <el-date-picker class="w-full" v-model="vipForm.birthday" ></el-date-picker>
+      </el-form-item>
+      <el-form-item label="性别" prop="sex">
+        <el-radio-group v-model="vipForm.sex">
+          <el-radio label="m" >男</el-radio>
+          <el-radio label="f" >女</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="开卡人" prop="name">
+        <el-input v-model="vipForm.salerap" placeholder="请输入开卡人"></el-input>
+      </el-form-item>
+      <el-form-item label="备注" prop="name">
+        <el-input v-model="vipForm.description"></el-input>
+      </el-form-item>
+    </el-form>
   </el-dialog>
 </template>
 
@@ -159,7 +182,18 @@
 import { computed, ref, Ref } from "vue"
 import {useVipStore} from '@/stores/vip'
 
-const vipDialogVisible = ref(false);
+const vipDialogVisible = ref(true);
+const vipFormInstance = ref();
+const vipForm = ref({
+  birthday: '',
+  name: '',
+  mobile: '',
+  salerap: '',
+  description: '',
+  sex: 'm'
+});
+
+const vipRules = ref({})
 
 const openVipDialog = () => {
   vipDialogVisible.value = true;
