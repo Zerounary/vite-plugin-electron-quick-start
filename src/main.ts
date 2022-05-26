@@ -11,6 +11,7 @@ import 'virtual:windi.css';
 import 'virtual:windi-devtools';
 
 import ElementPlus from "element-plus"
+import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import 'element-plus/dist/index.css'
 
 let app = createApp(App);
@@ -23,7 +24,9 @@ app.use(router)
 
 global.router = router;
 
-app.use(ElementPlus);
+app.use(ElementPlus, {
+  locale: zhCn
+});
 
 app.mount('#app')
   .$nextTick(window.removeLoading)
