@@ -1,6 +1,6 @@
 <template>
-  <div class="space-y-3">
-    <PosHeader />
+  <div>
+    <PosHeader class="mb-3" />
     <router-view></router-view>
   </div>
 </template>
