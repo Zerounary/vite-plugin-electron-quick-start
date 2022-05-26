@@ -3,7 +3,7 @@
     <div class="box space-x-3 w-full flex items-center bg-white shadow rounded">
       <input placeholder="请输入会员卡号或者手机号" v-model="vipKeyWord" />
       <button class="btn" @click="query">查询</button>
-      <button class="btn">新增VIP</button>
+      <button class="btn" @click="openVipDialog">新增VIP</button>
       <div class="circle !ml-24"></div>
       <div>{{ mobil }}</div>
       <div>白金卡</div>
@@ -148,11 +148,26 @@
       </div>
     </div>
   </div>
+  <el-dialog class="no-drag" 
+    v-model="vipDialogVisible"
+  >
+    会员新增弹窗
+  </el-dialog>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue"
+import { computed, ref, Ref } from "vue"
 import {useVipStore} from '@/stores/vip'
+
+const vipDialogVisible = ref(false);
+
+const openVipDialog = () => {
+  vipDialogVisible.value = true;
+}
+
+const closeVipDialog = () => {
+  vipDialogVisible.value = false;
+}
 
 const vipStore = useVipStore();
 
