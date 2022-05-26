@@ -18,7 +18,10 @@
       "~/*": [
         "./*"
       ]
-    }
+    },
+    "types": [
+      "element-plus/global"
+    ]
   },
   "include": ["src/**/*.ts", "electron-main/**/*.ts", "electron-preload/**/*.ts"]
 }

@@ -11,6 +11,10 @@ import routes from '~pages'
 import 'virtual:windi-components.css'
 import 'virtual:windi-utilities.css'
 
+import ElementPlus from "element-plus"
+import zhCn from 'element-plus/es/locale/lang/zh-cn'
+import 'element-plus/dist/index.css'
+
 let app = createApp(App);
 
 const pinia = createPinia();
@@ -25,6 +29,10 @@ let router = createRouter({
 app.use(router)
 
 global.router = router;
+
+app.use(ElementPlus, {
+  locale: zhCn
+});
 
 app.mount('#app')
   .$nextTick(window.removeLoading)

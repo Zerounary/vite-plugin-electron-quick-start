@@ -35,8 +35,8 @@ let quit = () => {
     <a href="https://v3.vuejs.org/" target="_blank">Vue 3 Docs</a>
   </p>
 
-  <button type="button" @click="counterStore.increment()">count is: {{ counterStore.count }}</button>
-  <button type="button" @click="quit">quit</button>
+  <el-button type="primary" @click="counterStore.increment()">count is: {{ counterStore.count }}</el-button>
+  <el-button type="danger" @click="quit">quit</el-button>
   <p>
     Edit
     <code>components/HelloWorld.vue</code> to test hot module replacement.
