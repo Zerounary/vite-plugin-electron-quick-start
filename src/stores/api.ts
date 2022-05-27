@@ -33,7 +33,14 @@ export const useApi = defineStore("portal", {
         tid,
         params: transformFn(data),
       });
-      console.log("🚀 ~ file: portal.ts ~ line 24 ~ add ~ res", res);
+      return res
+    },
+    async detail(table, filter) {
+      return new Promise((resolve, reject) => {
+        request.put(`/smd/${table}`, filter).then((data) => {
+          resolve(data?.data);
+        });
+      });
     },
     async Page(table, filter) {
       return new Promise((resolve, reject) => {

@@ -2,6 +2,20 @@ import { defineStore } from "pinia";
 import { request } from "@/util/request";
 import { useApi } from "./api";
 import { useAuthStore } from "./auth";
+import { ElMessage } from "element-plus";
+
+let defaultVipForm = () => ({
+  // 必填字段
+  cardno: "",
+  CViptypeId: "",
+  vipname: "",
+  birthday: "",
+
+  mobil: "",
+  HrEmployeeId: "",
+  description: "",
+  sex: "m",
+});
 
 export const useVipStore = defineStore("vip", {
   state: () => {
@@ -9,40 +23,51 @@ export const useVipStore = defineStore("vip", {
       tableId: 12899,
       vip: null,
       vipTypes: [],
-      vipForm: {
-        // 必填字段
-        cardno: "",
-        CViptypeId: "",
-        vipname: "",
-        birthday: "",
-
-        mobil: "",
-        HrEmployeeId: "",
-        description: "",
-        sex: "m",
-      },
+      vipForm: defaultVipForm(),
     };
   },
+  getters: {},
   actions: {
     async fetchVip(keyword) {
-      this.vip = (
-        await request.put("/smd/vip", {
-          keyword,
-        })
-      )?.data;
+      const api = useApi();
+      this.vip = await api.detail("vip", { keyword });
     },
     async fetchAllVipType(filter?) {
       const api = useApi();
       this.vipTypes = await api.noPage("viptype", filter);
     },
     async save(newVip) {
-      const api = useApi();
-      const auth = useAuthStore();
-      this.vip = await api.add(this.tableId, {
-        CCustomerId: auth.user.customerId,
-        CStoreId: auth.user.storeId,
-        ...newVip,
+      return new Promise(async (resolve, reject) => {
+        let dbVip = await this.isExists(newVip.cardno);
+        if (dbVip) {
+          ElMessage.warning(`所注册的会员【${newVip.cardno}】，已存在`);
+          this.vip = dbVip;
+          resolve(this.vip);
+          return;
+        }
+        const api = useApi();
+        const auth = useAuthStore();
+        let result = await api.add(this.tableId, {
+          CCustomerId: auth.user.customerId,
+          CStoreId: auth.user.storeId,
+          ...newVip,
+        });
+        console.log("🚀 ~ file: vip.ts ~ line 55 ~ returnnewPromise ~ result", result)
+        if(result?.code == 2) {
+          reject();
+        }
+        ElMessage.success(`会员【${newVip.vipname}】新增成功`);
+        await this.fetchVip(newVip.mobil);
+        resolve(this.vip);
       });
+    },
+    async isExists(mobil) {
+      const api = useApi();
+      let res = await api.detail("vip", { keyword: mobil });
+      return res;
+    },
+    resetVipForm() {
+      this.vipForm = defaultVipForm();
     },
   },
   persist: {

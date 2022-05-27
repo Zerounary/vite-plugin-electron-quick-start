@@ -156,19 +156,19 @@
       :rules="vipRules"
       ref="vipFormInstance"
       label-width="80px"
-      ><el-form-item label="会员卡号" required prop="cardno">
+      ><el-form-item label="会员卡号" prop="cardno">
         <el-input
           v-model="vipForm.cardno"
           placeholder="请输入会员卡号"
         ></el-input>
       </el-form-item>
-      <el-form-item label="手机号码" required prop="mobil">
+      <el-form-item label="手机号码" prop="mobil">
         <el-input
           v-model="vipForm.mobil"
           placeholder="请输入手机号码"
         ></el-input>
       </el-form-item>
-      <el-form-item label="顾客姓名" required prop="vipname">
+      <el-form-item label="顾客姓名" prop="vipname">
         <el-input v-model="vipForm.vipname" placeholder="请输入姓名"></el-input>
       </el-form-item>
       <el-form-item label="生日" prop="birthday">
@@ -188,7 +188,6 @@
         <el-select
           v-model="vipForm.HrEmployeeId"
           filterable
-          placeholder="Select"
         >
           <el-option
             v-for="item in employeeStore.employee"
@@ -201,7 +200,7 @@
       <el-form-item label="备注" prop="name">
         <el-input v-model="vipForm.description"></el-input>
       </el-form-item>
-      <el-form-item label="VIP类型" required prop="CViptypeId">
+      <el-form-item label="VIP类型" prop="CViptypeId">
         <el-radio-group v-model="vipForm.CViptypeId">
           <template v-for="vipType in vipStore.vipTypes" :key="vipType">
             <el-radio :label="vipType.id">{{ vipType.name }}</el-radio>
@@ -232,6 +231,7 @@ const {vipForm} = storeToRefs(vipStore)
 const vipRules = ref({});
 
 const openVipDialog = () => {
+  vipStore.resetVipForm();
   vipDialogVisible.value = true;
 };
 
@@ -246,8 +246,10 @@ onMounted(async () => {
   await employeeStore.fetchAllEmployee();
 });
 
-const saveVip = () => {
-  vipStore.save(vipForm.value);
+const saveVip = async () => {
+  vipStore.save(vipForm.value).then((result) => {
+    closeVipDialog();
+  });
 };
 
 // 手机号
