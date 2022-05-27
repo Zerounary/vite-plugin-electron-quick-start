@@ -1,5 +1,6 @@
 // import { ipcNames } from '~/electron-main/common/ipcNames';
 import Axios from "axios";
+import { ElMessage } from "element-plus";
 // import { mainSend } from '~/electron-main/common/ipcMain';
 
 Axios.defaults.adapter = require("axios/lib/adapters/http");
@@ -24,9 +25,12 @@ request.interceptors.request.use(
 request.interceptors.response.use(
    function (response) {
       // 对响应数据做点什么
-      console.log("🚀 ~ file: request.ts ~ line 30 ~ response", response)
       if(response.headers?.["set-cookie"]){
         Cookie = response.headers["set-cookie"]
+      }
+      if(response.status == 401 || response.data?.code == 401){
+        ElMessage.warning("登录已超时，请重新登录!");
+        router.push('/login');
       }
       return response.data;
     },
