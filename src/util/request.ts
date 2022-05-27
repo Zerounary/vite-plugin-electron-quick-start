@@ -37,6 +37,9 @@ request.interceptors.response.use(
         ElMessage.warning("登录已超时，请重新登录!");
         router.push('/login');
       }
+      if(response.data?.code == 2){
+        ElMessage.warning(response.data?.msg);
+      }
       return response.data;
     },
     function (error) {

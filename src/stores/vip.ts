@@ -8,7 +8,19 @@ export const useVipStore = defineStore("vip", {
     return {
       tableId: 12899,
       vip: null,
-      vipTypes: []
+      vipTypes: [],
+      vipForm: {
+        // 必填字段
+        cardno: "",
+        CViptypeId: "",
+        vipname: "",
+        birthday: "",
+
+        mobil: "",
+        HrEmployeeId: "",
+        description: "",
+        sex: "m",
+      },
     };
   },
   actions: {
@@ -31,7 +43,7 @@ export const useVipStore = defineStore("vip", {
         CStoreId: auth.user.storeId,
         ...newVip,
       });
-    }
+    },
   },
   persist: {
     enabled: true,
@@ -39,7 +51,7 @@ export const useVipStore = defineStore("vip", {
       {
         storage: localStorage,
         paths: ["vip"],
-      }
-    ]
-  }
+      },
+    ],
+  },
 });
