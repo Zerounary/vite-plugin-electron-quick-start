@@ -33,8 +33,9 @@ let password = ref('')
 
 const authStore = useAuthStore();
 
-let login = () => {
-  authStore.login(username.value, password.value);
+let login = async () => {
+  await authStore.login(username.value, password.value);
+  router.push("/pos/home");
 }
 </script>
 

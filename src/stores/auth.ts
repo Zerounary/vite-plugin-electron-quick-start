@@ -1,6 +1,5 @@
 import router from "@/router";
 import { request } from "@/util/request";
-import { getStore } from "@/util/storage";
 import { defineStore } from "pinia";
 
 export const useAuthStore = defineStore("auth", {
@@ -21,12 +20,10 @@ export const useAuthStore = defineStore("auth", {
         this.user
       );
       this.isLogin = true;
-      router.push("/pos/home");
     },
     async logout() {
       await request.post("/api/logout");
       this.isLogin = false;
-      router.push("/login");
     },
   },
   persist: {
@@ -34,7 +31,7 @@ export const useAuthStore = defineStore("auth", {
     strategies: [
       {
         storage: localStorage,
-        paths: ["isLogin"],
+        paths: ["isLogin", "user"],
       }
     ]
   }

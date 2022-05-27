@@ -46,8 +46,9 @@ import { useAuthStore } from "@/stores/auth";
 const storeStore = userStoreStore();
 const authStore = useAuthStore();
 
-let quit = () => {
-  authStore.logout();
+let quit = async () => {
+  await authStore.logout();
+  router.push("/login");
 };
 
 const isInPos = computed(() => {
