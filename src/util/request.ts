@@ -15,7 +15,7 @@ let Cookie = []
 
 request.interceptors.request.use(
   function(config) {
-    console.log("🚀 ~ file: request.ts ~ line 14 ~ config", config)
+    // console.debug("request ===> ", config)
     // Do something before request is sent
     config.headers.Cookie = Cookie.join('; ');
     return config;
@@ -24,6 +24,7 @@ request.interceptors.request.use(
 
 request.interceptors.response.use(
    function (response) {
+      // console.debug("response <=== ", response)
       // 对响应数据做点什么
       if(response.headers?.["set-cookie"]){
         Cookie = response.headers["set-cookie"]

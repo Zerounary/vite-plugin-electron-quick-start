@@ -1,5 +1,5 @@
 import { beforeEach, expect, describe, it } from "vitest";
-import { defaultTransformFn, usePortalStore } from "@/stores/portal";
+import { defaultTransformFn, useApi } from "@/stores/api";
 import { request } from "@/util/request.ts";
 
 

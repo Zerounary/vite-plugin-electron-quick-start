@@ -15,6 +15,7 @@ specifiers:
   electron-store: ^8.0.1
   electron-updater: ^5.0.1
   element-plus: ^2.2.2
+  lodash: ^4.17.21
   moment: ^2.29.3
   pinia: ^2.0.14
   pinia-plugin-persist: ^1.0.0
@@ -37,6 +38,7 @@ dependencies:
   electron-store: 8.0.1
   electron-updater: 5.0.1
   element-plus: 2.2.2_vue@3.2.33
+  lodash: 4.17.21
   moment: 2.29.3
   pinia: 2.0.14_typescript@4.6.4+vue@3.2.33
   pinia-plugin-persist: 1.0.0_pinia@2.0.14+vue@3.2.33

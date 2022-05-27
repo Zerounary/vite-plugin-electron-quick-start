@@ -7,9 +7,9 @@
       <div class="circle !ml-24"></div>
       <div>{{ mobil }}</div>
       <div>白金卡</div>
-      <div>券：{{tickets}}</div>
-      <div>积分：{{integral}}</div>
-      <div>储值：{{amount}}</div>
+      <div>券：{{ tickets }}</div>
+      <div>积分：{{ integral }}</div>
+      <div>储值：{{ amount }}</div>
     </div>
     <div
       class="flex space-x-3 h-[calc(100vh-60px-0.75rem-80px-0.75rem-0.75rem)]"
@@ -33,7 +33,7 @@
                 <th>操作</th>
               </tr>
             </thead>
-            <tbody class=" h-[calc(100vh-350px)] overflow-auto divide-y">
+            <tbody class="h-[calc(100vh-350px)] overflow-auto divide-y">
               <tr v-for="n in 100" :key="n">
                 <td>1</td>
                 <td>1</td>
@@ -54,7 +54,9 @@
           <button class="btn">查询</button>
         </div>
       </div>
-      <div class="h-full overflow-auto flex flex-col bg-white rounded shadow space-y-3 px-5">
+      <div
+        class="h-full overflow-auto flex flex-col bg-white rounded shadow space-y-3 px-5"
+      >
         <div class="grid grid-cols-3 gap-3 mt-10">
           <div class="flex flex-col items-center space-y-2">
             <div class="square"></div>
@@ -148,71 +150,91 @@
       </div>
     </div>
   </div>
-  <el-dialog class="no-drag" 
-    v-model="vipDialogVisible"
-    title="新增会员"
-  >
-    <el-form :model="vipForm" :rules="vipRules" ref="vipFormInstance" label-width="80px">
+  <el-dialog class="no-drag" v-model="vipDialogVisible" title="新增会员">
+    <el-form
+      :model="vipForm"
+      :rules="vipRules"
+      ref="vipFormInstance"
+      label-width="80px"
+    >
       <el-form-item label="手机号码" prop="mobile">
-        <el-input v-model="vipForm.mobile" placeholder="请输入手机号码"></el-input>
+        <el-input
+          v-model="vipForm.mobile"
+          placeholder="请输入手机号码"
+        ></el-input>
       </el-form-item>
       <el-form-item label="会员姓名" prop="name">
         <el-input v-model="vipForm.name" placeholder="请输入姓名"></el-input>
       </el-form-item>
       <el-form-item label="生日" prop="birthday">
-        <el-date-picker class="w-full" v-model="vipForm.birthday" ></el-date-picker>
+        <el-date-picker
+          class="w-full"
+          v-model="vipForm.birthday"
+          format="YYYYMMDD"
+        ></el-date-picker>
       </el-form-item>
       <el-form-item label="性别" prop="sex">
         <el-radio-group v-model="vipForm.sex">
-          <el-radio label="m" >男</el-radio>
-          <el-radio label="f" >女</el-radio>
+          <el-radio label="m">男</el-radio>
+          <el-radio label="f">女</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="开卡人" prop="name">
-        <el-input v-model="vipForm.salerap" placeholder="请输入开卡人"></el-input>
+        <el-input
+          v-model="vipForm.salerap"
+          placeholder="请输入开卡人"
+        ></el-input>
       </el-form-item>
       <el-form-item label="备注" prop="name">
         <el-input v-model="vipForm.description"></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="saveVip" >保存</el-button>
+        <el-button @click="closeVipDialog">取消</el-button>
       </el-form-item>
     </el-form>
   </el-dialog>
 </template>
 
 <script setup lang="ts">
-import { computed, ref, Ref } from "vue"
-import {useVipStore} from '@/stores/vip'
+import { computed, ref, Ref } from "vue";
+import { useVipStore } from "@/stores/vip";
 
 const vipDialogVisible = ref(true);
 const vipFormInstance = ref();
 const vipForm = ref({
-  birthday: '',
-  name: '',
-  mobile: '',
-  salerap: '',
-  description: '',
-  sex: 'm'
+  birthday: "",
+  name: "",
+  mobile: "",
+  salerap: "",
+  description: "",
+  sex: "m",
 });
 
-const vipRules = ref({})
+const vipRules = ref({});
 
 const openVipDialog = () => {
   vipDialogVisible.value = true;
-}
+};
 
 const closeVipDialog = () => {
   vipDialogVisible.value = false;
-}
+};
 
 const vipStore = useVipStore();
 
+const saveVip = () => {
+  vipStore.save(vipForm.value);
+}
+
 // 手机号
 const mobil = computed(() => {
-  return vipStore.vip?.mobil || '-';
+  return vipStore.vip?.mobil || "-";
 });
 
 // 会员类型
 const vipType = computed(() => {
-  return vipStore.vip?.vipType || '无';
+  return vipStore.vip?.vipType || "无";
 });
 
 // 积分
@@ -229,12 +251,11 @@ const amount = computed(() => {
 const tickets = computed(() => {
   return vipStore.vip?.tickets || 0;
 });
-let vipKeyWord = ref('');
+let vipKeyWord = ref("");
 
 let query = () => {
   vipStore.fetchVip(vipKeyWord.value);
-}
-
+};
 </script>
 
 <style scoped>
