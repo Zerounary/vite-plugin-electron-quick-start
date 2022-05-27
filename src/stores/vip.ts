@@ -8,6 +8,7 @@ export const useVipStore = defineStore("vip", {
     return {
       tableId: 12899,
       vip: null,
+      vipTypes: []
     };
   },
   actions: {
@@ -18,14 +19,27 @@ export const useVipStore = defineStore("vip", {
         })
       )?.data;
     },
+    async fetchAllVipType(filter?) {
+      const api = useApi();
+      this.vipTypes = await api.noPage("viptype", filter);
+    },
     async save(newVip) {
       const api = useApi();
       const auth = useAuthStore();
       this.vip = await api.add(this.tableId, {
         CCustomerId: auth.user.customerId,
         CStoreId: auth.user.storeId,
-        newVip,
+        ...newVip,
       });
     }
   },
+  persist: {
+    enabled: true,
+    strategies: [
+      {
+        storage: localStorage,
+        paths: ["vip"],
+      }
+    ]
+  }
 });

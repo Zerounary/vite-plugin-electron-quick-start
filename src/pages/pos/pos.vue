@@ -156,21 +156,26 @@
       :rules="vipRules"
       ref="vipFormInstance"
       label-width="80px"
-    >
+      ><el-form-item label="会员卡号" prop="cardno">
+        <el-input
+          v-model="vipForm.cardno"
+          placeholder="请输入会员卡号"
+        ></el-input>
+      </el-form-item>
       <el-form-item label="手机号码" prop="mobile">
         <el-input
-          v-model="vipForm.mobile"
+          v-model="vipForm.mobil"
           placeholder="请输入手机号码"
         ></el-input>
       </el-form-item>
-      <el-form-item label="会员姓名" prop="name">
-        <el-input v-model="vipForm.name" placeholder="请输入姓名"></el-input>
+      <el-form-item label="会员姓名" prop="vipname">
+        <el-input v-model="vipForm.vipname" placeholder="请输入姓名"></el-input>
       </el-form-item>
       <el-form-item label="生日" prop="birthday">
         <el-date-picker
           class="w-full"
           v-model="vipForm.birthday"
-          format="YYYYMMDD"
+          value-format="YYYYMMDD"
         ></el-date-picker>
       </el-form-item>
       <el-form-item label="性别" prop="sex">
@@ -180,16 +185,31 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item label="开卡人" prop="name">
-        <el-input
-          v-model="vipForm.salerap"
-          placeholder="请输入开卡人"
-        ></el-input>
+        <el-select
+          v-model="vipForm.HrEmployeeId"
+          filterable
+          placeholder="Select"
+        >
+          <el-option
+            v-for="item in employeeStore.employee"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="备注" prop="name">
         <el-input v-model="vipForm.description"></el-input>
       </el-form-item>
+      <el-form-item label="会员类型" prop="CViptypeId">
+        <el-radio-group v-model="vipForm.CViptypeId">
+          <template v-for="vipType in vipStore.vipTypes" :key="vipType">
+            <el-radio :label="vipType.id">{{ vipType.name }}</el-radio>
+          </template>
+        </el-radio-group>
+      </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="saveVip" >保存</el-button>
+        <el-button type="primary" @click="saveVip">保存</el-button>
         <el-button @click="closeVipDialog">取消</el-button>
       </el-form-item>
     </el-form>
@@ -197,16 +217,20 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, Ref } from "vue";
+import { onMounted, computed, ref, Ref } from "vue";
 import { useVipStore } from "@/stores/vip";
+import { useEmployeeStore } from "@/stores/employee";
 
 const vipDialogVisible = ref(true);
 const vipFormInstance = ref();
 const vipForm = ref({
+  cardno: "",
+  CViptypeId: "",
+  vipname: "",
   birthday: "",
-  name: "",
-  mobile: "",
-  salerap: "",
+
+  mobil: "",
+  HrEmployeeId: "",
   description: "",
   sex: "m",
 });
@@ -222,10 +246,16 @@ const closeVipDialog = () => {
 };
 
 const vipStore = useVipStore();
+const employeeStore = useEmployeeStore();
+
+onMounted(async () => {
+  await vipStore.fetchAllVipType();
+  await employeeStore.fetchAllEmployee();
+});
 
 const saveVip = () => {
   vipStore.save(vipForm.value);
-}
+};
 
 // 手机号
 const mobil = computed(() => {

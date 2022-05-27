@@ -22,8 +22,8 @@ export const useAuthStore = defineStore("auth", {
       this.isLogin = true;
     },
     async logout() {
-      await request.post("/api/logout");
       this.isLogin = false;
+      await request.post("/api/logout");
     },
   },
   persist: {

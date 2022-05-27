@@ -11,25 +11,29 @@ export const request = Axios.create({
   timeout: 30000,
 });
 
-let Cookie = []
+let Cookie =  localStorage.getItem("cookie") || "";
 
 request.interceptors.request.use(
   function(config) {
-    // console.debug("request ===> ", config)
+    console.debug("request ===> ", config)
     // Do something before request is sent
-    config.headers.Cookie = Cookie.join('; ');
+    config.headers.Cookie = Cookie;
     return config;
   }
 )
 
 request.interceptors.response.use(
    function (response) {
-      // console.debug("response <=== ", response)
+      console.debug("response <=== ", response)
       // 对响应数据做点什么
       if(response.headers?.["set-cookie"]){
-        Cookie = response.headers["set-cookie"]
+        Cookie = response.headers["set-cookie"].join("; ")
+        localStorage.setItem("cookie", Cookie)
       }
-      if(response.status == 401 || response.data?.code == 401){
+      if(response.status != 200) {
+        ElMessage.error(response.data?.message || response.statusText);
+      }
+      if(response.data?.code == 401){
         ElMessage.warning("登录已超时，请重新登录!");
         router.push('/login');
       }
