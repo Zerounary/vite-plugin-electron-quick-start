@@ -224,7 +224,7 @@ import { storeToRefs } from "pinia";
 const vipStore = useVipStore();
 const employeeStore = useEmployeeStore();
 
-const vipDialogVisible = ref(true);
+const vipDialogVisible = ref(false);
 const vipFormInstance = ref();
 const {vipForm} = storeToRefs(vipStore)
 
