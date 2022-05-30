@@ -320,8 +320,9 @@ const tickets = computed(() => {
 });
 let vipKeyWord = ref("");
 
-let query = () => {
-  vipStore.fetchVip(vipKeyWord.value);
+let query = async () => {
+  await vipStore.fetchVip(vipKeyWord.value);
+  vipKeyWord.value = "";
 };
 
 let newRetail = async () => {
