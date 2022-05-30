@@ -70,13 +70,13 @@ export const useVipStore = defineStore("vip", {
       this.vipForm = defaultVipForm();
     },
   },
-  persist: {
-    enabled: true,
-    strategies: [
-      {
-        storage: localStorage,
-        paths: ["vip"],
-      },
-    ],
-  },
+  // persist: {
+  //   enabled: true,
+  //   strategies: [
+  //     {
+  //       storage: localStorage,
+  //       paths: ["vip"],
+  //     },
+  //   ],
+  // },
 });
