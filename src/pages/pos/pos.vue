@@ -69,7 +69,7 @@
             <div class="square"></div>
             <div>库存查询</div>
           </div>
-          <div class="flex flex-col items-center space-y-2">
+          <div class="flex flex-col items-center space-y-2" @click="newRetail" >
             <div class="square"></div>
             <div>开新单</div>
           </div>
@@ -254,6 +254,11 @@ const { vipForm } = storeToRefs(vipStore);
 
 const vipRules = ref({});
 
+const fetchData = async () => {
+  await vipStore.fetchAllVipType();
+  await employeeStore.fetchAllEmployee();
+}
+
 const openVipDialog = () => {
   vipStore.resetVipForm();
   vipDialogVisible.value = true;
@@ -280,8 +285,7 @@ const cancelEmployee = () => {
 }
 
 onMounted(async () => {
-  await vipStore.fetchAllVipType();
-  await employeeStore.fetchAllEmployee();
+  await fetchData();
 });
 
 const saveVip = async () => {
@@ -319,6 +323,13 @@ let vipKeyWord = ref("");
 let query = () => {
   vipStore.fetchVip(vipKeyWord.value);
 };
+
+let newRetail = async () => {
+  fetchData();
+  vipStore.$reset();
+  retailStore.$reset();
+}
+
 </script>
 
 <style scoped>
