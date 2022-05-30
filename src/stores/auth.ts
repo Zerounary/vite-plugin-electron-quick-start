@@ -1,6 +1,7 @@
 import router from "@/router";
 import { request } from "@/util/request";
 import { defineStore } from "pinia";
+import { ElMessage } from "element-plus";
 
 export const useAuthStore = defineStore("auth", {
   state: () => {
@@ -19,7 +20,11 @@ export const useAuthStore = defineStore("auth", {
         "🚀 ~ file: auth.ts ~ line 17 ~ login ~ this.user",
         this.user
       );
-      this.isLogin = true;
+      if(this.user) {
+        this.isLogin = true;
+      }else {
+        ElMessage.error("用户名或密码错误");
+      }
     },
     async logout() {
       this.isLogin = false;
