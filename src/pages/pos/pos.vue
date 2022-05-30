@@ -58,7 +58,10 @@
         class="h-full overflow-auto flex flex-col bg-white rounded shadow space-y-3 px-5"
       >
         <div class="grid grid-cols-3 gap-3 mt-10">
-          <div class="flex flex-col items-center space-y-2">
+          <div
+            class="flex flex-col items-center space-y-2"
+            @click="openEmployeeDialog"
+          >
             <div class="square"></div>
             <div>营业员</div>
           </div>
@@ -150,6 +153,27 @@
       </div>
     </div>
   </div>
+  <el-dialog
+    class="no-drag"
+    width="300px"
+    v-model="employeeDialogVisible"
+    title="选择营业员"
+  >
+    <el-radio-group
+      class="h-200px overflow-auto"
+      v-model="retailStore.retailForm.SalesrepId"
+    >
+      <el-radio
+        class="w-full"
+        v-for="item in employeeStore.employee"
+        :key="item.id"
+        :label="item.id"
+        >{{ item.name }}</el-radio
+      >
+    </el-radio-group>
+    <el-button type="primary" @click="closeEmployeeDialog">保存</el-button>
+    <el-button @click="cancelEmployee">取消</el-button>
+  </el-dialog>
   <el-dialog class="no-drag" v-model="vipDialogVisible" title="新增会员">
     <el-form
       :model="vipForm"
@@ -185,10 +209,7 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item label="开卡人" prop="name">
-        <el-select
-          v-model="vipForm.HrEmployeeId"
-          filterable
-        >
+        <el-select v-model="vipForm.HrEmployeeId" filterable>
           <el-option
             v-for="item in employeeStore.employee"
             :key="item.id"
@@ -219,14 +240,17 @@
 import { onMounted, computed, ref, Ref } from "vue";
 import { useVipStore } from "@/stores/vip";
 import { useEmployeeStore } from "@/stores/employee";
+import { useRetailStore } from "@/stores/retail";
 import { storeToRefs } from "pinia";
 
 const vipStore = useVipStore();
 const employeeStore = useEmployeeStore();
+const retailStore = useRetailStore();
 
 const vipDialogVisible = ref(false);
 const vipFormInstance = ref();
-const {vipForm} = storeToRefs(vipStore)
+
+const { vipForm } = storeToRefs(vipStore);
 
 const vipRules = ref({});
 
@@ -239,7 +263,21 @@ const closeVipDialog = () => {
   vipDialogVisible.value = false;
 };
 
+// 营业员弹窗
+const employeeDialogVisible = ref(false);
 
+const openEmployeeDialog = () => {
+  employeeDialogVisible.value = true;
+};
+
+const closeEmployeeDialog = () => {
+  employeeDialogVisible.value = false;
+};
+
+const cancelEmployee = () => {
+  retailStore.retailForm.SalesrepId = null;
+  closeEmployeeDialog();
+}
 
 onMounted(async () => {
   await vipStore.fetchAllVipType();
