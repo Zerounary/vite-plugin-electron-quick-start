@@ -17,7 +17,9 @@ request.interceptors.request.use(
   function(config) {
     console.debug("request ===> ", config)
     // Do something before request is sent
-    config.headers.Cookie = Cookie;
+    if(config.url != "/api/loginUser") {
+      config.headers.Cookie = Cookie;
+    }
     return config;
   }
 )
