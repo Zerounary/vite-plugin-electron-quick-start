@@ -2,7 +2,7 @@
   <div class="px-3 space-y-3 text-13px">
     <div class="box space-x-3 w-full flex items-center bg-white shadow rounded">
       <input placeholder="请输入会员卡号或者手机号" v-model="vipKeyWord" />
-      <button class="btn" @click="query">查询</button>
+      <button class="btn" @click="queryVip">查询</button>
       <button class="btn" @click="openVipDialog">新增VIP</button>
       <div class="circle !ml-24"></div>
       <div>{{ mobil }}</div>
@@ -50,8 +50,8 @@
           </table>
         </div>
         <div class="box space-x-3">
-          <input placeholder="请输入条码" />
-          <button class="btn">查询</button>
+          <input :value="productKeyWord" @input="toUpper" placeholder="请输入条码" />
+          <button @click="queryProduct" class="btn">查询</button>
         </div>
       </div>
       <div
@@ -242,10 +242,13 @@ import { useVipStore } from "@/stores/vip";
 import { useEmployeeStore } from "@/stores/employee";
 import { useRetailStore } from "@/stores/retail";
 import { storeToRefs } from "pinia";
+import { useProductStore } from "@/stores/product";
+import { ElMessage } from "element-plus";
 
 const vipStore = useVipStore();
 const employeeStore = useEmployeeStore();
 const retailStore = useRetailStore();
+const productStore = useProductStore();
 
 const vipDialogVisible = ref(false);
 const vipFormInstance = ref();
@@ -319,10 +322,27 @@ const tickets = computed(() => {
   return vipStore.vip?.tickets || 0;
 });
 let vipKeyWord = ref("");
+let productKeyWord = ref("HW21002");
 
-let query = async () => {
+let queryVip = async () => {
   await vipStore.fetchVip(vipKeyWord.value);
   vipKeyWord.value = "";
+};
+
+let queryProduct = async () => {
+  let res = await productStore.fetchProductKeyWord(productKeyWord.value);
+  if(!res){
+    ElMessage.warning("没有查询到相关商品");
+  }else{
+    // 创建零售单
+    retailStore.createRetail(res);
+    if(res.type == "spu"){
+      // 款号展示矩阵
+    }else {
+      // 条码直接录入
+    }
+  }
+  console.log("🚀 ~ file: pos.vue ~ line 333 ~ queryProduct ~ res", res)
 };
 
 let newRetail = async () => {
@@ -331,6 +351,9 @@ let newRetail = async () => {
   retailStore.$reset();
 }
 
+let toUpper = (e) => {
+  productKeyWord.value = e.target.value.toUpperCase();
+}
 </script>
 
 <style scoped>

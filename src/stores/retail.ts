@@ -26,7 +26,7 @@ export const useRetailStore = defineStore("retail", {
     async fetchRetail() {
 
     },
-    async save(newRetail) {
+    async createRetail(newRetail) {
       return new Promise(async (resolve, reject) => {
         const api = useApi();
         const auth = useAuthStore();
