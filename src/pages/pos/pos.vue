@@ -20,8 +20,8 @@
       <div
         class="flex-grow h-full flex flex-col divide-y bg-white rounded shadow"
       >
-        <div class="flex-grow w-full p-5">
-          <table class="w-full">
+        <div class="flex-grow w-full overflow-auto p-5">
+          <table class="headfix w-full">
             <thead class="text-gray-600">
               <tr>
                 <th>款号</th>
@@ -185,10 +185,10 @@
       </div>
     </div>
     <div>
-      <table class="w-full">
+      <table id="matrix" class="w-full ">
         <thead>
           <tr>
-            <th>颜色/尺码</th>
+            <th>颜色\尺码</th>
             <th v-for="size in sizes" :key="size.id">
               {{ size.name }}({{ size.code }})
             </th>
@@ -212,10 +212,6 @@
           </tr>
         </tbody>
       </table>
-      <div>{{ spuMatrix }}</div>
-      <div>
-        {{ matrixValue }}
-      </div>
       <div class="flex justify-end space-x-5">
         <el-button type="primary" @click="saveMatrixValue">保存</el-button>
         <el-button @click="closeMatrixDialog">取消</el-button>
@@ -404,7 +400,7 @@ const spuMatrix = ref({
   attributes: [],
   storage: [],
 });
-const matrixDialogVisible = ref(false);
+const matrixDialogVisible = ref(true);
 
 const colors = computed(() => {
   return spuMatrix.value.attributes.filter((item) => item.type === 1);
@@ -501,15 +497,15 @@ let toUpper = (e) => {
 </script>
 
 <style scoped>
-table thead,
-table tbody {
+table.headfix thead,
+table.headfix tbody {
   @apply w-full float-left;
 }
-table tr {
+table.headfix tr {
   @apply h-40px w-full table text-left;
 }
-table th,
-table td {
+table.headfix th,
+table.headfix td {
   width: 10%;
 }
 .box {
@@ -527,5 +523,20 @@ input {
 }
 .square {
   @apply w-80px h-80px rounded bg-gray-200;
+}
+#matrix thead tr{
+  @apply bg-gray-100 h-40px;
+}
+#matrix thead tr th{
+  @apply text-left p-3;
+}
+#matrix tbody tr{
+  @apply bg-gray-100;
+}
+#matrix tbody tr td:first-child{
+  @apply !bg-gray-100;
+}
+#matrix tbody tr td{
+  @apply bg-white p-3;
 }
 </style>
