@@ -52,6 +52,20 @@ export const useApi = defineStore("portal", {
       });
       return res
     },
+    async delete(tid, idOrIds){
+      let ids = []
+      if(Object.prototype.toString.call(idOrIds) === "[object Array]"){
+        ids = idOrIds
+      }else{
+        ids.push(idOrIds)
+      }
+      let res = await request.post("/api/portal", {
+        tid,
+        opt: "D",
+        id: ids
+      });
+      return res
+    },
     async addProductItem(tid, pid, refId, skus){
       let res = await request.post("/api/portal", {
         tid,

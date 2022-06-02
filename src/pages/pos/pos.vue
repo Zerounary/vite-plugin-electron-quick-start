@@ -52,7 +52,7 @@
                 <td>{{ item["PRICEACTUAL"] }}</td>
                 <td>{{ item["DISCOUNT"] }}</td>
                 <td>{{ item["TOT_AMT_ACTUAL"] }}</td>
-                <td class="text-red-500">删除</td>
+                <td class="text-red-500 cursor-pointer" @click="deleteItem(item)">删除</td>
               </tr>
             </tbody>
           </table>
@@ -166,7 +166,11 @@
       </div>
     </div>
   </div>
-  <el-dialog class="no-drag" title="商品输入" v-model="matrixDialogVisible">
+  <el-dialog
+    class="no-drag"
+    title="商品输入"
+    v-model="matrixDialogVisible"
+  >
     <div class="space-y-5">
       <div class="flex space-x-10">
         <div>
@@ -213,10 +217,6 @@
             </tr>
           </tbody>
         </table>
-      </div>
-      <div class="flex justify-end space-x-5">
-        <el-button type="primary" @click="saveMatrixValue">保存</el-button>
-        <el-button @click="closeMatrixDialog">取消</el-button>
       </div>
     </div>
   </el-dialog>
@@ -402,7 +402,7 @@ const spuMatrix = ref({
   attributes: [],
   storage: [],
 });
-const matrixDialogVisible = ref(true);
+const matrixDialogVisible = ref(false);
 
 const colors = computed(() => {
   return spuMatrix.value.attributes.filter((item) => item.type === 1);
@@ -492,6 +492,11 @@ let newRetail = async () => {
   vipStore.$reset();
   retailStore.$reset();
 };
+
+let deleteItem = async (item) => {
+  await retailStore.delRetailItem(item['id'])
+  ElMessage.success("明细删除成功！");
+}
 
 let toUpper = (e) => {
   productKeyWord.value = e.target.value.toUpperCase();

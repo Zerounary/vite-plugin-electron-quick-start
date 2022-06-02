@@ -41,7 +41,9 @@ export const useRetailStore = defineStore("retail", {
       let result = [];
 
       for (const item of state.retailItem.table.tbody) {
-        let row = {};
+        let row = {
+          id: item.id,
+        };
         for (const field of state.retailItem.table.thead) {
           row[field.dbname] = item[field.id] || item[field.dbname];
         }
@@ -93,6 +95,12 @@ export const useRetailStore = defineStore("retail", {
       let item = this.getItem('M_RETAILITEM');
       await api.addProductItem(item.tid, item.pid, item.refId, skus);
       // await this.fetchRetail();
+      await this.fetchRetailItem();
+    },
+    async delRetailItem(id){
+      const api = useApi();
+      let item = this.getItem('M_RETAILITEM');
+      await api.delete(item.tid, id);
       await this.fetchRetailItem();
     },
     resetRetailForm() {
