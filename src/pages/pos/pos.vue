@@ -57,6 +57,7 @@
           <input
             :value="productKeyWord"
             @input="toUpper"
+            @keydown.enter="queryProduct"
             placeholder="请输入条码"
           />
           <button @click="queryProduct" class="btn">查询</button>
@@ -390,7 +391,7 @@ const tickets = computed(() => {
   return vipStore.vip?.tickets || 0;
 });
 let vipKeyWord = ref("");
-let productKeyWord = ref("HW21002");
+let productKeyWord = ref("");
 
 let queryVip = async () => {
   await vipStore.fetchVip(vipKeyWord.value);
