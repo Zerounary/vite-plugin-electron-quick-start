@@ -40,14 +40,18 @@
                 <td>{{ item["M_PRODUCT_ID"].dk }}</td>
                 <td>{{ item["M_PRODUCT_ID;VALUE"] }}</td>
                 <td class="space-y-5 text-xs">
-                  <div>颜色：{{ item["M_ATTRIBUTESETINSTANCE_ID;VALUE1"]}}</div>
-                  <div>尺码：{{ item["M_ATTRIBUTESETINSTANCE_ID;VALUE2"] }}</div>
+                  <div>
+                    颜色：{{ item["M_ATTRIBUTESETINSTANCE_ID;VALUE1"] }}
+                  </div>
+                  <div>
+                    尺码：{{ item["M_ATTRIBUTESETINSTANCE_ID;VALUE2"] }}
+                  </div>
                 </td>
-                <td>{{item['QTY']}}</td>
-                <td>{{item['PRICELIST']}}</td>
-                <td>{{item['PRICEACTUAL']}}</td>
-                <td>{{item['DISCOUNT']}}</td>
-                <td>{{item['TOT_AMT_ACTUAL']}}</td>
+                <td>{{ item["QTY"] }}</td>
+                <td>{{ item["PRICELIST"] }}</td>
+                <td>{{ item["PRICEACTUAL"] }}</td>
+                <td>{{ item["DISCOUNT"] }}</td>
+                <td>{{ item["TOT_AMT_ACTUAL"] }}</td>
                 <td class="text-red-500">删除</td>
               </tr>
             </tbody>
@@ -162,56 +166,54 @@
       </div>
     </div>
   </div>
-  <el-dialog
-    class="no-drag space-y-10"
-    title="商品输入"
-    v-model="matrixDialogVisible"
-  >
-    <div class="flex space-x-10">
-      <div>
-        款号：
-        {{ spuMatrix.product.value }}
+  <el-dialog class="no-drag" title="商品输入" v-model="matrixDialogVisible">
+    <div class="space-y-5">
+      <div class="flex space-x-10">
+        <div>
+          款号：
+          {{ spuMatrix.product.value }}
+        </div>
+        <div>
+          品名：
+          {{ spuMatrix.product.value }}
+        </div>
+        <div>
+          零售价：
+          {{ spuMatrix.product.pricelist }}
+        </div>
+        <div>
+          <img :src="spuMatrix.product.imageUrl" />
+        </div>
       </div>
       <div>
-        品名：
-        {{ spuMatrix.product.value }}
-      </div>
-      <div>
-        零售价：
-        {{ spuMatrix.product.pricelist }}
-      </div>
-      <div>
-        <img :src="spuMatrix.product.imageUrl" />
-      </div>
-    </div>
-    <div>
-      <table id="matrix" class="w-full ">
-        <thead>
-          <tr>
-            <th>颜色\尺码</th>
-            <th v-for="size in sizes" :key="size.id">
-              {{ size.name }}({{ size.code }})
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="h-80px" v-for="color in colors" :key="color.id">
-            <td>{{ color.name }}</td>
-            <td v-for="size in sizes" :key="size.id">
-              <div>
+        <table id="matrix" class="w-full">
+          <thead>
+            <tr>
+              <th>颜色\尺码</th>
+              <th v-for="size in sizes" :key="size.id">
+                {{ size.name }}({{ size.code }})
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="h-80px" v-for="color in colors" :key="color.id">
+              <td>{{ color.name }}</td>
+              <td v-for="size in sizes" :key="size.id">
                 <div>
-                  <input
-                    :value="getMatrixValue(color.id, size.id)"
-                    @input="matrixChange(color.id, size.id, $event)"
-                    class="p-10px w-full"
-                  />
+                  <div>
+                    <input
+                      :value="getMatrixValue(color.id, size.id)"
+                      @input="matrixChange(color.id, size.id, $event)"
+                      class="p-10px w-full"
+                    />
+                  </div>
+                  <div>可用：{{ getSpuStorage(color.id, size.id) }}</div>
                 </div>
-                <div>可用：{{ getSpuStorage(color.id, size.id) }}</div>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       <div class="flex justify-end space-x-5">
         <el-button type="primary" @click="saveMatrixValue">保存</el-button>
         <el-button @click="closeMatrixDialog">取消</el-button>
@@ -524,19 +526,19 @@ input {
 .square {
   @apply w-80px h-80px rounded bg-gray-200;
 }
-#matrix thead tr{
+#matrix thead tr {
   @apply bg-gray-100 h-40px;
 }
-#matrix thead tr th{
+#matrix thead tr th {
   @apply text-left p-3;
 }
-#matrix tbody tr{
+#matrix tbody tr {
   @apply bg-gray-100;
 }
-#matrix tbody tr td:first-child{
+#matrix tbody tr td:first-child {
   @apply !bg-gray-100;
 }
-#matrix tbody tr td{
+#matrix tbody tr td {
   @apply bg-white p-3;
 }
 </style>
