@@ -10,7 +10,9 @@
       <div>券：{{ tickets }}</div>
       <div>积分：{{ integral }}</div>
       <div>储值：{{ amount }}</div>
-      <div class=" flex-grow text-right text-base font-bold text-gray-600" >单号：{{retailStore.retailObject["DOCNO"] || '空'}}</div>
+      <div class="flex-grow text-right text-base font-bold text-gray-600">
+        单号：{{ retailStore.retailObject["DOCNO"] || "空" }}
+      </div>
     </div>
     <div
       class="flex space-x-3 h-[calc(100vh-60px-0.75rem-80px-0.75rem-0.75rem)]"
@@ -30,22 +32,23 @@
                 <th>成交价</th>
                 <th>折扣</th>
                 <th>成交金额</th>
-                <th>库存</th>
                 <th>操作</th>
               </tr>
             </thead>
             <tbody class="h-[calc(100vh-350px)] overflow-auto divide-y">
-              <tr v-for="n in 100" :key="n">
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
+              <tr v-for="item in retailStore.itemData" :key="item.id">
+                <td>{{ item["M_PRODUCT_ID"].dk }}</td>
+                <td>{{ item["M_PRODUCT_ID;VALUE"] }}</td>
+                <td class="space-y-5 text-xs">
+                  <div>颜色：{{ item["M_ATTRIBUTESETINSTANCE_ID;VALUE1"]}}</div>
+                  <div>尺码：{{ item["M_ATTRIBUTESETINSTANCE_ID;VALUE2"] }}</div>
+                </td>
+                <td>{{item['QTY']}}</td>
+                <td>{{item['PRICELIST']}}</td>
+                <td>{{item['PRICEACTUAL']}}</td>
+                <td>{{item['DISCOUNT']}}</td>
+                <td>{{item['TOT_AMT_ACTUAL']}}</td>
+                <td class="text-red-500">删除</td>
               </tr>
             </tbody>
           </table>

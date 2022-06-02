@@ -30,6 +30,19 @@ export const useApi = defineStore("portal", {
       let res = await request.post(path, payload);
       return res;
     },
+    async queryAllItem(itemTableId, refId, pid) {
+      let res = await request.post("/api/portal", {
+        opt: "Q",
+        tid: itemTableId,
+        refId,
+        pid,
+        page: {
+          num: 1,
+          size: 10000,
+        }
+      });
+      return res;
+    },
     async add(tid, data, transformFn?) {
       transformFn = transformFn || defaultTransformFn;
       let res = await request.post("/api/portal", {

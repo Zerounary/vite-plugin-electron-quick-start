@@ -18,6 +18,7 @@ export const useRetailStore = defineStore("retail", {
     return {
       tableId: 12964,
       retail: null,
+      retailItem: null,
       retailForm: defaultRetailForm(),
     };
   },
@@ -32,10 +33,43 @@ export const useRetailStore = defineStore("retail", {
       }else {
         return {}
       }
+    },
+    itemData: (state) => {
+      if(!state.retailItem?.table)
+        return []
+
+      let result = [];
+
+      for (const item of state.retailItem.table.tbody) {
+        let row = {};
+        for (const field of state.retailItem.table.thead) {
+          row[field.dbname] = item[field.id] || item[field.dbname];
+        }
+        result.push(row);
+      }
+
+      return result;
     }
   },
   actions: {
     async fetchRetail() {},
+    async fetchRetailItem() {
+      const api = useApi();
+      let item = this.getItem('M_RETAILITEM');
+      let res = await api.queryAllItem(item.tid, item.refId, item.pid);
+      this.retailItem = res;
+      return res;
+    },
+    getItem(name) {
+      let item = _.find(this.retail.items, {
+        name
+      });
+      return {
+        tid: item.tid,
+        refId: item.id,
+        pid: this.retail.id,
+      };
+    },
     async createRetail(newRetail) {
       return new Promise(async (resolve, reject) => {
         const api = useApi();
@@ -49,10 +83,6 @@ export const useRetailStore = defineStore("retail", {
           billdate: moment().format("YYYYMMDD"),
           ...newRetail,
         });
-        console.log(
-          "🚀 ~ file: retail.ts ~ line 36 ~ returnnewPromise ~ result",
-          result
-        );
         this.retail = result;
         // await this.fetchRetail();
         resolve(this.retail);
@@ -60,18 +90,10 @@ export const useRetailStore = defineStore("retail", {
     },
     async putRetailItem(skus) {
       const api = useApi();
-      console.log("🚀 ~ file: retail.ts ~ line 52 ~ putRetailItem ~ this.retail", this.retail)
-      let item = _.find(this.retail.items, {
-        name: "M_RETAILITEM",
-      });
-      console.log(
-        "🚀 ~ file: retail.ts ~ line 53 ~ putRetailItem ~ item",
-        item
-      );
-      let refId = item.id;
-      let itemTableId = item.tid;
-      await api.addProductItem(itemTableId, this.retail.id, refId, skus);
+      let item = this.getItem('M_RETAILITEM');
+      await api.addProductItem(item.tid, item.pid, item.refId, skus);
       // await this.fetchRetail();
+      await this.fetchRetailItem();
     },
     resetRetailForm() {
       this.retailForm = defaultRetailForm();
@@ -82,7 +104,7 @@ export const useRetailStore = defineStore("retail", {
     strategies: [
       {
         storage: localStorage,
-        paths: ["retail", "retailForm"],
+        paths: ["retail", "retailForm", "retailItem"],
       },
     ],
   },
