@@ -36,7 +36,7 @@
               </tr>
             </thead>
             <tbody class="h-[calc(100vh-350px)] overflow-auto divide-y">
-              <tr v-for="item in retailStore.itemData" :key="item.id">
+              <tr v-for="(item, index) in retailStore.itemData" :key="item.id">
                 <td>{{ item["M_PRODUCT_ID"].dk }}</td>
                 <td>{{ item["M_PRODUCT_ID;VALUE"] }}</td>
                 <td class="space-y-5 text-xs">
@@ -47,12 +47,67 @@
                     尺码：{{ item["M_ATTRIBUTESETINSTANCE_ID;VALUE2"] }}
                   </div>
                 </td>
-                <td>{{ item["QTY"] }}</td>
+                <td>
+                  <input
+                    :value="item['QTY']"
+                    @input="
+                      retailStore.changeRowItemField(
+                        index,
+                        'QTY',
+                        $event.target.value
+                      )
+                    "
+                    @blur="retailStore.saveRowItem(index, 'QTY')"
+                  />
+                </td>
                 <td>{{ item["PRICELIST"] }}</td>
-                <td>{{ item["PRICEACTUAL"] }}</td>
-                <td>{{ item["DISCOUNT"] }}</td>
-                <td>{{ item["TOT_AMT_ACTUAL"] }}</td>
-                <td class="text-red-500 cursor-pointer" @click="deleteItem(item)">删除</td>
+                <td>
+                  <input
+                    :value="item['PRICEACTUAL']"
+                    @input="
+                      retailStore.changeRowItemField(
+                        index,
+                        'PRICEACTUAL',
+                        $event.target.value
+                      )
+                    "
+                    @blur="retailStore.saveRowItem(index, 'PRICEACTUAL')"
+                  />
+                </td>
+                <td>
+                  {{ item["DISCOUNT"] }}
+                  <!-- <input
+                    :value="item['DISCOUNT']"
+                    @input="
+                      retailStore.changeRowItemField(
+                        index,
+                        'DISCOUNT',
+                        $event.target.value
+                      )
+                    "
+                    @blur="retailStore.saveRowItem(index, 'DISCOUNT')"
+                  /> -->
+                </td>
+                <td>
+                  {{ item["TOT_AMT_ACTUAL"] }}
+                  <!-- <input
+                    :value="item['TOT_AMT_ACTUAL']"
+                    @input="
+                      retailStore.changeRowItemField(
+                        index,
+                        'TOT_AMT_ACTUAL',
+                        $event.target.value
+                      )
+                    "
+                    @blur="retailStore.saveRowItem(index, 'TOT_AMT_ACTUAL')"
+                  /> -->
+                </td>
+                <td
+                  class="text-red-500 cursor-pointer"
+                  @click="deleteItem(item)"
+                >
+                  删除
+                </td>
               </tr>
             </tbody>
           </table>
@@ -166,11 +221,7 @@
       </div>
     </div>
   </div>
-  <el-dialog
-    class="no-drag"
-    title="商品输入"
-    v-model="matrixDialogVisible"
-  >
+  <el-dialog class="no-drag" title="商品输入" v-model="matrixDialogVisible">
     <div class="space-y-5">
       <div class="flex space-x-10">
         <div>
@@ -494,9 +545,9 @@ let newRetail = async () => {
 };
 
 let deleteItem = async (item) => {
-  await retailStore.delRetailItem(item['id'])
+  await retailStore.delRetailItem(item["id"]);
   ElMessage.success("明细删除成功！");
-}
+};
 
 let toUpper = (e) => {
   productKeyWord.value = e.target.value.toUpperCase();
@@ -521,6 +572,9 @@ table.headfix td {
 
 input {
   @apply border h-full rounded px-2 w-240px;
+}
+.headfix input {
+  @apply h-40px w-min-60px;
 }
 .btn {
   @apply w-80px border px-2 h-full rounded text-sm;

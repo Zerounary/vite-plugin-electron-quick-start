@@ -59,6 +59,7 @@ export const useRetailStore = defineStore("retail", {
       const api = useApi();
       let item = this.getItem('M_RETAILITEM');
       let res = await api.queryAllItem(item.tid, item.refId, item.pid);
+      console.log("🚀 ~ file: retail.ts ~ line 62 ~ fetchRetailItem ~ res", res)
       this.retailItem = res;
       return res;
     },
@@ -96,6 +97,19 @@ export const useRetailStore = defineStore("retail", {
       await api.addProductItem(item.tid, item.pid, item.refId, skus);
       // await this.fetchRetail();
       await this.fetchRetailItem();
+    },
+    async changeRowItemField(index, key, value){
+      this.retailItem.table.tbody[index][key] = value;
+    },
+    async saveRowItem(index, key) {
+      const api = useApi();
+      let row = this.retailItem.table.tbody[index]
+      let item = this.getItem('M_RETAILITEM');
+      let head = this.retailItem.table.thead.find(item => item.dbname === key);
+      let value = row[key];
+      let newDateItem =  await api.saveItemDataRow(item.tid, head, row.id, value);
+      await this.fetchRetailItem();
+      return newDateItem;
     },
     async delRetailItem(id){
       const api = useApi();

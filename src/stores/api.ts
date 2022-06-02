@@ -52,6 +52,21 @@ export const useApi = defineStore("portal", {
       });
       return res
     },
+    async saveItemDataRow(tid, head, rowId, value){
+      let data = [
+        {
+          ...head,
+          value
+        }
+      ]
+      let newItemData = await request.post("/api/portal", {
+        opt: "M",
+        id: rowId,
+        tid,
+        data
+      });
+      return newItemData;
+    },
     async delete(tid, idOrIds){
       let ids = []
       if(Object.prototype.toString.call(idOrIds) === "[object Array]"){
