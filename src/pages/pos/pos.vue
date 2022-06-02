@@ -200,11 +200,11 @@
           </div>
           <div class="flex flex-col items-center space-y-1">
             <div class="font-bold">2900.00</div>
-            <div class="text-gray-500">商品总价</div>
+            <div class="text-gray-500">促销优惠</div>
           </div>
           <div class="flex flex-col items-center space-y-1">
             <div class="font-bold">2900.00</div>
-            <div class="text-gray-500">商品总价</div>
+            <div class="text-gray-500">会员优惠</div>
           </div>
         </div>
 
