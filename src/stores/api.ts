@@ -26,12 +26,27 @@ export const useApi = defineStore("portal", {
   },
 
   actions: {
+    async custom(path, payload) {
+      let res = await request.post(path, payload);
+      return res;
+    },
     async add(tid, data, transformFn?) {
       transformFn = transformFn || defaultTransformFn;
       let res = await request.post("/api/portal", {
         opt: "A",
         tid,
         params: transformFn(data),
+      });
+      return res
+    },
+    async addProductItem(tid, pid, refId, skus){
+      let res = await request.post("/api/portal", {
+        tid,
+        pid,
+        refId,
+        opt: "A",
+        skus,
+        params: []
       });
       return res
     },

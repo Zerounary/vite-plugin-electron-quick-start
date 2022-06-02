@@ -5,12 +5,12 @@ import { useAuthStore } from "./auth";
 import { ElMessage } from "element-plus";
 import { useVipStore } from "./vip";
 import moment from "moment";
-import { useThrottledRefHistory } from "@vueuse/core";
+import _ from "lodash";
 
 let defaultRetailForm = () => ({
   // 必填字段
   billdate: moment().format("YYYYMMDD"),
-  SalesrepId: null
+  SalesrepId: null,
 });
 
 export const useRetailStore = defineStore("retail", {
@@ -21,11 +21,21 @@ export const useRetailStore = defineStore("retail", {
       retailForm: defaultRetailForm(),
     };
   },
-  getters: {},
+  getters: {
+    retailObject: (state) => {
+      let result = {};
+      if (state.retail?.data) {
+        for (const field of state.retail.data) {
+          result[field.dbname] = field.value;
+        }
+        return result;
+      }else {
+        return {}
+      }
+    }
+  },
   actions: {
-    async fetchRetail() {
-
-    },
+    async fetchRetail() {},
     async createRetail(newRetail) {
       return new Promise(async (resolve, reject) => {
         const api = useApi();
@@ -39,10 +49,29 @@ export const useRetailStore = defineStore("retail", {
           billdate: moment().format("YYYYMMDD"),
           ...newRetail,
         });
-        console.log("🚀 ~ file: retail.ts ~ line 36 ~ returnnewPromise ~ result", result)
-        await this.fetchRetail();
+        console.log(
+          "🚀 ~ file: retail.ts ~ line 36 ~ returnnewPromise ~ result",
+          result
+        );
+        this.retail = result;
+        // await this.fetchRetail();
         resolve(this.retail);
       });
+    },
+    async putRetailItem(skus) {
+      const api = useApi();
+      console.log("🚀 ~ file: retail.ts ~ line 52 ~ putRetailItem ~ this.retail", this.retail)
+      let item = _.find(this.retail.items, {
+        name: "M_RETAILITEM",
+      });
+      console.log(
+        "🚀 ~ file: retail.ts ~ line 53 ~ putRetailItem ~ item",
+        item
+      );
+      let refId = item.id;
+      let itemTableId = item.tid;
+      await api.addProductItem(itemTableId, this.retail.id, refId, skus);
+      // await this.fetchRetail();
     },
     resetRetailForm() {
       this.retailForm = defaultRetailForm();
@@ -53,7 +82,7 @@ export const useRetailStore = defineStore("retail", {
     strategies: [
       {
         storage: localStorage,
-        paths: [],
+        paths: ["retail", "retailForm"],
       },
     ],
   },

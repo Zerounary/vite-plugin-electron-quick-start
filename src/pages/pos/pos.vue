@@ -10,6 +10,7 @@
       <div>券：{{ tickets }}</div>
       <div>积分：{{ integral }}</div>
       <div>储值：{{ amount }}</div>
+      <div class=" flex-grow text-right text-base font-bold text-gray-600" >单号：{{retailStore.retailObject["DOCNO"] || '空'}}</div>
     </div>
     <div
       class="flex space-x-3 h-[calc(100vh-60px-0.75rem-80px-0.75rem-0.75rem)]"
@@ -50,7 +51,11 @@
           </table>
         </div>
         <div class="box space-x-3">
-          <input :value="productKeyWord" @input="toUpper" placeholder="请输入条码" />
+          <input
+            :value="productKeyWord"
+            @input="toUpper"
+            placeholder="请输入条码"
+          />
           <button @click="queryProduct" class="btn">查询</button>
         </div>
       </div>
@@ -69,7 +74,7 @@
             <div class="square"></div>
             <div>库存查询</div>
           </div>
-          <div class="flex flex-col items-center space-y-2" @click="newRetail" >
+          <div class="flex flex-col items-center space-y-2" @click="newRetail">
             <div class="square"></div>
             <div>开新单</div>
           </div>
@@ -153,6 +158,66 @@
       </div>
     </div>
   </div>
+  <el-dialog
+    class="no-drag space-y-10"
+    title="商品输入"
+    v-model="matrixDialogVisible"
+  >
+    <div class="flex space-x-10">
+      <div>
+        款号：
+        {{ spuMatrix.product.value }}
+      </div>
+      <div>
+        品名：
+        {{ spuMatrix.product.value }}
+      </div>
+      <div>
+        零售价：
+        {{ spuMatrix.product.pricelist }}
+      </div>
+      <div>
+        <img :src="spuMatrix.product.imageUrl" />
+      </div>
+    </div>
+    <div>
+      <table class="w-full">
+        <thead>
+          <tr>
+            <th>颜色/尺码</th>
+            <th v-for="size in sizes" :key="size.id">
+              {{ size.name }}({{ size.code }})
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="h-80px" v-for="color in colors" :key="color.id">
+            <td>{{ color.name }}</td>
+            <td v-for="size in sizes" :key="size.id">
+              <div>
+                <div>
+                  <input
+                    :value="getMatrixValue(color.id, size.id)"
+                    @input="matrixChange(color.id, size.id, $event)"
+                    class="p-10px w-full"
+                  />
+                </div>
+                <div>可用：{{ getSpuStorage(color.id, size.id) }}</div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div>{{ spuMatrix }}</div>
+      <div>
+        {{ matrixValue }}
+      </div>
+      <div class="flex justify-end space-x-5">
+        <el-button type="primary" @click="saveMatrixValue">保存</el-button>
+        <el-button @click="closeMatrixDialog">取消</el-button>
+      </div>
+    </div>
+  </el-dialog>
   <el-dialog
     class="no-drag"
     width="300px"
@@ -260,7 +325,7 @@ const vipRules = ref({});
 const fetchData = async () => {
   await vipStore.fetchAllVipType();
   await employeeStore.fetchAllEmployee();
-}
+};
 
 const openVipDialog = () => {
   vipStore.resetVipForm();
@@ -285,7 +350,7 @@ const closeEmployeeDialog = () => {
 const cancelEmployee = () => {
   retailStore.retailForm.SalesrepId = null;
   closeEmployeeDialog();
-}
+};
 
 onMounted(async () => {
   await fetchData();
@@ -329,31 +394,106 @@ let queryVip = async () => {
   vipKeyWord.value = "";
 };
 
+const spuMatrix = ref({
+  product: {},
+  skus: [],
+  attributes: [],
+  storage: [],
+});
+const matrixDialogVisible = ref(false);
+
+const colors = computed(() => {
+  return spuMatrix.value.attributes.filter((item) => item.type === 1);
+});
+
+const sizes = computed(() => {
+  return spuMatrix.value.attributes.filter((item) => item.type === 2);
+});
+
+const matrixValue = ref({});
+
+const getMatrixValue = (colorId, sizeId) => {
+  let sku = spuMatrix.value.skus.find((item) => {
+    if (item.colorId === colorId && item.sizeId === sizeId) {
+      return true;
+    }
+  });
+  return matrixValue.value[sku.no];
+};
+
+const matrixChange = (colorId, sizeId, e) => {
+  let sku = spuMatrix.value.skus.find((item) => {
+    if (item.colorId === colorId && item.sizeId === sizeId) {
+      return true;
+    }
+  });
+  matrixValue.value[sku.no] = e.target.value;
+};
+
+const getSpuStorage = (colorId, sizeId) => {
+  let sku = spuMatrix.value.skus.find((item) => {
+    if (item.colorId === colorId && item.sizeId === sizeId) {
+      return true;
+    }
+  });
+  let storage = spuMatrix.value.storage.find((item) => {
+    if (item.skuId === sku.id) {
+      return true;
+    }
+  });
+  return storage?.qtycan || 0;
+};
+
+const closeMatrixDialog = () => {
+  spuMatrix.value = {
+    product: {},
+    skus: [],
+    attributes: [],
+    storage: [],
+  };
+  matrixValue.value = {};
+  matrixDialogVisible.value = false;
+};
+
+const saveMatrixValue = async () => {
+  await retailStore.putRetailItem(matrixValue.value);
+  closeMatrixDialog();
+};
+
 let queryProduct = async () => {
-  let res = await productStore.fetchProductKeyWord(productKeyWord.value);
-  if(!res){
-    ElMessage.warning("没有查询到相关商品");
-  }else{
+  // 没有零售单据，创建一个
+  if (!retailStore.retail) {
     // 创建零售单
-    retailStore.createRetail(res);
-    if(res.type == "spu"){
+    retailStore.createRetail();
+  }
+
+  let res = await productStore.fetchProductKeyWord(productKeyWord.value);
+  if (!res) {
+    ElMessage.warning("没有查询到相关商品");
+  } else {
+    if (res.type == "spu") {
       // 款号展示矩阵
-    }else {
+      matrixDialogVisible.value = true;
+      spuMatrix.value = await productStore.fetchMatrix(res.id);
+    } else {
       // 条码直接录入
+      await retailStore.putRetailItem({
+        [res.code]: 1,
+      });
     }
   }
-  console.log("🚀 ~ file: pos.vue ~ line 333 ~ queryProduct ~ res", res)
+  console.log("🚀 ~ file: pos.vue ~ line 333 ~ queryProduct ~ res", res);
 };
 
 let newRetail = async () => {
   fetchData();
   vipStore.$reset();
   retailStore.$reset();
-}
+};
 
 let toUpper = (e) => {
   productKeyWord.value = e.target.value.toUpperCase();
-}
+};
 </script>
 
 <style scoped>
