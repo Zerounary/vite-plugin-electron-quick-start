@@ -26,6 +26,7 @@
     "moment": "^2.29.3",
     "pinia": "^2.0.14",
     "pinia-plugin-persist": "^1.0.0",
+    "sqlite3": "^5.0.8",
     "vue": "^3.2.31",
     "vue-router": "^4.0.15"
   },
