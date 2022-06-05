@@ -1,29 +1,28 @@
 <template>
   <div>
     <router-link to="/pos/home">/pos/home</router-link>
+    <button @click="insertIt">插入</button>
   </div>
 </template>
 
 <script setup lang="ts">
-import { db } from '~/electron-main/common/db';
+import { ref } from 'vue';
+import { insert_m_dimdef } from "~/electron-main/common/db";
 
-db.serialize(() => {
-    db.run("CREATE TABLE lorem (info TEXT)");
+const id = ref(0);
 
-    const stmt = db.prepare("INSERT INTO lorem VALUES (?)");
-    for (let i = 0; i < 10; i++) {
-        stmt.run("Ipsum " + i);
-    }
-    stmt.finalize();
+const insertIt = () => {
+  console.log("insertIt");
 
-    db.each("SELECT rowid AS id, info FROM lorem", (err, row) => {
-        console.log(row.id + ": " + row.info);
-    });
-});
-
-db.close();
+  insert_m_dimdef.run({
+    id: id.value++,
+    name: "yes",
+    description: "ok",
+    dimflag: "DIM1",
+    creationdate: null,
+    modifieddate: null,
+  });
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
