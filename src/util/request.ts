@@ -8,7 +8,7 @@ Axios.defaults.withCredentials = true;
 
 export const request = Axios.create({
   baseURL: 'http://localhost:8079/',
-  timeout: 30000,
+  timeout: 300000,
 });
 
 let Cookie =  localStorage.getItem("cookie") || "";

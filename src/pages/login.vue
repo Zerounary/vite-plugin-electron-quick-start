@@ -35,7 +35,7 @@ const authStore = useAuthStore();
 
 let login = async () => {
   await authStore.login(username.value, password.value);
-  router.push("/index");
+  router.push("/");
 }
 </script>
 

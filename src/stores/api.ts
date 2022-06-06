@@ -109,8 +109,8 @@ export const useApi = defineStore("portal", {
     async noPage(table, filter) {
       return new Promise((resolve, reject) => {
         request
-          .put(`/sml/${table}`, {
-            noPage: true,
+          .put(`/noPage`, {
+            table,
             ...filter,
           })
           .then((data) => {
