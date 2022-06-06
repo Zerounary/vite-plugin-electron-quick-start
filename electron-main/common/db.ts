@@ -174,13 +174,14 @@ create table if not exists m_product_alias(
 "id" INT PRIMARY KEY,
 "no" char(80),
 "intscode" char(80),
+"m_product_id" INT,
 "m_attributesetinstance_id" INT,
 "creationdate" INT,
 "modifieddate" INT
 );`);
 
 export const insert_m_product_alias = db.prepare(
-  `INSERT INTO m_product_alias VALUES (@id, @no, @intscode, @m_attributesetinstance_id, @creationdate, @modifieddate)`
+  `INSERT INTO m_product_alias VALUES (@id, @no, @intscode, @m_product_id, @m_attributesetinstance_id, @creationdate, @modifieddate)`
 );
 
 // 会员类型
