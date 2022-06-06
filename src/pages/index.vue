@@ -8,14 +8,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted } from 'vue';
 import { useCacheStore } from '@/stores/cache';
 
 const cache = useCacheStore();
 
-const insertIt = () => {
-  cache.cacheAll();
-};
+onMounted(async () => {
+  await cache.cacheAll();
+  router.push("/pos/home");
+})
 </script>
 
 <style scoped></style>
