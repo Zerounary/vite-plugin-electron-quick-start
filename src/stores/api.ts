@@ -26,7 +26,7 @@ export const useApi = defineStore("portal", {
   },
 
   actions: {
-    async custom(path, payload) {
+    async custom(path, payload?) {
       let res = await request.post(path, payload);
       return res;
     },

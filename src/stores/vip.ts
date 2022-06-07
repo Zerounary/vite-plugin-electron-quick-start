@@ -42,7 +42,7 @@ export const useVipStore = defineStore("vip", {
     },
     async fetchVip(keyword) {
       const api = useApi();
-      this.vip = await api.detail("vip", { keyword });
+      this.vip = await api.custom(`/api/marketing-vip-query?keyword=${keyword}`);
     },
     async fetchAllVipType(filter?) {
       const api = useApi();
