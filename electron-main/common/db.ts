@@ -154,6 +154,16 @@ create table if not exists c_viptype_dis(
 "modifieddate" INT
 );`);
 
+// 会员类型折扣,对应属性
+db.exec(`
+create table if not exists hr_employee(
+"id" INT PRIMARY KEY,
+"no" char(80),
+"name" char(80),
+"creationdate" INT,
+"modifieddate" INT
+);`);
+
 
 // 获取最大修改时间
 export function getLastModifidDate(table) {

@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { db } from "~/electron-main/common/db";
 import { useApi } from "./api";
 import { useAuthStore } from "./auth";
 import { useDateStore } from './date';
@@ -23,12 +24,8 @@ export const useEmployeeStore = defineStore("employee", {
       return res;
     },
     async fetchAllEmployee(filter?) {
-      const api = useApi();
-      const auth = useAuthStore();
-      this.employee = await api.noPage("employee", {
-        storeId: auth.user.storeId,
-        ...filter
-      });
+      let employee = db.prepare(`SELECT * FROM hr_employee`).all();
+      this.employee = employee;
     },
   },
 });

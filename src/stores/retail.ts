@@ -13,6 +13,25 @@ let defaultRetailForm = () => ({
   SalesrepId: null,
 });
 
+let defaultMarketingRetail = () => ({
+  source: 'POS',
+  docno: crypto.randomUUID(),
+  billdate: moment().format("YYYYMMDD"),
+  storeCode: '',
+  totQty: 0,
+  totAmount: 0,
+  totActAmount: 0, // 实际金额
+  totDisAmount: 0, // 折扣金额
+  freight: 0,
+  vip: {
+
+  },
+  integralDis: {},
+  items: [],
+  activityItems: [],
+  ticketItems: []
+})
+
 export const useRetailStore = defineStore("retail", {
   state: () => {
     return {
@@ -21,7 +40,8 @@ export const useRetailStore = defineStore("retail", {
       retailItem: null,
       retailForm: defaultRetailForm(),
       homeChart: [],
-      homeGrid: {}
+      homeGrid: {},
+      pos: defaultMarketingRetail(),
     };
   },
   getters: {

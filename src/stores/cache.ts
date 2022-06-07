@@ -1,3 +1,4 @@
+import { useAuthStore } from './auth';
 import { defineStore } from "pinia";
 import { getLastModifidDate } from "~/electron-main/common/db";
 import { useApi } from "./api";
@@ -21,6 +22,7 @@ export const useCacheStore = defineStore("cache", {
       await this.cacheDim();
       await this.cacheProduct();
       await this.cacheProductAlias();
+      await this.cacheEmployee();
       this.isLoading = false;
     },
     async cacheVipType() {
@@ -124,5 +126,18 @@ export const useCacheStore = defineStore("cache", {
       insert(table, res);
       this.loadingMessage = `缓存条码数据完成...`;
     },
+    async cacheEmployee() {
+      const auth = useAuthStore();
+      const api = useApi();
+      let table = "hr_employee";
+      this.loadingMessage = "正在请求员工..";
+      let res = await api.noPage(`cache/${table}`, {
+        storeId: auth.user.storeId,
+        lastModifyDate: getLastModifidDate(table),
+      });
+      this.loadingMessage = `开始缓存员工数据(${res?.length || 0}条)...`;
+      insert(table, res);
+      this.loadingMessage = `缓存员工数据完成...`;
+    }
   },
 });
