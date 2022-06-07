@@ -60,7 +60,7 @@ export const useRetailStore = defineStore("retail", {
       const auth = useAuthStore();
       const date = useDateStore();
       const api = useApi();
-      let res = await api.noPage("pos/home_grid", {
+      let res = await api.detail("pos/home_grid", {
         storeId: auth.user.storeId,
         billdate: date.getDateRange
       });

@@ -16,11 +16,15 @@ const props = defineProps({
     type: Object,
     default: () => ({}),
   },
+  heads: {
+    type: Array,
+    default: () => [],
+  }
 });
 
 let cells = computed(() => {
   let data = []
-  for(let key in props.value){
+  for(let key of props.heads){
     data.push({
       title: key,
       value: props.value[key],

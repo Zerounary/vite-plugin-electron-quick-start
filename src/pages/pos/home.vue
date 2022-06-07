@@ -2,7 +2,7 @@
   <div class="space-y-3">
     <div class="w-1200px m-auto flex flex-col items-center space-y-3">
       <DateNav />
-      <ObjectGrid :value="grid" />
+      <ObjectGrid :heads="gridHeads" :value="retailStore.homeGrid" />
       <div class="w-full flex space-x-8 ">
         <RankList title="商品销售排行" :heads="productHeads" :data="productStore.rank" />
         <RankList title="导购业绩" :heads="employeeHeads" :data="employeeStore.rank" />
@@ -72,6 +72,7 @@ dateStore.$subscribe(async (mutation, state) => {
   productStore.fetchProductRank();
   employeeStore.fetchEmployeeRank();
   vipStore.fetchVipRank();
+  retailStore.fetchHomeGrid();
   flushHomeChart();
 });
 
@@ -79,22 +80,11 @@ onMounted(async () => {
   await productStore.fetchProductRank();
   await employeeStore.fetchEmployeeRank();
   await vipStore.fetchVipRank();
-  await retailStore.fetchRetailChart();
+  await retailStore.fetchHomeGrid();
   flushHomeChart();
 });
 
-const grid = {
-  零售额: 2819,
-  销售指标: 2819,
-  达成率: "20%",
-  零售数量: 2819,
-  退货数量: 2819,
-  退货率: "10%",
-  客单价: 100,
-  连带率: 2.3,
-  会销率: "89%",
-  新增会员: 2819,
-};
+const gridHeads = ['零售额', '销售指标', '达成率', '零售数量', '退货数量', '退货率', '客单价', '连带率', '会销率','新增会员'];
 
 const productHeads = [
   {
