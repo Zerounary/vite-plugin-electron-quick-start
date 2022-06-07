@@ -40,11 +40,15 @@ import { rendererSend } from "~/electron-main/common/ipcRender";
 import ipcNames from "~/electron-main/common/ipcNames";
 import { toLocaleString } from "@/util/format";
 import { userStoreStore } from "@/stores/store";
-import { computed } from "vue";
+import { computed, onMounted } from "vue";
 import { useAuthStore } from "@/stores/auth";
 
 const storeStore = userStoreStore();
 const authStore = useAuthStore();
+
+onMounted(async () => {
+  await storeStore.fetchUserStore();
+});
 
 let quit = async () => {
   await authStore.logout();

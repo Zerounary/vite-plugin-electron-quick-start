@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
-import { request } from "@/util/request";
 import { useApi } from "./api";
 import { useAuthStore } from "./auth";
+import { useDateStore } from "./date";
 import { ElMessage } from "element-plus";
 
 let defaultVipForm = () => ({
@@ -24,10 +24,22 @@ export const useVipStore = defineStore("vip", {
       vip: null,
       vipTypes: [],
       vipForm: defaultVipForm(),
+      rank: []
     };
   },
   getters: {},
   actions: {
+    async fetchVipRank() {
+      const auth = useAuthStore();
+      const date = useDateStore();
+      const api = useApi();
+      let res = await api.noPage("pos/vip_rank", {
+        storeId: auth.user.storeId,
+        billdate: date.getDateRange,
+      });
+      this.rank = res;
+      return res;
+    },
     async fetchVip(keyword) {
       const api = useApi();
       this.vip = await api.detail("vip", { keyword });
@@ -52,8 +64,11 @@ export const useVipStore = defineStore("vip", {
           CStoreId: auth.user.storeId,
           ...newVip,
         });
-        console.log("🚀 ~ file: vip.ts ~ line 55 ~ returnnewPromise ~ result", result)
-        if(result?.code == 2) {
+        console.log(
+          "🚀 ~ file: vip.ts ~ line 55 ~ returnnewPromise ~ result",
+          result
+        );
+        if (result?.code == 2) {
           reject();
         }
         ElMessage.success(`会员【${newVip.vipname}】新增成功`);

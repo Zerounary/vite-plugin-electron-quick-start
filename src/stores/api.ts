@@ -92,13 +92,6 @@ export const useApi = defineStore("portal", {
       });
       return res
     },
-    async detail(table, filter) {
-      return new Promise((resolve, reject) => {
-        request.put(`/smd/${table}`, filter).then((data) => {
-          resolve(data?.data);
-        });
-      });
-    },
     async Page(table, filter) {
       return new Promise((resolve, reject) => {
         request.put(`/sml/${table}`, filter).then((data) => {
@@ -110,6 +103,18 @@ export const useApi = defineStore("portal", {
       return new Promise((resolve, reject) => {
         request
           .put(`/noPage`, {
+            table,
+            ...filter,
+          })
+          .then((data) => {
+            resolve(data?.data);
+          });
+      });
+    },
+    async detail(table: string, filter?: Object) {
+      return new Promise((resolve, reject) => {
+        request
+          .put(`/detail`, {
             table,
             ...filter,
           })

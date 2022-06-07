@@ -4,9 +4,9 @@
       <DateNav />
       <ObjectGrid :value="grid" />
       <div class="w-full flex space-x-8 ">
-        <RankList title="商品销售排行" :heads="heads" :data="data" />
-        <RankList title="导购业绩" />
-        <RankList title="会员销售排行" />
+        <RankList title="商品销售排行" :heads="productHeads" :data="productStore.rank" />
+        <RankList title="导购业绩" :heads="employeeHeads" :data="employeeStore.rank" />
+        <RankList title="会员销售排行" :heads="vipHeads" :data="vipStore.rank" />
       </div>
       <div
         ref="retailChart"
@@ -17,16 +17,28 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import DateNav from "@/components/DateNav.vue";
 import ObjectGrid from "@/components/ObjectGrid.vue";
 import RankList from "@/components/RankList.vue";
 
 import * as echarts from "echarts";
+import { useProductStore } from "@/stores/product";
+import { useDateStore } from "@/stores/date";
+import { useEmployeeStore } from "@/stores/employee";
+import { useVipStore } from "@/stores/vip";
+import { useRetailStore } from "@/stores/retail";
+
+const dateStore = useDateStore();
+const productStore = useProductStore();
+const employeeStore = useEmployeeStore();
+const vipStore = useVipStore();
+const retailStore = useRetailStore();
 
 const retailChart = ref<HTMLElement>();
 
-onMounted(() => {
+async function flushHomeChart() {
+  await retailStore.fetchRetailChart();
   const chart = echarts.init(retailChart.value);
   chart.setOption({
     title: {
@@ -40,20 +52,7 @@ onMounted(() => {
     },
     xAxis: {
       type: "category",
-      data: [
-        "1月",
-        "2月",
-        "3月",
-        "4月",
-        "5月",
-        "6月",
-        "7月",
-        "8月",
-        "9月",
-        "10月",
-        "11月",
-        "12月",
-      ],
+      data: (retailStore.homeChart || []).map((item) => item['日期']),
     },
     yAxis: {
       type: "value",
@@ -62,14 +61,26 @@ onMounted(() => {
       {
         name: "销售额",
         type: "line",
-        data: [
-          1000, 2000, 3600, 1400, 2800, 3200, 3600, 4500, 5500, 6500, 7500,
-          8500,
-        ],
+        data: (retailStore.homeChart || []).map((item) => item['金额']),
       },
     ],
   });
   chart.resize();
+}
+
+dateStore.$subscribe(async (mutation, state) => {
+  productStore.fetchProductRank();
+  employeeStore.fetchEmployeeRank();
+  vipStore.fetchVipRank();
+  flushHomeChart();
+});
+
+onMounted(async () => {
+  await productStore.fetchProductRank();
+  await employeeStore.fetchEmployeeRank();
+  await vipStore.fetchVipRank();
+  await retailStore.fetchRetailChart();
+  flushHomeChart();
 });
 
 const grid = {
@@ -85,13 +96,13 @@ const grid = {
   新增会员: 2819,
 };
 
-const heads = [
+const productHeads = [
   {
     label: "商品",
     prop: "name",
   },
   {
-    label: "商品",
+    label: "日均销量",
     prop: "dayAvgQty",
   },
   {
@@ -104,17 +115,52 @@ const heads = [
   },
 ];
 
-let item = {
-  name: "商品1",
-  dayAvgQty: 2819,
-  storageQty: 2819,
-  saleDay: 28,
-};
-const data = [];
+const employeeHeads = [
+  {
+    label: "导购",
+    prop: "name",
+  },
+  {
+    label: "单数",
+    prop: "billsnum",
+  },
+  {
+    label: "业绩",
+    prop: "amt",
+  },
+  {
+    label: "数量",
+    prop: "qty",
+  },
+  {
+    label: "开卡",
+    prop: "vip",
+  },
+];
 
-for (let i = 0; i < 4; i++) {
-  data.push(item);
-}
+const vipHeads = [
+  {
+    label: "会员卡号",
+    prop: "cardno",
+  },
+  {
+    label: "会员卡",
+    prop: "vipType",
+  },
+  {
+    label: "数量",
+    prop: "qty",
+  },
+  {
+    label: "金额",
+    prop: "amt",
+  },
+  // {
+  //   label: "操作",
+  //   prop: "saleDay",
+  // },
+]
+
 </script>
 
 <style scoped>

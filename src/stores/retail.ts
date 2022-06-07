@@ -1,11 +1,11 @@
 import { defineStore } from "pinia";
-import { request } from "@/util/request";
 import { useApi } from "./api";
 import { useAuthStore } from "./auth";
 import { ElMessage } from "element-plus";
 import { useVipStore } from "./vip";
 import moment from "moment";
 import _ from "lodash";
+import { useDateStore } from "./date";
 
 let defaultRetailForm = () => ({
   // 必填字段
@@ -20,6 +20,8 @@ export const useRetailStore = defineStore("retail", {
       retail: null,
       retailItem: null,
       retailForm: defaultRetailForm(),
+      homeChart: [],
+      homeGrid: {}
     };
   },
   getters: {
@@ -54,6 +56,40 @@ export const useRetailStore = defineStore("retail", {
     }
   },
   actions: {
+    async fetchHomeGrid() {
+      const auth = useAuthStore();
+      const date = useDateStore();
+      const api = useApi();
+      let res = await api.noPage("pos/home_grid", {
+        storeId: auth.user.storeId,
+        billdate: date.getDateRange
+      });
+      this.homeGrid = res;
+      return res;
+    },
+    async fetchRetailChart() {
+      const auth = useAuthStore();
+      const date = useDateStore();
+      const api = useApi();
+      const format = () => {
+        if(date.tag == 'today'){
+          return "HH24"
+        }else if(date.tag == 'week' || date.tag == 'month'){
+          return "DD"
+        }else if(date.tag == 'year'){
+          return "MM"
+        }else {
+          return "DD"
+        }
+      }
+      let res = await api.noPage("pos/chart_retail", {
+        format: format(),
+        storeId: auth.user.storeId,
+        billdate: date.getDateRange,
+      });
+      this.homeChart = res;
+      return res;
+    },
     async fetchRetail() {},
     async fetchRetailItem() {
       const api = useApi();
