@@ -11,7 +11,7 @@
       <div>积分：{{ integral }}</div>
       <div>储值：{{ amount }}</div>
       <div class="flex-grow text-right text-base font-bold text-gray-600">
-        单号：{{ retailStore.retailObject["DOCNO"] || "空" }}
+        单号：{{ retailStore.pos.docno || "空" }}
       </div>
     </div>
     <div
@@ -36,20 +36,16 @@
               </tr>
             </thead>
             <tbody class="h-[calc(100vh-350px)] overflow-auto divide-y">
-              <tr v-for="(item, index) in retailStore.itemData" :key="item.id">
-                <td>{{ item["M_PRODUCT_ID"].dk }}</td>
-                <td>{{ item["M_PRODUCT_ID;VALUE"] }}</td>
+              <tr v-for="(item, index) in retailStore.pos.items" :key="item.id">
+                <td>{{ item.good.spuName }}</td>
+                <td>{{ item.good.spuCode }}</td>
                 <td class="space-y-5 text-xs">
-                  <div>
-                    颜色：{{ item["M_ATTRIBUTESETINSTANCE_ID;VALUE1"] }}
-                  </div>
-                  <div>
-                    尺码：{{ item["M_ATTRIBUTESETINSTANCE_ID;VALUE2"] }}
-                  </div>
+                  <div>颜色：{{ item.color }}</div>
+                  <div>尺码：{{ item.size }}</div>
                 </td>
                 <td>
                   <input
-                    :value="item['QTY']"
+                    :value="item.qty"
                     @input="
                       retailStore.changeRowItemField(
                         index,
@@ -60,10 +56,10 @@
                     @blur="retailStore.saveRowItem(index, 'QTY')"
                   />
                 </td>
-                <td>{{ item["PRICELIST"] }}</td>
+                <td>{{ item.price }}</td>
                 <td>
                   <input
-                    :value="item['PRICEACTUAL']"
+                    :value="item.actPrice"
                     @input="
                       retailStore.changeRowItemField(
                         index,
@@ -75,7 +71,7 @@
                   />
                 </td>
                 <td>
-                  {{ item["DISCOUNT"] }}
+                  {{ item.discount }}
                   <!-- <input
                     :value="item['DISCOUNT']"
                     @input="
@@ -89,7 +85,7 @@
                   /> -->
                 </td>
                 <td>
-                  {{ item["TOT_AMT_ACTUAL"] }}
+                  {{ item.actAmount }}
                   <!-- <input
                     :value="item['TOT_AMT_ACTUAL']"
                     @input="
@@ -104,7 +100,7 @@
                 </td>
                 <td
                   class="text-red-500 cursor-pointer"
-                  @click="deleteItem(item)"
+                  @click="deleteItem(index)"
                 >
                   删除
                 </td>
@@ -112,14 +108,36 @@
             </tbody>
           </table>
         </div>
-        <div class="box space-x-3">
+        <div class="box space-x-3 relative">
+          <div
+            class="absolute bottom-90px w-500px shadow border rounded p-30px"
+            v-show="pdtOptionsVisible"
+          >
+            <el-table
+              :show-header="false"
+              :data="pdtOptions"
+              max-height="250"
+              @row-click="selectPdt"
+            >
+              <el-table-column prop="code" />
+              <el-table-column prop="name" />
+              <el-table-column
+                prop="type"
+                :formatter="
+                  (row, column, cellValue, index) => {
+                    return cellValue == 'spu' ? '款号' : '条码';
+                  }
+                "
+              />
+            </el-table>
+          </div>
           <input
             :value="productKeyWord"
             @input="toUpper"
-            @keydown.enter="queryProduct"
+            @keydown.enter="queryAndPutItem"
             placeholder="请输入条码"
           />
-          <button @click="queryProduct" class="btn">查询</button>
+          <button @click="queryAndPutItem" class="btn">查询</button>
         </div>
       </div>
       <div
@@ -262,12 +280,16 @@
                       class="p-10px w-full"
                     />
                   </div>
-                  <div>可用：{{ getSpuStorage(color.id, size.id) }}</div>
+                  <!-- <div>可用：{{ getSpuStorage(color.id, size.id) }}</div> -->
                 </div>
               </td>
             </tr>
           </tbody>
         </table>
+        <div class="flex justify-end space-x-5">
+          <el-button type="primary" @click="saveMatrixValue">保存</el-button>
+          <el-button @click="closeMatrixDialog">取消</el-button>
+        </div>
       </div>
     </div>
   </el-dialog>
@@ -355,7 +377,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, computed, ref, Ref } from "vue";
+import { onMounted, watch, computed, ref, Ref } from "vue";
 import { useVipStore } from "@/stores/vip";
 import { useEmployeeStore } from "@/stores/employee";
 import { useRetailStore } from "@/stores/retail";
@@ -513,29 +535,68 @@ const saveMatrixValue = async () => {
   closeMatrixDialog();
 };
 
+let putItem = async (inputItem) => {
+  if (inputItem.type == "spu") {
+    // 款号展示矩阵
+    matrixDialogVisible.value = true;
+    let res = await productStore.fetchMatrix(inputItem.id);
+    console.log("🚀 ~ file: pos.vue ~ line 541 ~ putItem ~ res", res);
+    spuMatrix.value = res;
+  } else {
+    // 条码直接录入
+    await retailStore.putRetailItem({
+      [inputItem.code]: 1,
+    });
+  }
+};
+
+const pdtOptions = ref([]);
+const pdtOptionsVisible = ref(false);
+
+watch(productKeyWord, (value, oldValue) => {
+  if (!value) {
+    pdtOptionsVisible.value = false;
+  } else {
+    queryProduct();
+  }
+});
+
+let closePdtOptions = () => {
+  pdtOptions.value = [];
+  pdtOptionsVisible.value = false;
+};
 let queryProduct = async () => {
+  let res = await productStore.fetchProductKeyWordLikeList(
+    productKeyWord.value
+  );
+  pdtOptions.value = res;
+  pdtOptionsVisible.value = true;
+};
+let queryAndPutItem = async () => {
   // 没有零售单据，创建一个
   if (!retailStore.retail) {
     // 创建零售单
     retailStore.createRetail();
   }
-
+  closePdtOptions();
   let res = await productStore.fetchProductKeyWord(productKeyWord.value);
-  if (!res) {
-    ElMessage.warning("没有查询到相关商品");
+  if (!res.length) {
+    ElMessage.warning("没有找到对应商品");
   } else {
-    if (res.type == "spu") {
-      // 款号展示矩阵
-      matrixDialogVisible.value = true;
-      spuMatrix.value = await productStore.fetchMatrix(res.id);
-    } else {
-      // 条码直接录入
-      await retailStore.putRetailItem({
-        [res.code]: 1,
-      });
+    if (res.length > 2) {
+      pdtOptions.value = res;
+      pdtOptionsVisible.value = true;
+      return;
     }
+    putItem(res[0]);
   }
-  console.log("🚀 ~ file: pos.vue ~ line 333 ~ queryProduct ~ res", res);
+};
+
+let selectPdt = async (row) => {
+  productKeyWord.value = row.code;
+  await queryAndPutItem();
+  closePdtOptions();
+  productKeyWord.value = '';
 };
 
 let newRetail = async () => {
@@ -544,8 +605,8 @@ let newRetail = async () => {
   retailStore.$reset();
 };
 
-let deleteItem = async (item) => {
-  await retailStore.delRetailItem(item["id"]);
+let deleteItem = async (itemIndex) => {
+  await retailStore.delRetailItem(itemIndex);
   ElMessage.success("明细删除成功！");
 };
 

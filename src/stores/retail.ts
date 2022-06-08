@@ -1,3 +1,4 @@
+import { useProductStore } from "./product";
 import { defineStore } from "pinia";
 import { useApi } from "./api";
 import { useAuthStore } from "./auth";
@@ -6,6 +7,8 @@ import { useVipStore } from "./vip";
 import moment from "moment";
 import _ from "lodash";
 import { useDateStore } from "./date";
+import { insert } from "~/electron-main/common/db";
+import { userStoreStore } from "./store";
 
 let defaultRetailForm = () => ({
   // 必填字段
@@ -13,24 +16,78 @@ let defaultRetailForm = () => ({
   SalesrepId: null,
 });
 
+let itemType = {
+  good: {
+    spuCode: "",
+    spuName: "",
+    skuCode: "",
+    dims: [
+      {
+        code: "",
+        value: "",
+      },
+    ],
+  },
+  qty: 0,
+  amount: 0,
+  actAmount: 0,
+  price: 0,
+  actPrice: 0,
+  discount: 0,
+  activityDisAmount: 0,
+  ticketDisAmount: 0,
+  vipIntegralDisAmount: 0,
+};
+let activityItemType = {
+  activityNo: "",
+  activityName: "",
+  activityType: "",
+  activityDisAmount: 0,
+  goodItems: [
+    {
+      subDocno: "",
+      activityDisAmount: 0,
+    },
+  ],
+  giftItem: {
+    giftSkuCode: "",
+    giftQty: 0,
+    giftActPrice: 0,
+    giftActAmount: 0,
+  },
+};
+
+let ticketItemType = {
+  ticketNo: "",
+  ticketName: "",
+  ticketType: "",
+  ticketDisAmount: 0,
+  invalidate: "",
+  sort: 0,
+  goodItems: [
+    {
+      subDocno: "",
+      activityDisAmount: 0,
+    },
+  ],
+};
+
 let defaultMarketingRetail = () => ({
-  source: 'POS',
+  source: "POS",
   docno: crypto.randomUUID(),
   billdate: moment().format("YYYYMMDD"),
-  storeCode: '',
+  storeCode: "",
   totQty: 0,
   totAmount: 0,
   totActAmount: 0, // 实际金额
   totDisAmount: 0, // 折扣金额
   freight: 0,
-  vip: {
-
-  },
+  vip: {},
   integralDis: {},
   items: [],
   activityItems: [],
-  ticketItems: []
-})
+  ticketItems: [],
+});
 
 export const useRetailStore = defineStore("retail", {
   state: () => {
@@ -52,13 +109,12 @@ export const useRetailStore = defineStore("retail", {
           result[field.dbname] = field.value;
         }
         return result;
-      }else {
-        return {}
+      } else {
+        return {};
       }
     },
     itemData: (state) => {
-      if(!state.retailItem?.table)
-        return []
+      if (!state.retailItem?.table) return [];
 
       let result = [];
 
@@ -73,7 +129,7 @@ export const useRetailStore = defineStore("retail", {
       }
 
       return result;
-    }
+    },
   },
   actions: {
     async fetchHomeGrid() {
@@ -82,7 +138,7 @@ export const useRetailStore = defineStore("retail", {
       const api = useApi();
       let res = await api.detail("pos/home_grid", {
         storeId: auth.user.storeId,
-        billdate: date.getDateRange
+        billdate: date.getDateRange,
       });
       this.homeGrid = res;
       return res;
@@ -92,16 +148,16 @@ export const useRetailStore = defineStore("retail", {
       const date = useDateStore();
       const api = useApi();
       const format = () => {
-        if(date.tag == 'today'){
-          return "HH24"
-        }else if(date.tag == 'week' || date.tag == 'month'){
-          return "DD"
-        }else if(date.tag == 'year'){
-          return "MM"
-        }else {
-          return "DD"
+        if (date.tag == "today") {
+          return "HH24";
+        } else if (date.tag == "week" || date.tag == "month") {
+          return "DD";
+        } else if (date.tag == "year") {
+          return "MM";
+        } else {
+          return "DD";
         }
-      }
+      };
       let res = await api.noPage("pos/chart_retail", {
         format: format(),
         storeId: auth.user.storeId,
@@ -113,15 +169,18 @@ export const useRetailStore = defineStore("retail", {
     async fetchRetail() {},
     async fetchRetailItem() {
       const api = useApi();
-      let item = this.getItem('M_RETAILITEM');
+      let item = this.getItem("M_RETAILITEM");
       let res = await api.queryAllItem(item.tid, item.refId, item.pid);
-      console.log("🚀 ~ file: retail.ts ~ line 62 ~ fetchRetailItem ~ res", res)
+      console.log(
+        "🚀 ~ file: retail.ts ~ line 62 ~ fetchRetailItem ~ res",
+        res
+      );
       this.retailItem = res;
       return res;
     },
     getItem(name) {
       let item = _.find(this.retail.items, {
-        name
+        name,
       });
       return {
         tid: item.tid,
@@ -129,49 +188,70 @@ export const useRetailStore = defineStore("retail", {
         pid: this.retail.id,
       };
     },
-    async createRetail(newRetail) {
-      return new Promise(async (resolve, reject) => {
-        const api = useApi();
-        const auth = useAuthStore();
-        const vip = useVipStore();
-        let result = await api.add(this.tableId, {
-          CCustomerId: auth.user.customerId,
-          CStoreId: auth.user.storeId,
-          CVipId: vip.vip?.id || null,
-          SalesrepId: this.retailForm.SalesrepId || null,
-          billdate: moment().format("YYYYMMDD"),
-          ...newRetail,
+    async createRetail() {
+      const store = userStoreStore();
+      const vip = useVipStore();
+      if (store.code) {
+        ElMessage.warning("未查询到店仓编码");
+        return;
+      }
+      insert("pos_retail", [
+        {
+          docno: this.pos.docno,
+          retail_json: JSON.stringify({
+            ...this.pos,
+            vip: vip.vip,
+            storeCode: store.code,
+          }),
+        },
+      ]);
+    },
+
+    async putRetailItem(skus: Object) {
+      // 将需要插入的skus查询出调用营销执行和展示的所有字段
+      const product = useProductStore();
+      for (const skuCode in skus) {
+        let sku = await product.fetchSkuFull(skuCode);
+        let { price, good } = sku;
+        let qty = skus[skuCode];
+        this.pos.items.push({
+          good,
+          qty,
+          color: sku.color,
+          size: sku.size,
+          amount: price * qty,
+          actAmount: price * qty,
+          price,
+          actPrice: price,
+          discount: 1,
+          activityDisAmount: 0,
+          ticketDisAmount: 0,
+          vipIntegralDisAmount: 0,
         });
-        this.retail = result;
-        // await this.fetchRetail();
-        resolve(this.retail);
-      });
+      }
     },
-    async putRetailItem(skus) {
-      const api = useApi();
-      let item = this.getItem('M_RETAILITEM');
-      await api.addProductItem(item.tid, item.pid, item.refId, skus);
-      // await this.fetchRetail();
-      await this.fetchRetailItem();
-    },
-    async changeRowItemField(index, key, value){
+    async changeRowItemField(index, key, value) {
       this.retailItem.table.tbody[index][key] = value;
     },
     async saveRowItem(index, key) {
       const api = useApi();
-      let row = this.retailItem.table.tbody[index]
-      let item = this.getItem('M_RETAILITEM');
-      let head = this.retailItem.table.thead.find(item => item.dbname === key);
+      let row = this.retailItem.table.tbody[index];
+      let item = this.getItem("M_RETAILITEM");
+      let head = this.retailItem.table.thead.find(
+        (item) => item.dbname === key
+      );
       let value = row[key];
-      let newDateItem =  await api.saveItemDataRow(item.tid, head, row.id, value);
+      let newDateItem = await api.saveItemDataRow(
+        item.tid,
+        head,
+        row.id,
+        value
+      );
       await this.fetchRetailItem();
       return newDateItem;
     },
-    async delRetailItem(id){
-      const api = useApi();
-      let item = this.getItem('M_RETAILITEM');
-      await api.delete(item.tid, id);
-      await this.fetchRetailItem();
+    async delRetailItem(itemIndex) {
+      this.pos.items.splice(itemIndex, 1);
     },
     resetRetailForm() {
       this.retailForm = defaultRetailForm();
@@ -182,7 +262,7 @@ export const useRetailStore = defineStore("retail", {
     strategies: [
       {
         storage: localStorage,
-        paths: ["retail", "retailForm", "retailItem"],
+        paths: ["retail", "retailForm", "retailItem", "pos"],
       },
     ],
   },

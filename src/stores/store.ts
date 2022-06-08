@@ -6,6 +6,7 @@ export const userStoreStore = defineStore("store", {
   state: () => {
     return {
       id: null,
+      code: '',
       name: "无",
       storageQty: 0,
       vipNum: 0,
