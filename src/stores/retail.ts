@@ -92,6 +92,7 @@ export const useRetailStore = defineStore("retail", {
       tableId: 12964,
       homeChart: [],
       homeGrid: {},
+      marketing: false,
       pos: {
         ...defaultMarketingRetail(),
         storeCode: storeStore.code
@@ -186,12 +187,13 @@ export const useRetailStore = defineStore("retail", {
     },
     async dealMarketing() {
       const api = useApi();
+      this.marketing = true;
       let res = await api.custom("/api/deal-marketing", this.pos)
-      console.log("🚀 ~ file: retail.ts ~ line 183 ~ dealMarketing ~ res", res)
       // 直接替换接口报错就会有问题
       if(res.docno){
         this.pos = res;
       }
+      this.marketing = false;
     }
   },
   persist: {

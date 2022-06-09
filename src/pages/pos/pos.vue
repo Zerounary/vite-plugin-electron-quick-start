@@ -19,6 +19,7 @@
     >
       <div
         class="flex-grow h-full flex flex-col divide-y bg-white rounded shadow"
+        v-loading="retailStore.marketing"
       >
         <div class="flex-grow w-full overflow-auto p-5">
           <table class="headfix w-full">
