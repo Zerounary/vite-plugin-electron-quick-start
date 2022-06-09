@@ -1,7 +1,7 @@
 <template>
   <div class="drag grid grid-cols-2 items-center h-60px shadow bg-white px-3">
     <div class="text-left flex items-end space-x-3">
-      <div class="text-xl font-bold">{{ storeStore.name }}</div>
+      <div class="text-xl font-bold">{{ storeStore.name }}<span class="text-xs text-gray-300">{{storeStore.code}}</span></div>
       <div class="flex text-sm space-x-3">
         <div class="text-gray-500">
           库存总量：{{ toLocaleString(storeStore.storageQty) }}

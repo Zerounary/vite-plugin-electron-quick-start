@@ -3,7 +3,9 @@ export const db = require("better-sqlite3")("./data.db", {
 });
 
 const dbAdd = (db, table, data) => {
-  db.prepare(`DELETE FROM ${table} where id = $id`).run(data);
+  if(data.id){
+    db.prepare(`DELETE FROM ${table} where id = $id`).run(data);
+  }
   const cols = Object.keys(data).join(", ");
   const placeholders = Object.keys(data)
     .map((x) => "$" + x)
@@ -170,8 +172,7 @@ create table if not exists hr_employee(
 // POS零售单
 db.exec(`
 create table if not exists pos_retail(
-"id" INTEGER PRIMARY KEY AUTOINCREMENT,
-"docno" char(80),
+"id" char(80),
 "retail_json" char(80),
 "is_hang" INT2 default 0,                                                           
 "is_pay" INT2 default 0,

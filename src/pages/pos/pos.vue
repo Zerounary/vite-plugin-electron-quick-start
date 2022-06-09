@@ -11,7 +11,7 @@
       <div>积分：{{ integral }}</div>
       <div>储值：{{ amount }}</div>
       <div class="flex-grow text-right text-base font-bold text-gray-600">
-        单号：{{ retailStore.pos.docno || "空" }}
+        本机单号：{{ retailStore.localBillCount || "空" }}
       </div>
     </div>
     <div
@@ -171,7 +171,7 @@
             <div class="square"></div>
             <div>订单查询</div>
           </div>
-          <div class="flex flex-col items-center space-y-2">
+          <div class="flex flex-col items-center space-y-2" @click="hangRetail">
             <div class="square"></div>
             <div>挂单</div>
           </div>
@@ -590,8 +590,12 @@ let selectPdt = async (row) => {
 
 let newRetail = async () => {
   vipStore.$reset();
-  retailStore.$reset();
+  retailStore.createRetail();
 };
+
+let hangRetail = async () => {
+  retailStore.hangRetail();
+}
 
 let deleteItem = async (itemIndex) => {
   await retailStore.delRetailItem(itemIndex);

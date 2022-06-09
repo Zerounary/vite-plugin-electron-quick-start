@@ -93,6 +93,7 @@ export const useRetailStore = defineStore("retail", {
       homeChart: [],
       homeGrid: {},
       marketing: false,
+      localBillCount: 1,
       pos: {
         ...defaultMarketingRetail(),
         storeCode: storeStore.code,
@@ -156,20 +157,16 @@ export const useRetailStore = defineStore("retail", {
     async createRetail() {
       const store = userStoreStore();
       const vip = useVipStore();
-      if (store.code) {
+      if (!store.code) {
         ElMessage.warning("未查询到店仓编码");
         return;
       }
-      insert("pos_retail", [
-        {
-          docno: this.pos.docno,
-          retail_json: JSON.stringify({
-            ...this.pos,
-            vip: vip.vip,
-            storeCode: store.code,
-          }),
-        },
-      ]);
+      this.pos = {
+        ...defaultMarketingRetail(),
+        storeCode: store.code,
+        vip: vip.vip,
+      };
+      this.localBillCount++;
     },
     async putRetailItem(skus: Object) {
       // 将需要插入的skus查询出调用营销执行和展示的所有字段
@@ -212,6 +209,28 @@ export const useRetailStore = defineStore("retail", {
         this.pos = res;
       }
       this.marketing = false;
+    },
+    async saveToDB(params) {
+      const store = userStoreStore();
+      const vip = useVipStore();
+      insert("pos_retail", [
+        {
+          ...params,
+          id: this.pos.docno,
+          retail_json: JSON.stringify({
+            ...this.pos,
+            vip: vip.vip,
+            storeCode: store.code,
+          }),
+        },
+      ]);
+    },
+    async hangRetail() {
+      await this.saveToDB({
+        is_hang: 1,
+      });
+      ElMessage.success("挂单成功!");
+      await this.createRetail();
     },
   },
   persist: {
