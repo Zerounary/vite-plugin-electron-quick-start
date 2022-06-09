@@ -71,7 +71,6 @@ export const useProductStore = defineStore("product", {
       let dims = db.prepare(queryProductDimsSql).all(skuCode);
       console.log("🚀 ~ file: product.ts ~ line 63 ~ fetchSkuFull ~ dims", dims)
       return {
-        subDocno: sku.id,
         good: {
           spuCode: sku.spuCode,
           spuName: sku.spuName,
