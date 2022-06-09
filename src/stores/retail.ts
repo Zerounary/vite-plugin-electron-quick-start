@@ -5,7 +5,7 @@ import { useAuthStore } from "./auth";
 import { ElMessage } from "element-plus";
 import { useVipStore } from "./vip";
 import moment from "moment";
-import _ from "lodash";
+import _, { result } from "lodash";
 import { useDateStore } from "./date";
 import { insert } from "~/electron-main/common/db";
 import { userStoreStore } from "./store";
@@ -95,11 +95,29 @@ export const useRetailStore = defineStore("retail", {
       marketing: false,
       pos: {
         ...defaultMarketingRetail(),
-        storeCode: storeStore.code
+        storeCode: storeStore.code,
       },
     };
   },
-  getters: {},
+  getters: {
+    getItemActivity: (state) => {
+      return (index) => {
+        let result = [];
+        for (const activity of state.pos.activityItems) {
+          for (const goodItem of activity.goodItems) {
+            if (goodItem.subDocno == index) {
+              result.push({
+                activityName: activity.activityName,
+                activityType: activity.activityType,
+                activityDisAmount: goodItem.activityDisAmount,
+              });
+            }
+          }
+        }
+        return result;
+      };
+    },
+  },
   actions: {
     async fetchHomeGrid() {
       const auth = useAuthStore();
@@ -188,13 +206,13 @@ export const useRetailStore = defineStore("retail", {
     async dealMarketing() {
       const api = useApi();
       this.marketing = true;
-      let res = await api.custom("/api/deal-marketing", this.pos)
+      let res = await api.custom("/api/deal-marketing", this.pos);
       // 直接替换接口报错就会有问题
-      if(res.docno){
+      if (res.docno) {
         this.pos = res;
       }
       this.marketing = false;
-    }
+    },
   },
   persist: {
     enabled: true,

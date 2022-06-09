@@ -38,15 +38,32 @@
             </thead>
             <tbody class="h-[calc(100vh-350px)] overflow-auto divide-y">
               <tr v-for="(item, index) in retailStore.pos.items" :key="item.id">
-                <td>{{ item.good.spuName }}</td>
-                <td>{{ item.good.spuCode }}</td>
-                <td class="space-x-2 space-y-2 text-xs">
-                  <el-tag type="success"
-                    >{{ productStore.getSkuFull(item.good.skuCode).colorName }}
-                  </el-tag>
-                  <el-tag type="success"
-                    >{{ productStore.getSkuFull(item.good.skuCode).sizeName }}
-                  </el-tag>
+                <td class="space-y-3">
+                  <div class="headline">{{ item.good.spuName }}</div>
+                  <div class="">
+                    <el-tag
+                      type="danger"
+                      v-for="activity in retailStore.getItemActivity(index)"
+                      :key="activity.activityName"
+                      :title="`减 ${activity.activityDisAmount} 元`"
+                      >{{ activity.activityName }}</el-tag
+                    >
+                  </div>
+                </td>
+                <td>
+                  <div class="headline">{{ item.good.spuCode }}</div>
+                </td>
+                <td class="text-xs">
+                  <div class="headline space-x-2">
+                    <el-tag type="success" title="颜色"
+                      >{{
+                        productStore.getSkuFull(item.good.skuCode).colorName
+                      }}
+                    </el-tag>
+                    <el-tag type="success" title="尺码"
+                      >{{ productStore.getSkuFull(item.good.skuCode).sizeName }}
+                    </el-tag>
+                  </div>
                 </td>
                 <td>
                   <input
@@ -60,7 +77,9 @@
                     "
                   />
                 </td>
-                <td>{{ item.price }}</td>
+                <td>
+                  <div class="headline">{{ item.price }}</div>
+                </td>
                 <td>
                   <input
                     :value="item.actPrice"
@@ -74,38 +93,16 @@
                   />
                 </td>
                 <td>
-                  {{ item.discount }}
-                  <!-- <input
-                    :value="item['DISCOUNT']"
-                    @input="
-                      retailStore.changeRowItemField(
-                        index,
-                        'DISCOUNT',
-                        $event.target.value
-                      )
-                    "
-                    @blur="retailStore.saveRowItem(index, 'DISCOUNT')"
-                  /> -->
+                  <div class="headline">{{ item.discount }}</div>
                 </td>
                 <td>
-                  {{ item.actAmount }}
-                  <!-- <input
-                    :value="item['TOT_AMT_ACTUAL']"
-                    @input="
-                      retailStore.changeRowItemField(
-                        index,
-                        'TOT_AMT_ACTUAL',
-                        $event.target.value
-                      )
-                    "
-                    @blur="retailStore.saveRowItem(index, 'TOT_AMT_ACTUAL')"
-                  /> -->
+                  <div class="headline">{{ item.actAmount }}</div>
                 </td>
                 <td
                   class="text-red-500 cursor-pointer"
                   @click="deleteItem(index)"
                 >
-                  删除
+                  <div class="headline">删除</div>
                 </td>
               </tr>
             </tbody>
@@ -232,7 +229,7 @@
         <div class="!mt-10 flex items-center space-x-5 py-5">
           <div class="flex-grow text-right space-y-2">
             <div>共5件商品</div>
-            <div class="text-red-500">￥{{ retailStore.pos.totActAmount }}</div>
+            <div class="text-red-500 text-xl">￥{{ retailStore.pos.totActAmount }}</div>
           </div>
 
           <button class="h-50px w-120px border rounded bg-blue-500 text-white">
@@ -617,6 +614,7 @@ table.headfix tr {
 table.headfix th,
 table.headfix td {
   width: 10%;
+  @apply align-top py-3;
 }
 .box {
   @apply h-80px px-5 py-5;
@@ -627,6 +625,9 @@ input {
 }
 .headfix input {
   @apply h-40px w-min-60px;
+}
+.headline {
+  @apply h-40px leading-40px;
 }
 .btn {
   @apply w-80px border px-2 h-full rounded text-sm;
