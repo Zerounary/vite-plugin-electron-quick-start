@@ -269,3 +269,12 @@ and ma.value1_id = clr.id
 and ma.value2_id = sz.id
 and mpa.no = ?
       `;
+
+export const queryMarketDim = `
+SELECT mpa.id, mpa.no as "skuCode", clr.name as colorName, clr.value as colorCode, sz.name as sizeName, sz.value as sizeCode
+FROM m_product_alias mpa, m_attributesetinstance ma , m_attributevalue clr, m_attributevalue sz
+WHERE mpa.m_attributesetinstance_id = ma.id 
+AND ma.value1_id = clr.id 
+AND ma.value2_id = sz.id
+AND mpa.no = ?
+`

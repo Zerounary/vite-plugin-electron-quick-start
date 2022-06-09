@@ -4,6 +4,7 @@ import { useApi } from "./api";
 import { useAuthStore } from "./auth";
 import {
   db,
+  queryMarketDim,
   queryProductAttributesSql,
   queryProductByIdSql,
   queryProductDimsSql,
@@ -18,6 +19,14 @@ export const useProductStore = defineStore("product", {
     return {
       rank: [],
     };
+  },
+  getters: {
+    getSkuFull: (state) => {
+      return (skuCode) => {
+        let sku = db.prepare(queryMarketDim).get(skuCode);
+        return sku;
+      }
+    }
   },
   actions: {
     async fetchProductRank() {
@@ -62,6 +71,7 @@ export const useProductStore = defineStore("product", {
       let dims = db.prepare(queryProductDimsSql).all(skuCode);
       console.log("🚀 ~ file: product.ts ~ line 63 ~ fetchSkuFull ~ dims", dims)
       return {
+        subDocno: sku.id,
         good: {
           spuCode: sku.spuCode,
           spuName: sku.spuName,

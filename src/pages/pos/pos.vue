@@ -40,9 +40,13 @@
               <tr v-for="(item, index) in retailStore.pos.items" :key="item.id">
                 <td>{{ item.good.spuName }}</td>
                 <td>{{ item.good.spuCode }}</td>
-                <td class="space-y-5 text-xs">
-                  <div>颜色：{{ item.color }}</div>
-                  <div>尺码：{{ item.size }}</div>
+                <td class="space-x-2 space-y-2 text-xs">
+                  <el-tag type="success"
+                    >{{ productStore.getSkuFull(item.good.skuCode).colorName }}
+                  </el-tag>
+                  <el-tag type="success"
+                    >{{ productStore.getSkuFull(item.good.skuCode).sizeName }}
+                  </el-tag>
                 </td>
                 <td>
                   <input
@@ -212,15 +216,15 @@
           class="flex items-center justify-center text-16px space-x-16 !mt-20"
         >
           <div class="flex flex-col items-center space-y-1">
-            <div class="font-bold">{{retailStore.pos.totAmount}}</div>
+            <div class="font-bold">{{ retailStore.pos.totAmount }}</div>
             <div class="text-gray-500">商品总价</div>
           </div>
           <div class="flex flex-col items-center space-y-1">
-            <div class="font-bold">{{retailStore.pos.totDisAmount}}</div>
+            <div class="font-bold">{{ retailStore.pos.totDisAmount }}</div>
             <div class="text-gray-500">优惠金额</div>
           </div>
           <div class="flex flex-col items-center space-y-1">
-            <div class="font-bold">{{retailStore.pos.totQty}}</div>
+            <div class="font-bold">{{ retailStore.pos.totQty }}</div>
             <div class="text-gray-500">商品总数</div>
           </div>
         </div>
@@ -228,7 +232,7 @@
         <div class="!mt-10 flex items-center space-x-5 py-5">
           <div class="flex-grow text-right space-y-2">
             <div>共5件商品</div>
-            <div class="text-red-500">￥{{retailStore.pos.totActAmount}}</div>
+            <div class="text-red-500">￥{{ retailStore.pos.totActAmount }}</div>
           </div>
 
           <button class="h-50px w-120px border rounded bg-blue-500 text-white">
@@ -421,8 +425,7 @@ const cancelEmployee = () => {
   closeEmployeeDialog();
 };
 
-onMounted(async () => {
-});
+onMounted(async () => {});
 
 const saveVip = async () => {
   vipStore.save(vipForm.value).then((result) => {
@@ -585,7 +588,7 @@ let selectPdt = async (row) => {
   productKeyWord.value = row.code;
   await queryAndPutItem();
   closePdtOptions();
-  productKeyWord.value = '';
+  productKeyWord.value = "";
 };
 
 let newRetail = async () => {
