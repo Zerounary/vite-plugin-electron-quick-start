@@ -67,7 +67,7 @@ let ticketItemType = {
 };
 
 let defaultMarketingRetail = () => ({
-  source: "POS",
+  source: "store",
   docno: crypto.randomUUID(),
   // billdate: moment().format("YYYY-MM-DD"),
   storeCode: "",
