@@ -216,11 +216,11 @@
           </div>
           <div class="flex flex-col items-center space-y-1">
             <div class="font-bold">{{retailStore.pos.totDisAmount}}</div>
-            <div class="text-gray-500">促销优惠</div>
+            <div class="text-gray-500">优惠金额</div>
           </div>
           <div class="flex flex-col items-center space-y-1">
-            <div class="font-bold">{{retailStore.pos.totVipDisAmount}}</div>
-            <div class="text-gray-500">会员优惠</div>
+            <div class="font-bold">{{retailStore.pos.totQty}}</div>
+            <div class="text-gray-500">商品总数</div>
           </div>
         </div>
 
