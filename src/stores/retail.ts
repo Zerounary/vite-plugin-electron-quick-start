@@ -69,7 +69,7 @@ let ticketItemType = {
 let defaultMarketingRetail = () => ({
   source: "store",
   docno: crypto.randomUUID(),
-  // billdate: moment().format("YYYY-MM-DD"),
+  billdate: moment().format("YYYY-MM-DD"),
   storeCode: "",
   salesrepId: null,
   totQty: 0,
