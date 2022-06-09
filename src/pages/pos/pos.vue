@@ -422,7 +422,10 @@ const cancelEmployee = () => {
   closeEmployeeDialog();
 };
 
-onMounted(async () => {});
+onMounted(async () => {
+  await vipStore.fetchAllVipType();
+  await employeeStore.fetchAllEmployee();
+});
 
 const saveVip = async () => {
   vipStore.save(vipForm.value).then((result) => {

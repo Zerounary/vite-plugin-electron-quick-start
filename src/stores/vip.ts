@@ -3,6 +3,7 @@ import { useApi } from "./api";
 import { useAuthStore } from "./auth";
 import { useDateStore } from "./date";
 import { ElMessage } from "element-plus";
+import { db } from "~/electron-main/common/db";
 
 let defaultVipForm = () => ({
   // 必填字段
@@ -45,8 +46,8 @@ export const useVipStore = defineStore("vip", {
       this.vip = await api.custom(`/api/marketing-vip-query?keyword=${keyword}`);
     },
     async fetchAllVipType(filter?) {
-      const api = useApi();
-      this.vipTypes = await api.noPage("viptype", filter);
+      let vipTypes = db.prepare(`SELECT * FROM c_viptype`).all();
+      this.vipTypes = vipTypes;
     },
     async save(newVip) {
       return new Promise(async (resolve, reject) => {
