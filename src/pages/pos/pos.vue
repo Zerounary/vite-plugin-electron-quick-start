@@ -49,11 +49,10 @@
                     @input="
                       retailStore.changeRowItemField(
                         index,
-                        'QTY',
+                        'qty',
                         $event.target.value
                       )
                     "
-                    @blur="retailStore.saveRowItem(index, 'QTY')"
                   />
                 </td>
                 <td>{{ item.price }}</td>
@@ -63,11 +62,10 @@
                     @input="
                       retailStore.changeRowItemField(
                         index,
-                        'PRICEACTUAL',
+                        'actPrice',
                         $event.target.value
                       )
                     "
-                    @blur="retailStore.saveRowItem(index, 'PRICEACTUAL')"
                   />
                 </td>
                 <td>
@@ -213,15 +211,15 @@
           class="flex items-center justify-center text-16px space-x-16 !mt-20"
         >
           <div class="flex flex-col items-center space-y-1">
-            <div class="font-bold">2900.00</div>
+            <div class="font-bold">{{retailStore.pos.totAmount}}</div>
             <div class="text-gray-500">商品总价</div>
           </div>
           <div class="flex flex-col items-center space-y-1">
-            <div class="font-bold">2900.00</div>
+            <div class="font-bold">{{retailStore.pos.totDisAmount}}</div>
             <div class="text-gray-500">促销优惠</div>
           </div>
           <div class="flex flex-col items-center space-y-1">
-            <div class="font-bold">2900.00</div>
+            <div class="font-bold">{{retailStore.pos.totVipDisAmount}}</div>
             <div class="text-gray-500">会员优惠</div>
           </div>
         </div>
@@ -229,7 +227,7 @@
         <div class="!mt-10 flex items-center space-x-5 py-5">
           <div class="flex-grow text-right space-y-2">
             <div>共5件商品</div>
-            <div class="text-red-500">￥2400.00</div>
+            <div class="text-red-500">￥{{retailStore.pos.totActAmount}}</div>
           </div>
 
           <button class="h-50px w-120px border rounded bg-blue-500 text-white">
@@ -301,7 +299,7 @@
   >
     <el-radio-group
       class="h-200px overflow-auto"
-      v-model="retailStore.retailForm.SalesrepId"
+      v-model="retailStore.pos.salesrepId"
     >
       <el-radio
         class="w-full"
@@ -397,11 +395,6 @@ const { vipForm } = storeToRefs(vipStore);
 
 const vipRules = ref({});
 
-const fetchData = async () => {
-  await vipStore.fetchAllVipType();
-  await employeeStore.fetchAllEmployee();
-};
-
 const openVipDialog = () => {
   vipStore.resetVipForm();
   vipDialogVisible.value = true;
@@ -423,12 +416,11 @@ const closeEmployeeDialog = () => {
 };
 
 const cancelEmployee = () => {
-  retailStore.retailForm.SalesrepId = null;
+  retailStore.pos.salesrepId = null;
   closeEmployeeDialog();
 };
 
 onMounted(async () => {
-  await fetchData();
 });
 
 const saveVip = async () => {
@@ -574,10 +566,6 @@ let queryProduct = async () => {
 };
 let queryAndPutItem = async () => {
   // 没有零售单据，创建一个
-  if (!retailStore.retail) {
-    // 创建零售单
-    retailStore.createRetail();
-  }
   closePdtOptions();
   let res = await productStore.fetchProductKeyWord(productKeyWord.value);
   if (!res.length) {
@@ -600,7 +588,6 @@ let selectPdt = async (row) => {
 };
 
 let newRetail = async () => {
-  fetchData();
   vipStore.$reset();
   retailStore.$reset();
 };
