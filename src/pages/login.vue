@@ -7,7 +7,11 @@
       <h1>欢迎登录</h1>
       <form class="space-y-5">
         <div class="flex items-center relative">
-          <Icon icon="ant-design:user-outlined" width="20" class="absolute ml-10px" />
+          <Icon
+            icon="ant-design:user-outlined"
+            width="20"
+            class="absolute ml-10px"
+          />
           <input v-model="username" placeholder="输入账号" />
         </div>
         <div class="flex items-center relative">
@@ -20,23 +24,41 @@
     <div class="fixed bottom-0 w-full h-30px text-center leading-30px text-xs">
       2015-2022 上海云欢网络科技有限公司 版权所有 www.cloudhappy.cn
     </div>
+    <div
+      class="no-drag bg-white shadow h-48px w-48px rounded-full fixed bottom-3 right-3 flex items-center justify-center text-gray-500 text-sm cursor-pointer"
+      @click="openSetting"
+    >
+      设置
+    </div>
   </div>
+  <el-dialog v-model="settingVisiable">
+    <el-form>
+      <el-form-item label="接口地址："> <input v-model="settingStore.url" /> </el-form-item>
+    </el-form>
+  </el-dialog>
 </template>
 
 <script setup lang="ts">
-import {ref} from 'vue';
+import { ref } from "vue";
 import { Icon } from "@iconify/vue";
-import { useAuthStore } from '@/stores/auth';
+import { useAuthStore } from "@/stores/auth";
 
-let username = ref('')
-let password = ref('')
+let username = ref("");
+let password = ref("");
 
 const authStore = useAuthStore();
+const settingStore = useSettingStore();
 
 let login = async () => {
   await authStore.login(username.value, password.value);
   router.push("/");
-}
+};
+
+const settingVisiable = ref(false);
+
+let openSetting = async () => {
+  settingVisiable.value = true;
+};
 </script>
 
 <style scoped>
@@ -50,5 +72,4 @@ input {
 button {
   @apply bg-blue-500 text-white px-4 py-2 rounded w-full h-40px;
 }
-
 </style>
