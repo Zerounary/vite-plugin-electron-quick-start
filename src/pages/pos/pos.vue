@@ -186,7 +186,8 @@
             <div class="flex-grow text-16px">优惠券</div>
             <div class="w-120px text-right">
               <select>
-                <option>优惠券XXXXXX</option>
+                <option v-if="retailStore.pos.ticketItems">无</option>
+                <option v-for="ticket in retailStore.pos.ticketItems" :key="ticket.ticketNo">{{ticket.ticketName}}</option>
               </select>
             </div>
           </div>
@@ -194,14 +195,14 @@
           <div class="flex items-center">
             <div class="flex-grow text-16px">积分</div>
             <div class="w-240px text-right">
-              共1000积分，使用50积分，抵扣50.00元
+              共{{integral}}积分，使用0积分，抵扣0.00元
             </div>
           </div>
 
           <div class="flex items-center">
             <div class="flex-grow text-16px">抹零</div>
             <div class="w-240px text-right">
-              已优惠9元
+              已优惠0元
               <select>
                 <option>保留小数位</option>
               </select>
@@ -592,7 +593,6 @@ let selectPdt = async (row) => {
 };
 
 let newRetail = async () => {
-  vipStore.$reset();
   retailStore.createRetail();
 };
 
