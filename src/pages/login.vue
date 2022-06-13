@@ -31,7 +31,7 @@
       设置
     </div>
   </div>
-  <el-dialog v-model="settingVisiable">
+  <el-dialog class="no-drag" v-model="settingVisiable">
     <el-form>
       <el-form-item label="接口地址："> <input v-model="settingStore.url" /> </el-form-item>
     </el-form>
@@ -42,6 +42,7 @@
 import { ref } from "vue";
 import { Icon } from "@iconify/vue";
 import { useAuthStore } from "@/stores/auth";
+import { useSettingStore } from "@/stores/setting";
 
 let username = ref("");
 let password = ref("");

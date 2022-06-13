@@ -6,8 +6,10 @@ import { ElMessage } from "element-plus";
 Axios.defaults.adapter = require("axios/lib/adapters/http");
 Axios.defaults.withCredentials = true;
 
+const baseURL =  JSON.parse(localStorage.getItem("setting") || '{}')?.url || "http://localhost:8079/";
+
 export const request = Axios.create({
-  baseURL: 'http://localhost:8079/',
+  baseURL,
   timeout: 300000,
 });
 
