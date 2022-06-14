@@ -36,6 +36,9 @@
       <el-form-item label="接口地址：">
         <input v-model="settingStore.url" placeholder="请输入地址" />
       </el-form-item>
+      <el-form-item>
+        <el-button type="danger" @click="quit">退出系统</el-button>
+      </el-form-item>
     </el-form>
   </el-dialog>
 </template>
@@ -47,6 +50,8 @@ import { useAuthStore } from "@/stores/auth";
 import { useSettingStore } from "@/stores/setting";
 import { isURL } from "@/util/check";
 import { ElMessage } from "element-plus";
+import { rendererSend } from "~/electron-main/common/ipcRender";
+import ipcNames from "~/electron-main/common/ipcNames";
 
 let username = ref("");
 let password = ref("");
@@ -62,6 +67,10 @@ let login = async () => {
   await authStore.login(username.value, password.value);
   router.push("/");
 };
+
+let quit = async () => {
+  rendererSend(ipcNames.quit, null);
+}
 
 const settingVisiable = ref(false);
 
