@@ -6,10 +6,13 @@ import { ElMessage } from "element-plus";
 Axios.defaults.adapter = require("axios/lib/adapters/http");
 Axios.defaults.withCredentials = true;
 
-const baseURL =  JSON.parse(localStorage.getItem("setting") || '{}')?.url || "http://localhost:8079/";
+
+const getSettingBaseURL = () => {
+  return JSON.parse(localStorage.getItem("setting") || '{}')?.url || "http://localhost:8079/";
+};
 
 export const request = Axios.create({
-  baseURL,
+  baseURL: getSettingBaseURL(),
   timeout: 300000,
 });
 
@@ -18,10 +21,12 @@ let Cookie =  localStorage.getItem("cookie") || "";
 request.interceptors.request.use(
   function(config) {
     console.debug("request ===> ", config)
-    // Do something before request is sent
+    // 非登录页面传递cookie
     if(config.url != "/api/loginUser") {
       config.headers.Cookie = Cookie;
     }
+    // 设置请求地址为设置的地址
+    config.baseURL = getSettingBaseURL();
     return config;
   }
 )

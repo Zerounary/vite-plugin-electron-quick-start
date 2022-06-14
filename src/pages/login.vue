@@ -31,9 +31,11 @@
       设置
     </div>
   </div>
-  <el-dialog class="no-drag" v-model="settingVisiable">
+  <el-dialog title="系统设置" custom-class="no-drag" v-model="settingVisiable">
     <el-form>
-      <el-form-item label="接口地址："> <input v-model="settingStore.url" /> </el-form-item>
+      <el-form-item label="接口地址：">
+        <input v-model="settingStore.url" placeholder="请输入地址" />
+      </el-form-item>
     </el-form>
   </el-dialog>
 </template>
@@ -43,6 +45,8 @@ import { ref } from "vue";
 import { Icon } from "@iconify/vue";
 import { useAuthStore } from "@/stores/auth";
 import { useSettingStore } from "@/stores/setting";
+import { isURL } from "@/util/check";
+import { ElMessage } from "element-plus";
 
 let username = ref("");
 let password = ref("");
@@ -51,6 +55,10 @@ const authStore = useAuthStore();
 const settingStore = useSettingStore();
 
 let login = async () => {
+  if (!isURL(settingStore.url)) {
+    ElMessage.error("请输入正确的接口地址");
+    return;
+  }
   await authStore.login(username.value, password.value);
   router.push("/");
 };

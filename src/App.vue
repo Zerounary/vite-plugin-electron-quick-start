@@ -52,7 +52,7 @@ rendererOn(ipcNames.update_not_available, (event, info) => {
 </script>
 
 <template>
-  <div class="space-y-3">
+  <div class="">
     <router-view></router-view>
   </div>
 </template>
