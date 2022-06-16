@@ -85,6 +85,15 @@ let defaultMarketingRetail = () => ({
   ticketItems: [],
 });
 
+let defaultPayment = () => {
+  return [
+    {
+      paywayId: 2,
+      name: "现金",
+      payAmt: 0,
+    },
+  ];
+};
 export const useRetailStore = defineStore("retail", {
   state: () => {
     const storeStore = userStoreStore();
@@ -98,10 +107,20 @@ export const useRetailStore = defineStore("retail", {
         ...defaultMarketingRetail(),
         storeCode: storeStore.code,
       },
+      payments: defaultPayment(),
     };
   },
   getters: {
-    getItemActivity: (state) => {
+    totPayAmt(state) {
+      return state.payments.reduce((sum, item) => {
+        return sum + Number(item.payAmt);
+      }, 0);
+    },
+    changeAmt(state) {
+      let change =  Number(this.totPayAmt) - Number(state.pos.totActAmount);
+      return change;
+    },
+    getItemActivity(state) {
       return (index) => {
         let result = [];
         for (const activity of state.pos.activityItems) {
@@ -232,6 +251,29 @@ export const useRetailStore = defineStore("retail", {
       ElMessage.success("挂单成功!");
       await this.createRetail();
     },
+    async appendPayment(payment) {
+      let existIndex = this.payments.findIndex(
+        (item) => item.paywayId == payment.paywayId
+      );
+      if (existIndex >= 0) {
+        this.payments.splice(existIndex, 1, {
+          paywayId: payment.paywayId,
+          name: payment.name,
+          payAmt: Number(payment.payAmt) + this.payments[existIndex].payAmt,
+        });
+      } else {
+        this.payments.push(payment);
+      }
+    },
+    async rePay() {
+      this.payments = defaultPayment();
+    },
+    async savePay(){
+      if(this.pos.totActAmount != this.totPayAmt){
+        ElMessage.warning("实际收款和应收不相等，请检查!");
+        return;
+      }
+    }
   },
   persist: {
     enabled: true,

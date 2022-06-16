@@ -187,7 +187,12 @@
             <div class="w-120px text-right">
               <select>
                 <option v-if="retailStore.pos.ticketItems">无</option>
-                <option v-for="ticket in retailStore.pos.ticketItems" :key="ticket.ticketNo">{{ticket.ticketName}}</option>
+                <option
+                  v-for="ticket in retailStore.pos.ticketItems"
+                  :key="ticket.ticketNo"
+                >
+                  {{ ticket.ticketName }}
+                </option>
               </select>
             </div>
           </div>
@@ -195,7 +200,7 @@
           <div class="flex items-center">
             <div class="flex-grow text-16px">积分</div>
             <div class="w-240px text-right">
-              共{{integral}}积分，使用0积分，抵扣0.00元
+              共{{ integral }}积分，使用0积分，抵扣0.00元
             </div>
           </div>
 
@@ -230,10 +235,12 @@
         <div class="!mt-10 flex items-center space-x-5 py-5">
           <div class="flex-grow text-right space-y-2">
             <div>共5件商品</div>
-            <div class="text-red-500 text-xl">￥{{ retailStore.pos.totActAmount }}</div>
+            <div class="text-red-500 text-xl">
+              ￥{{ retailStore.pos.totActAmount }}
+            </div>
           </div>
 
-          <button class="h-50px w-120px border rounded bg-blue-500 text-white">
+          <button class="h-50px w-120px border rounded bg-blue-500 text-white" @click="payDialogVisible = true">
             付款
           </button>
         </div>
@@ -375,6 +382,70 @@
       </el-form-item>
     </el-form>
   </el-dialog>
+  <el-dialog
+    custom-class="no-drag"
+    width="600px"
+    v-model="payDialogVisible"
+    title="付款"
+  >
+    <div class="space-y-5">
+      <div
+        class="border rounded h-80px grid grid-cols-4 items-center text-16px"
+      >
+        <div class="flex flex-col items-center space-y-1">
+          <div class="font-bold text-3xl">{{ retailStore.pos.totQty }}</div>
+          <div class="text-gray-500">总数量</div>
+        </div>
+        <div class="flex flex-col items-center space-y-1">
+          <div class="font-bold text-3xl text-yellow-500">
+            {{ retailStore.pos.totActAmount }}
+          </div>
+          <div class="text-gray-500">总计</div>
+        </div>
+        <div class="flex flex-col items-center space-y-1">
+          <div class="font-bold text-3xl text-indigo-600">{{ retailStore.totPayAmt }}</div>
+          <div class="text-gray-500">收款</div>
+        </div>
+        <div class="flex flex-col items-center space-y-1">
+          <div class="font-bold text-3xl text-red-500">
+            {{ retailStore.changeAmt }}
+          </div>
+          <div class="text-gray-500">找零</div>
+        </div>
+      </div>
+      <div class="flex flex-col space-y-2 items-center justify-center">
+        <div
+          class="flex items-center space-x-3"
+          v-for="payment in retailStore.payments"
+          :key="payment.id"
+        >
+          <div class="w-80px">{{ payment.name }}</div>
+          <div><input class="py-3 px-2" v-model.number="payment.payAmt" /></div>
+          <div>
+            <Icon
+              icon="ant-design:user-outlined"
+              width="20"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="flex space-x-5 w-max-600px overflow-x-auto">
+        <div
+          class="flex items-center justify-center flex-shrink-0 h-24 w-24 rounded border"
+          v-for="payway in paywayStore.payways"
+          :key="payway.id"
+          @click="appendPayment(payway)"
+        >
+          <div>{{ payway.name }}</div>
+        </div>
+      </div>
+    </div>
+    <div class=" pt-5 text-right">
+      <el-button size="large" type="info" @click="rePay">重付</el-button>
+      <el-button size="large" type="primary" @click="savePay">付款</el-button>
+      <el-button size="large" @click="closePayDialog">取消</el-button>
+    </div>
+  </el-dialog>
 </template>
 
 <script setup lang="ts">
@@ -384,19 +455,53 @@ import { useEmployeeStore } from "@/stores/employee";
 import { useRetailStore } from "@/stores/retail";
 import { storeToRefs } from "pinia";
 import { useProductStore } from "@/stores/product";
-import { ElMessage } from "element-plus";
+import { usePaywayStore } from "@/stores/payway";
+import { ElMessage, ElMessageBox } from "element-plus";
 
 const vipStore = useVipStore();
 const employeeStore = useEmployeeStore();
+const paywayStore = usePaywayStore();
 const retailStore = useRetailStore();
 const productStore = useProductStore();
 
 const vipDialogVisible = ref(false);
+const payDialogVisible = ref(true);
 const vipFormInstance = ref();
 
 const { vipForm } = storeToRefs(vipStore);
 
 const vipRules = ref({});
+
+const rePay = () => {
+  retailStore.rePay();
+}
+
+const savePay = () => {
+  retailStore.savePay();
+}
+
+const closePayDialog = () => {
+  retailStore.rePay();
+  payDialogVisible.value = false;
+}
+
+const appendPayment = (payway) => {
+  ElMessageBox.prompt("请输入金额", payway.name + "付款", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    inputPattern: /^[0-9]*$/,
+    inputErrorMessage: "请输入数字",
+    inputPlaceholder: "请输入金额",
+  }).then((input) => {
+    if (input) {
+      retailStore.appendPayment({
+        paywayId: payway.id,
+        name: payway.name,
+        payAmt: Number(input.value),
+      });
+    }
+  });
+};
 
 const openVipDialog = () => {
   vipStore.resetVipForm();
@@ -426,6 +531,7 @@ const cancelEmployee = () => {
 onMounted(async () => {
   await vipStore.fetchAllVipType();
   await employeeStore.fetchAllEmployee();
+  await paywayStore.fetchAllPayway();
 });
 
 const saveVip = async () => {
@@ -598,7 +704,7 @@ let newRetail = async () => {
 
 let hangRetail = async () => {
   retailStore.hangRetail();
-}
+};
 
 let deleteItem = async (itemIndex) => {
   await retailStore.delRetailItem(itemIndex);
