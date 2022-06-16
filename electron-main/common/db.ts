@@ -169,6 +169,16 @@ create table if not exists hr_employee(
 "modifieddate" INT
 );`);
 
+// 付款方式
+db.exec(`
+create table if not exists c_payway(
+"id" INT PRIMARY KEY,
+"code" char(80),
+"name" char(80),
+"creationdate" INT,
+"modifieddate" INT
+);`);
+
 // POS零售单
 db.exec(`
 create table if not exists pos_retail(

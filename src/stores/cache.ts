@@ -23,6 +23,7 @@ export const useCacheStore = defineStore("cache", {
       await this.cacheProduct();
       await this.cacheProductAlias();
       await this.cacheEmployee();
+      await this.cachePayway();
       this.isLoading = false;
     },
     async cacheVipType() {
@@ -138,6 +139,20 @@ export const useCacheStore = defineStore("cache", {
       this.loadingMessage = `开始缓存员工数据(${res?.length || 0}条)...`;
       insert(table, res);
       this.loadingMessage = `缓存员工数据完成...`;
+    },
+    async cachePayway() {
+      const auth = useAuthStore();
+      const api = useApi();
+      let table = "c_payway";
+      let tableName = "付款方式";
+      this.loadingMessage = `正在请求${tableName}..`;
+      let res = await api.noPage(`cache/${table}`, {
+        storeId: auth.user.storeId,
+        lastModifyDate: getLastModifidDate(table),
+      });
+      this.loadingMessage = `开始缓存${tableName}数据(${res?.length || 0}条)...`;
+      insert(table, res);
+      this.loadingMessage = `缓存${tableName}数据完成...`;
     }
   },
 });
