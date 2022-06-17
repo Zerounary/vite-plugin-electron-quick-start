@@ -18,6 +18,7 @@ onMounted(async () => {
     background: "rgba(0, 0, 0, 0.7)",
   });
   await cache.cacheAll();
+  // TODO 上传已付款未提交的单据
   loading.close();
   router.push("/pos/home");
 });

@@ -1,3 +1,4 @@
+import ipcNames from "~/electron-main/common/ipcNames";
 import { useProductStore } from "./product";
 import { defineStore } from "pinia";
 import { useApi } from "./api";
@@ -9,6 +10,11 @@ import _, { result } from "lodash";
 import { useDateStore } from "./date";
 import { insert } from "~/electron-main/common/db";
 import { userStoreStore } from "./store";
+import {
+  rendererInvoke,
+  rendererSend,
+  rendererSendSync,
+} from "~/electron-main/common/ipcRender";
 
 let itemType = {
   good: {
@@ -117,8 +123,8 @@ export const useRetailStore = defineStore("retail", {
       }, 0);
     },
     changeAmt(state) {
-      let change =  Number(this.totPayAmt) - Number(state.pos.totActAmount);
-      return change;
+      let change = Number(this.totPayAmt) - Number(state.pos.totActAmount);
+      return change < 0 ? 0 : change;
     },
     getItemActivity(state) {
       return (index) => {
@@ -240,6 +246,8 @@ export const useRetailStore = defineStore("retail", {
             ...this.pos,
             vip: vip.vip,
             storeCode: store.code,
+            changeAmt: this.changeAmt,
+            payments: this.payments,
           }),
         },
       ]);
@@ -268,12 +276,26 @@ export const useRetailStore = defineStore("retail", {
     async rePay() {
       this.payments = defaultPayment();
     },
-    async savePay(){
-      if(this.pos.totActAmount != this.totPayAmt){
+    async savePay() {
+      const api = useApi();
+      if (this.pos.totActAmount != this.totPayAmt - this.changeAmt) {
         ElMessage.warning("实际收款和应收不相等，请检查!");
         return;
       }
-    }
+      // 检查网络并提交到接口
+      api
+        .custom("/api/savePosRetail", {
+          ...this.pos,
+          changeAmt: this.changeAmt,
+          payments: this.payments,
+        })
+        .catch(() => {
+          this.saveToDB({
+            is_pay: 1
+          });
+          ElMessage.warning("网络不可用，本单已离线缓存!");
+        });
+    },
   },
   persist: {
     enabled: true,

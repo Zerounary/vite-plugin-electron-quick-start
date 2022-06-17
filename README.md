@@ -8,6 +8,9 @@ Vue3 + Vite + electron18 + vitest + pinia + vue-router4 + commitizen + windicss 
 
 Plugins: vite-plugin-electron + vite-plugin-pages + vite-plugin-windicss
 
+mainOn - renderSend
+mainHandle - renderInvoke
+
 ## Installation
 
 ```shell
