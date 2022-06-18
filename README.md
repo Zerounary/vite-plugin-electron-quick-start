@@ -6,7 +6,7 @@ Boilerplate for [vite-plugin-electron](https://www.npmjs.com/package/vite-plugin
 
 Vue3 + Vite + electron18 + vitest + pinia + vue-router4 + commitizen + windicss + electron-store + electron-log + electron-updater
 
-Plugins: vite-plugin-electron + vite-plugin-pages + vite-plugin-windicss
+Plugins: vite-plugin-electron + vite-plugin-pages + vite-plugin-windicss + pinia-plugin-persist
 
 ## Installation
 

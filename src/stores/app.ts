@@ -26,7 +26,7 @@ export const useAppStore = defineStore("counter", {
         if (state.version.isDownloaded) {
           return "点击更新";
         } else if (state.version.isError) {
-          return state.version.error || '更新失败';
+          return state.version.error || "更新失败";
         } else if (state.version.downloadProgress) {
           return state.version.downloadProgress.percent.toFixed(2) + "%";
         } else {
@@ -41,5 +41,14 @@ export const useAppStore = defineStore("counter", {
     increment() {
       this.count++;
     },
+  },
+  persist: {
+    enabled: true,
+    strategies: [
+      {
+        storage: localStorage,
+        paths: ["count"],
+      },
+    ],
   },
 });
