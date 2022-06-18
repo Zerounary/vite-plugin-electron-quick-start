@@ -278,20 +278,26 @@ export const useRetailStore = defineStore("retail", {
     },
     async savePay() {
       const api = useApi();
+      const store = userStoreStore();
+      const vip = useVipStore();
       if (this.pos.totActAmount != this.totPayAmt - this.changeAmt) {
         ElMessage.warning("实际收款和应收不相等，请检查!");
         return;
       }
+      console.log(`🚀 ~ file: retail.ts ~ line 288 ~ savePay ~ this.pos.integralDis'${this.pos.integralDis == ''}'`)
       // 检查网络并提交到接口
       api
         .custom("/api/savePosRetail", {
           ...this.pos,
+          vip: vip.vip,
+          storeCode: store.code,
           changeAmt: this.changeAmt,
           payments: this.payments,
+          // integralDis: this.pos.integralDis == '' ? {} : this.pos.integralDis,
         })
         .catch(() => {
           this.saveToDB({
-            is_pay: 1
+            is_pay: 1,
           });
           ElMessage.warning("网络不可用，本单已离线缓存!");
         });
