@@ -5,6 +5,8 @@
     "output": "release/${version}"
   },
   "files": ["dist"],
+  "extraResources": ["./static"],
+  "extraFiles": ["./bin"],
   "mac": {
     "artifactName": "${productName}_${version}.${ext}",
     "target": ["dmg"]

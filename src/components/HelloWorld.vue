@@ -5,6 +5,8 @@ import { useAppStore } from "../stores/app"
 import { rendererSend } from '~/electron-main/common/ipcRender'
 import ipcNames from '~/electron-main/common/ipcNames';
 
+import  { binPath, staticPath } from "@/utils/path"
+
 defineProps<{ msg: string }>()
 
 const counterStore =  useAppStore();
@@ -17,7 +19,10 @@ let quit = () => {
 
 <template>
   <h1>{{ msg }}</h1>
-
+  <p>
+    binPath: '{{binPath}}'
+    staticPath: '{{staticPath}}'
+  </p>
   <p>
     Recommended IDE setup:
     <a href="https://code.visualstudio.com/" target="_blank">VSCode</a>
