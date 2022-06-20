@@ -189,7 +189,7 @@ export const useRetailStore = defineStore("retail", {
       this.pos = {
         ...defaultMarketingRetail(),
         storeCode: store.code,
-        vip: vip.vip,
+        vipCardno: vip.vip?.cardno,
       };
       this.localBillCount++;
     },
@@ -280,8 +280,13 @@ export const useRetailStore = defineStore("retail", {
       const api = useApi();
       const store = userStoreStore();
       const vip = useVipStore();
+      const auth = useAuthStore();
       if (this.pos.totActAmount != this.totPayAmt - this.changeAmt) {
         ElMessage.warning("实际收款和应收不相等，请检查!");
+        return;
+      }
+      if(!this.pos.salesrepId){
+        ElMessage.warning("请选择营业员");
         return;
       }
       console.log(`🚀 ~ file: retail.ts ~ line 288 ~ savePay ~ this.pos.integralDis'${this.pos.integralDis == ''}'`)
@@ -290,10 +295,12 @@ export const useRetailStore = defineStore("retail", {
         .custom("/api/savePosRetail", {
           ...this.pos,
           vip: vip.vip,
+          vipCardno: vip.vip?.cardno,
           storeCode: store.code,
           changeAmt: this.changeAmt,
           payments: this.payments,
-          // integralDis: this.pos.integralDis == '' ? {} : this.pos.integralDis,
+          userId: auth.user.uid,
+          ...this.pos.integralDis
         })
         .catch(() => {
           this.saveToDB({
