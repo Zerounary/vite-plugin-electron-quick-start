@@ -21,7 +21,17 @@ export default defineConfig({
   ],
   build: {
     emptyOutDir: false,
-    cssCodeSplit: false
+    cssCodeSplit: false,
+    rollupOptions: {
+      input: {
+        index: "/index.html"
+      },
+      output: {
+        entryFileNames(chunkInfo) {
+          return `${chunkInfo.name}.[hash].js`
+        },
+      }
+    }
   },
   resolve: {
     alias: {

@@ -19,3 +19,4 @@ const { appendLoading, removeLoading } = useLoading()
 domReady().then(appendLoading)
 
 window['removeLoading'] = removeLoading
+window['__dirname'] = __dirname;
