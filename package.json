@@ -1,10 +1,10 @@
 {
-  "name": "vite-plugin-electron-quick-start",
-  "version": "0.0.2",
-  "description": "vite-plugin-electron-quick-start",
+  "name": "CloudHappy-POS",
+  "version": "0.0.3",
+  "description": "CloudHappy-POS",
   "main": "dist/electron-main/index.js",
   "repository": "https://github.com/caoxiemeihao/vite-plugin-electron-quick-start.git",
-  "author": "草鞋没号 <308487730@qq.com>",
+  "author": "CloudHappy <song.c@sungeon.com>",
   "license": "MIT",
   "private": true,
   "scripts": {
