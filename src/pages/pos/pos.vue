@@ -465,7 +465,7 @@ const retailStore = useRetailStore();
 const productStore = useProductStore();
 
 const vipDialogVisible = ref(false);
-const payDialogVisible = ref(true);
+const payDialogVisible = ref(false);
 const vipFormInstance = ref();
 
 const { vipForm } = storeToRefs(vipStore);
@@ -478,6 +478,7 @@ const rePay = () => {
 
 const savePay = () => {
   retailStore.savePay();
+  payDialogVisible.value = false;
 }
 
 const closePayDialog = () => {

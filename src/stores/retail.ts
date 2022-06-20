@@ -285,11 +285,15 @@ export const useRetailStore = defineStore("retail", {
         ElMessage.warning("实际收款和应收不相等，请检查!");
         return;
       }
-      if(!this.pos.salesrepId){
+      if (!this.pos.salesrepId) {
         ElMessage.warning("请选择营业员");
         return;
       }
-      console.log(`🚀 ~ file: retail.ts ~ line 288 ~ savePay ~ this.pos.integralDis'${this.pos.integralDis == ''}'`)
+      console.log(
+        `🚀 ~ file: retail.ts ~ line 288 ~ savePay ~ this.pos.integralDis'${
+          this.pos.integralDis == ""
+        }'`
+      );
       // 检查网络并提交到接口
       api
         .custom("/api/savePosRetail", {
@@ -300,7 +304,16 @@ export const useRetailStore = defineStore("retail", {
           changeAmt: this.changeAmt,
           payments: this.payments,
           userId: auth.user.uid,
-          ...this.pos.integralDis
+          ...this.pos.integralDis,
+        })
+        .then(() => {
+          ElMessage.success("付款成功!");
+          this.pos = {
+            ...defaultMarketingRetail(),
+            storeCode: store.code,
+          };
+          vip.vip = null;
+          this.payments = defaultPayment();
         })
         .catch(() => {
           this.saveToDB({
