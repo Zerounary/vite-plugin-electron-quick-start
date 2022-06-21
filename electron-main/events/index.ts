@@ -1,5 +1,5 @@
 import log from "electron-log";
-import { app } from "electron";
+import { app, Menu } from "electron";
 import { mainSend, mainOn } from "../common/ipcMain";
 import ipcNames from "../common/ipcNames";
 import autoLaunch from "./autoLaunch";
@@ -10,7 +10,7 @@ export default (win) => {
   let isFirstStart = electronStore_app.get("isFirstStart");
   let isFirst = isFirstStart === undefined;
   electronStore_app.set("isFirstStart", isFirst); // 第一次启动时还未生成配置文件
-  
+
   mainSend(win, ipcNames.Test, new Date().toLocaleString());
   /**
    * 退出
@@ -40,4 +40,20 @@ export default (win) => {
    * 自动启动
    */
   autoLaunch(win);
+
+  /**
+   * 设置菜单
+   */
+  Menu.setApplicationMenu(
+    Menu.buildFromTemplate([
+      {
+        label: "设置",
+        click: () => {
+          mainSend(win, ipcNames.menu_cmd, {
+            name: "setting",
+          });
+        },
+      },
+    ])
+  );
 };

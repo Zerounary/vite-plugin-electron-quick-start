@@ -60,6 +60,15 @@ rendererOn(ipcNames.update_launch_status, (e, isEnabled) => {
   appStore.launchStatus = isEnabled;
 });
 
+type MenuCmd = {
+  name: string;
+};
+rendererOn(ipcNames.menu_cmd, (e, cmd: MenuCmd) => {
+  if (cmd.name == "setting") {
+    router.push("/setting");
+  }
+});
+
 const minus = () => {
   rendererSend(ipcNames.minimize, null);
 };
@@ -110,9 +119,7 @@ const quit = () => {
         ><Icon icon="flat-color-icons:about" />About</router-link
       >
       |
-      <router-link to="/setting"
-        ><Icon icon="ep:setting" />Setting</router-link
-      >
+      <router-link to="/setting"><Icon icon="ep:setting" />Setting</router-link>
     </p>
     <router-view></router-view>
   </div>
