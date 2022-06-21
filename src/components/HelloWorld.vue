@@ -1,28 +1,24 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useAppStore } from "../stores/app"
+import { ref } from "vue";
+import { useAppStore } from "../stores/app";
 // import { storeToRefs } from "pinia"
-import { rendererSend } from '~/electron-main/common/ipcRender'
-import ipcNames from '~/electron-main/common/ipcNames';
+import { rendererSend } from "~/electron-main/common/ipcRender";
+import ipcNames from "~/electron-main/common/ipcNames";
 
-import  { binPath, staticPath } from "@/utils/path"
+import { binPath, staticPath } from "@/utils/path";
 
-defineProps<{ msg: string }>()
+defineProps<{ msg: string }>();
 
-const counterStore =  useAppStore();
+const counterStore = useAppStore();
 
 let quit = () => {
-  rendererSend(ipcNames.quit, null)
-}
-
+  rendererSend(ipcNames.quit, null);
+};
 </script>
 
 <template>
   <h1>{{ msg }}</h1>
-  <p>
-    binPath: '{{binPath}}'
-    staticPath: '{{staticPath}}'
-  </p>
+  <p>binPath: '{{ binPath }}' staticPath: '{{ staticPath }}'</p>
   <p>
     Recommended IDE setup:
     <a href="https://code.visualstudio.com/" target="_blank">VSCode</a>
@@ -40,7 +36,9 @@ let quit = () => {
     <a href="https://v3.vuejs.org/" target="_blank">Vue 3 Docs</a>
   </p>
 
-  <el-button type="primary" @click="counterStore.increment()">count is: {{ counterStore.count }}</el-button>
+  <el-button type="primary" @click="counterStore.increment()"
+    >count is: {{ counterStore.count }}</el-button
+  >
   <el-button type="danger" @click="quit">quit</el-button>
   <p>
     Edit

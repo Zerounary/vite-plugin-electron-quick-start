@@ -6,6 +6,8 @@ enum ipcNames {
   update_error = 'update_error',
   update_downloaded = 'update_downloaded',
   quit_update = 'quit_update',
-  quit = 'quit'
+  maximize = 'maximize',
+  quit = 'quit',
+  minimize = "minimize"
 }
 export default ipcNames;
