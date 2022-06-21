@@ -2,8 +2,15 @@ import log from "electron-log";
 import { app } from "electron";
 import { mainSend, mainOn } from "../common/ipcMain";
 import ipcNames from "../common/ipcNames";
+import autoLaunch from "./autoLaunch";
+import { getStore } from "../common/store";
 
 export default (win) => {
+  let electronStore_app = getStore("app");
+  let isFirstStart = electronStore_app.get("isFirstStart");
+  let isFirst = isFirstStart === undefined;
+  electronStore_app.set("isFirstStart", isFirst); // 第一次启动时还未生成配置文件
+  
   mainSend(win, ipcNames.Test, new Date().toLocaleString());
   /**
    * 退出
@@ -28,4 +35,9 @@ export default (win) => {
   mainOn(ipcNames.minimize, () => {
     win.minimize();
   });
+
+  /**
+   * 自动启动
+   */
+  autoLaunch(win);
 };

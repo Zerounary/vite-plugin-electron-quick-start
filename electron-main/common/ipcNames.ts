@@ -8,6 +8,10 @@ enum ipcNames {
   quit_update = 'quit_update',
   maximize = 'maximize',
   quit = 'quit',
-  minimize = "minimize"
+  minimize = "minimize",
+  update_launch_status = "update_launch_status",
+  auto_launch_enable = "auto_launch_enable",
+  auto_launch_disable = "auto_launch_disable",
+  auto_launch_status = "auto_launch_status"
 }
 export default ipcNames;

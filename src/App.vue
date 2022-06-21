@@ -51,6 +51,15 @@ rendererOn(ipcNames.update_not_available, (event, info) => {
     },
   });
 });
+
+rendererOn(ipcNames.update_launch_status, (e, isEnabled) => {
+  console.log(
+    "🚀 ~ file: App.vue ~ line 32 ~ rendererOn ~ isEnabled",
+    isEnabled
+  );
+  appStore.launchStatus = isEnabled;
+});
+
 const minus = () => {
   rendererSend(ipcNames.minimize, null);
 };
@@ -99,6 +108,10 @@ const quit = () => {
       |
       <router-link to="/about"
         ><Icon icon="flat-color-icons:about" />About</router-link
+      >
+      |
+      <router-link to="/setting"
+        ><Icon icon="ep:setting" />Setting</router-link
       >
     </p>
     <router-view></router-view>

@@ -5,6 +5,7 @@ export const useAppStore = defineStore("counter", {
   state: () => {
     return {
       count: 0,
+      launchStatus: false,
       version: {
         now: version,
         newVersion: null,
@@ -47,7 +48,7 @@ export const useAppStore = defineStore("counter", {
     strategies: [
       {
         storage: localStorage,
-        paths: ["count"],
+        paths: ["count", "launchStatus"],
       },
     ],
   },

@@ -7,6 +7,7 @@
   "author": "草鞋没号 <308487730@qq.com>",
   "license": "MIT",
   "private": true,
+  "autoLaunch": true,
   "scripts": {
     "dev": "vite",
     "test": "vitest",
@@ -16,6 +17,7 @@
     "build": "rimraf dist && vite build && electron-builder"
   },
   "dependencies": {
+    "auto-launch": "^5.0.5",
     "electron-log": "^4.4.7",
     "electron-store": "^8.0.1",
     "electron-updater": "^5.0.1",
