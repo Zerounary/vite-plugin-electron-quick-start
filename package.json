@@ -7,7 +7,7 @@
   "author": "草鞋没号 <308487730@qq.com>",
   "license": "MIT",
   "private": true,
-  "autoLaunch": true,
+  "autoLaunch": false,
   "scripts": {
     "dev": "vite",
     "test": "vitest",
