@@ -1,0 +1,10 @@
+body {
+  margin: 0;
+  @apply bg-blue-50 text-gray-700 dark:bg-gray-800 dark:text-gray-200;
+}
+.drag {
+  -webkit-app-region: drag;
+}
+.no-drag {
+  -webkit-app-region: no-drag;
+}
