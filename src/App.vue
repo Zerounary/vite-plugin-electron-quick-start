@@ -6,6 +6,7 @@ import ipcNames from "~/electron-main/common/ipcNames";
 import { rendererSend } from "~/electron-main/common/ipcRender";
 import { rendererOn } from "~/electron-main/common/ipcRender";
 import { useAppStore } from "@/stores/app";
+import aria2 from "@/utils/aria2"
 import { Icon } from "@iconify/vue";
 
 let appStore = useAppStore();
@@ -69,6 +70,11 @@ rendererOn(ipcNames.menu_cmd, (e, cmd: MenuCmd) => {
   }
 });
 
+const download = async () => {
+  let a = await aria2();
+  a.call("addUri", ["http://127.0.0.1/sail.png"]);
+
+}
 const minus = () => {
   rendererSend(ipcNames.minimize, null);
 };
@@ -119,6 +125,7 @@ const quit = () => {
         ><Icon icon="flat-color-icons:about" />About</router-link
       >
       |
+      <el-button @click="download">下载</el-button>
       <router-link to="/setting"><Icon icon="ep:setting" />Setting</router-link>
     </p>
     <router-view></router-view>

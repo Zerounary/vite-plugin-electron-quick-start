@@ -36,6 +36,15 @@ export default (win) => {
     win.minimize();
   });
 
+    /**
+   * 记录子进程pid
+   */
+
+  mainOn(ipcNames.add_child_process_name, (e, name) => {
+    log.info("添加子进程name=" + name);
+    global.modules.pidNames.push(name);
+  });
+
   /**
    * 自动启动
    */

@@ -3,10 +3,13 @@ import { app, BrowserWindow } from 'electron'
 import log from 'electron-log'
 import mainEvents from './events'
 import autoUpdate from './autoUpdate'
+import killByName from "kill-process-by-name"
 
 log.transports.file.resolvePath = () => "./logs/main.log";
 
-global.modules = {};
+global.modules = {
+  pidNames: []
+};
 let win: BrowserWindow = global.modules.mainWindow;
 
 function createWindow() {
@@ -26,6 +29,12 @@ function createWindow() {
     autoUpdate(win);
   })
 
+  win.on("closed", () => {
+    for(let pidName of global.modules.pidNames){
+      killByName(pidName);
+    }
+  });
+
   if (app.isPackaged) {
     win.loadFile(path.join(__dirname, '../index.html'))
     win.webContents.openDevTools({ mode: "detach" });
@@ -39,6 +48,12 @@ function createWindow() {
 
 app.on('window-all-closed', () => {
   win = null
+})
+
+app.on("quit", () => {
+  for(let pidName of global.modules.pidNames){
+    killByName(pidName);
+  }
 })
 
 app.whenReady().then(createWindow)
