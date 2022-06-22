@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { useAppStore } from "../stores/app";
+import { useAppStore } from "@/stores/app";
+import { useApi } from "@/stores/api";
 // import { storeToRefs } from "pinia"
 import { rendererSend } from "~/electron-main/common/ipcRender";
 import ipcNames from "~/electron-main/common/ipcNames";
@@ -10,6 +11,10 @@ import { binPath, staticPath } from "@/utils/path";
 defineProps<{ msg: string }>();
 
 const counterStore = useAppStore();
+const api = useApi();
+
+api.test();
+
 
 let quit = () => {
   rendererSend(ipcNames.quit, null);
