@@ -159,7 +159,10 @@
             <div class="square"></div>
             <div>开新单</div>
           </div>
-          <div class="flex flex-col items-center space-y-2">
+          <div
+            class="flex flex-col items-center space-y-2"
+            @click="originRetVisable = true"
+          >
             <div class="square"></div>
             <div>原单退货</div>
           </div>
@@ -240,7 +243,10 @@
             </div>
           </div>
 
-          <button class="h-50px w-120px border rounded bg-blue-500 text-white" @click="payDialogVisible = true">
+          <button
+            class="h-50px w-120px border rounded bg-blue-500 text-white"
+            @click="payDialogVisible = true"
+          >
             付款
           </button>
         </div>
@@ -403,7 +409,9 @@
           <div class="text-gray-500">总计</div>
         </div>
         <div class="flex flex-col items-center space-y-1">
-          <div class="font-bold text-3xl text-indigo-600">{{ retailStore.totPayAmt }}</div>
+          <div class="font-bold text-3xl text-indigo-600">
+            {{ retailStore.totPayAmt }}
+          </div>
           <div class="text-gray-500">收款</div>
         </div>
         <div class="flex flex-col items-center space-y-1">
@@ -415,17 +423,18 @@
       </div>
       <div class="flex flex-col space-y-2 items-center justify-center">
         <div
-          class="flex items-center space-x-3"
-          v-for="payment in retailStore.payments"
+          class="grid grid-cols-5 gap-1 items-center"
+          v-for="(payment, index) in retailStore.payments"
           :key="payment.id"
         >
           <div class="w-80px">{{ payment.name }}</div>
-          <div><input class="py-3 px-2" v-model.number="payment.payAmt" /></div>
-          <div>
-            <Icon
-              icon="ant-design:user-outlined"
-              width="20"
-            />
+          <div class="col-span-3">
+            <input class="py-3 px-2 w-120px" v-model.number="payment.payAmt" />
+          </div>
+          <div v-if="index > 0">
+            <Icon class="cursor-pointer" @click="removePayment(index)" icon="material-symbols:close-rounded" />
+          </div>
+          <div v-else>
           </div>
         </div>
       </div>
@@ -440,15 +449,260 @@
         </div>
       </div>
     </div>
-    <div class=" pt-5 text-right">
+    <div class="pt-5 text-right">
       <el-button size="large" type="info" @click="rePay">重付</el-button>
       <el-button size="large" type="primary" @click="savePay">付款</el-button>
       <el-button size="large" @click="closePayDialog">取消</el-button>
     </div>
   </el-dialog>
+  <el-dialog
+    custom-class="no-drag"
+    width="1200px"
+    v-model="originRetVisable"
+    title="原单退货"
+  >
+    <div class="space-y-5">
+      <el-form :inline="true">
+        <el-form-item label="销售店铺：">
+          {{ storeStore.name }}
+        </el-form-item>
+        <el-form-item label="小票编号：">
+          <el-input v-model="retailStore.retailFilter.refno" />
+        </el-form-item>
+        <el-form-item label="手机号：">
+          <el-input v-model="retailStore.retailFilter.phone" />
+        </el-form-item>
+        <el-form-item label="营业员：">
+          <el-select clearable v-model="retailStore.retailFilter.employeeId">
+            <el-option
+              v-for="item in employeeStore.employee"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+              >{{ item.name }}</el-option
+            >
+          </el-select>
+        </el-form-item>
+        <el-form-item label="销售日期：">
+          <el-date-picker
+            type="daterange"
+            value-format="YYYYMMDD"
+            v-model="retailStore.retailFilter.billdate"
+          >
+          </el-date-picker>
+          <!-- <el-radio-group>
+            <el-radio-button>不限</el-radio-button>
+            <el-radio-button>今天</el-radio-button>
+            <el-radio-button>昨天</el-radio-button>
+            <el-radio-button>本周</el-radio-button>
+            <el-radio-button>上周</el-radio-button>
+            <el-radio-button>本月</el-radio-button>
+            <el-radio-button>指定日期</el-radio-button>
+          </el-radio-group> -->
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="retailStore.queryRetailList()"
+            >查询</el-button
+          >
+        </el-form-item>
+      </el-form>
+      <el-table
+        height="300"
+        stripe
+        border
+        highlight-current-row
+        :data="retailStore.retailList"
+        @row-click="rowClick"
+      >
+        <el-table-column
+          prop="billdate"
+          label="销售日期"
+          width=""
+        ></el-table-column>
+        <el-table-column
+          prop="docno"
+          label="小票编号"
+          width=""
+        ></el-table-column>
+        <el-table-column
+          prop="employee"
+          label="营业员"
+          width=""
+        ></el-table-column>
+        <el-table-column prop="vip" label="VIP" width=""></el-table-column>
+        <el-table-column prop="totQty" label="数量" width=""></el-table-column>
+        <el-table-column prop="totRQty" label="已退" width=""></el-table-column>
+        <el-table-column
+          prop="actAmount"
+          label="成交金额"
+          width=""
+        ></el-table-column>
+        <el-table-column
+          prop="storeName"
+          label="店仓"
+          width=""
+        ></el-table-column>
+      </el-table>
+      <el-row :gutter="10">
+        <el-col :span="18">
+          <el-table
+            height="200"
+            stripe
+            border
+            :data="retailStore.retailItemList"
+          >
+            <el-table-column
+              prop="spuCode"
+              label="款号"
+              width=""
+            ></el-table-column>
+            <el-table-column
+              prop="spuName"
+              label="品名"
+              width=""
+            ></el-table-column>
+            <el-table-column
+              prop="skuCode"
+              label="条码"
+              width=""
+            ></el-table-column>
+            <el-table-column
+              prop="colorName"
+              label="颜色"
+              width=""
+            ></el-table-column>
+            <el-table-column
+              prop="sizeName"
+              label="尺码"
+              width=""
+            ></el-table-column>
+            <el-table-column prop="qty" label="数量" width=""></el-table-column>
+            <el-table-column
+              prop="rqty"
+              label="已退"
+              width=""
+            ></el-table-column>
+            <el-table-column prop="retQty" label="本次退货" width="">
+              <template #default="scope">
+                <el-input
+                  :disabled="scope.row.qty <= scope.row.rqty"
+                  v-model.number="scope.row.retQty"
+                  @change="retItemQty(scope.row, $event)"
+                />
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="priceActual"
+              label="成交价"
+              width=""
+            ></el-table-column>
+            <el-table-column
+              prop="actAmount"
+              label="成交金额"
+              width=""
+            ></el-table-column>
+          </el-table>
+        </el-col>
+        <el-col :span="6">
+          <el-card title="付款方式">
+            <ul class="space-y-3">
+              <li class="flex items-center">
+                <div class="payment-label">付款方式</div>
+                <div class="text-xl">
+                  {{ retailStore.originRetailPayment.payway }}
+                </div>
+              </li>
+              <li class="flex items-center">
+                <div class="payment-label">付款金额</div>
+                <div class="text-xl">
+                  {{ retailStore.originRetailPayment.payAmt }}
+                </div>
+              </li>
+              <li class="flex items-center">
+                <div class="payment-label">可退金额</div>
+                <div class="text-xl">
+                  {{ retailStore.originRetailPayment.canRetAmt }}
+                </div>
+              </li>
+            </ul>
+          </el-card>
+        </el-col>
+      </el-row>
+    </div>
+    <div class="pt-5 text-right">
+      <el-button size="large" type="primary" @click="openRetPayDialog"
+        >确定</el-button
+      >
+      <el-button size="large" @click="originRetVisable = false">取消</el-button>
+    </div>
+  </el-dialog>
+  <el-dialog
+    custom-class="no-drag"
+    width="600px"
+    v-model="retPayDialogVisible"
+    title="退款"
+  >
+    <div class="space-y-5">
+      <div
+        class="border rounded h-80px grid grid-cols-3 items-center text-16px"
+      >
+        <div class="flex flex-col items-center space-y-1">
+          <div class="font-bold text-3xl">{{ retailStore.retTotalQty }}</div>
+          <div class="text-gray-500">总数量</div>
+        </div>
+        <div class="flex flex-col items-center space-y-1">
+          <div class="font-bold text-3xl text-yellow-500">
+            {{ retailStore.retTotalAmount }}
+          </div>
+          <div class="text-gray-500">应退款</div>
+        </div>
+        <div class="flex flex-col items-center space-y-1">
+          <div class="font-bold text-3xl text-indigo-600">
+            {{ retailStore.totPayAmt }}
+          </div>
+          <div class="text-gray-500">实际退款</div>
+        </div>
+      </div>
+      <div class="flex flex-col space-y-2 items-center justify-center">
+        <div
+          class="grid grid-cols-5 gap-1 items-center"
+          v-for="(payment, index) in retailStore.payments"
+          :key="payment.id"
+        >
+          <div class="w-80px">{{ payment.name }}</div>
+          <div class="col-span-3">
+            <input class="py-3 px-2 w-120px" v-model.number="payment.payAmt" />
+          </div>
+          <div v-if="index > 0">
+            <Icon class="cursor-pointer" @click="removePayment(index)" icon="material-symbols:close-rounded" />
+          </div>
+          <div v-else>
+          </div>
+        </div>
+      </div>
+      <div class="flex space-x-5 w-max-600px overflow-x-auto">
+        <div
+          class="flex items-center justify-center flex-shrink-0 h-24 w-24 rounded border"
+          v-for="payway in paywayStore.payways"
+          :key="payway.id"
+          @click="appendPayment(payway)"
+        >
+          <div>{{ payway.name }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="pt-5 text-right">
+      <el-button size="large" type="info" @click="reRetPay">重付</el-button>
+      <el-button size="large" type="primary" @click="submitOriginRetRetail"
+        >确定</el-button
+      >
+      <el-button size="large" @click="closeRetPayDialog">取消</el-button>
+    </div>
+  </el-dialog>
 </template>
 
 <script setup lang="ts">
+import { Icon } from "@iconify/vue";
 import { onMounted, watch, computed, ref, Ref } from "vue";
 import { useVipStore } from "@/stores/vip";
 import { useEmployeeStore } from "@/stores/employee";
@@ -456,6 +710,8 @@ import { useRetailStore } from "@/stores/retail";
 import { storeToRefs } from "pinia";
 import { useProductStore } from "@/stores/product";
 import { usePaywayStore } from "@/stores/payway";
+// import { useAuthStore } from "@/stores/auth";
+import { userStoreStore } from "@/stores/store";
 import { ElMessage, ElMessageBox } from "element-plus";
 
 const vipStore = useVipStore();
@@ -463,6 +719,7 @@ const employeeStore = useEmployeeStore();
 const paywayStore = usePaywayStore();
 const retailStore = useRetailStore();
 const productStore = useProductStore();
+const storeStore = userStoreStore();
 
 const vipDialogVisible = ref(false);
 const payDialogVisible = ref(false);
@@ -474,17 +731,17 @@ const vipRules = ref({});
 
 const rePay = () => {
   retailStore.rePay();
-}
+};
 
 const savePay = () => {
   retailStore.savePay();
   payDialogVisible.value = false;
-}
+};
 
 const closePayDialog = () => {
   retailStore.rePay();
   payDialogVisible.value = false;
-}
+};
 
 const appendPayment = (payway) => {
   ElMessageBox.prompt("请输入金额", payway.name + "付款", {
@@ -712,9 +969,48 @@ let deleteItem = async (itemIndex) => {
   ElMessage.success("明细删除成功！");
 };
 
+let originRetVisable = ref(true);
+let retPayDialogVisible = ref(false);
+
 let toUpper = (e) => {
   productKeyWord.value = e.target.value.toUpperCase();
 };
+
+let rowClick = (row, column, event) => {
+  retailStore.selectRetailItem = {};
+  retailStore.queryRetailItemList(row);
+};
+
+let retItemQty = (row, value) => {
+  let itemId = row.id;
+  retailStore.selectRetailItem[itemId] = {
+    value: Number(value),
+    priceActual: row.priceActual,
+  };
+};
+
+let submitOriginRetRetail = async () => {
+  retailStore.submitOriginRetRetail();
+  retPayDialogVisible.value = false;
+};
+
+let openRetPayDialog = () => {
+  retailStore.rePay();
+  retPayDialogVisible.value = true;
+}
+
+let reRetPay = () => {
+  retailStore.rePay();
+};
+
+let closeRetPayDialog = () => {
+  retPayDialogVisible.value = false;
+};
+
+let removePayment = (index) => {
+  retailStore.removePayment(index);
+}
+
 </script>
 
 <style scoped>
@@ -766,5 +1062,9 @@ input {
 }
 #matrix tbody tr td {
   @apply bg-white p-3;
+}
+
+.payment-label {
+  @apply w-min-80px text-gray-500;
 }
 </style>

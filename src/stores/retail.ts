@@ -100,6 +100,14 @@ let defaultPayment = () => {
     },
   ];
 };
+
+let defaultOriginRetailPayment = () => {
+  return {
+    payway: "无",
+    payAmt: 0,
+    canRetAmt: 0,
+  };
+};
 export const useRetailStore = defineStore("retail", {
   state: () => {
     const storeStore = userStoreStore();
@@ -109,6 +117,17 @@ export const useRetailStore = defineStore("retail", {
       homeGrid: {},
       marketing: false,
       localBillCount: 1,
+      retailFilter: {
+        refno: "",
+        phone: "",
+        employeeId: "",
+        billdate: null,
+      },
+      retailList: [],
+      retailItemList: [],
+      selectRetailId: null,
+      selectRetailItem: {},
+      originRetailPayment: defaultOriginRetailPayment(),
       pos: {
         ...defaultMarketingRetail(),
         storeCode: storeStore.code,
@@ -143,8 +162,104 @@ export const useRetailStore = defineStore("retail", {
         return result;
       };
     },
+    filter(state) {
+      let filter = {};
+      for (let key in state.retailFilter) {
+        let value = state.retailFilter[key];
+        if (value) {
+          if (key == "billdate") {
+            filter[key] = {
+              datebeg: value[0],
+              dateend: value[1],
+            };
+          } else {
+            filter[key] = value;
+          }
+        }
+      }
+      return filter;
+    },
+    originRetRetail(state) {
+      const auth = useAuthStore();
+      let items = [];
+      for (let itemId in state.selectRetailItem) {
+        items.push({
+          itemId,
+          qty: state.selectRetailItem[itemId].value,
+        });
+      }
+      return {
+        userId: auth.user.uid,
+        originRetailId: state.selectRetailId,
+        items,
+        payments: state.payments
+      };
+    },
+    retTotalQty(state){
+      return this.originRetRetail.items.reduce((a,b) => (a+b.qty), 0);
+    },
+    retTotalAmount(state){
+      let items = [];
+      for(let itemId in state.selectRetailItem){
+        items.push(state.selectRetailItem[itemId]);
+      }
+      return items.reduce((a,b) => (a+b.priceActual), 0);
+    }
   },
   actions: {
+    async queryRetailList() {
+      const api = useApi();
+      const auth = useAuthStore();
+      let res = await api.noPage("pos/retail_list", {
+        ...this.filter,
+        storeId: auth.user.storeId,
+      });
+      this.retailList = res;
+    },
+    async queryRetailItemList(row) {
+      this.selectRetailId = row.id;
+      const api = useApi();
+      let items = await api.noPage("pos/retailitem_list", {
+        retailId: row.id,
+      });
+      this.retailItemList = items;
+      let payments = await api.noPage("pos/retailpayitem_list", {
+        retailId: row.id,
+      });
+      console.log("🚀 ~ file: retail.ts ~ line 216 ~ queryRetailItemList ~ payments", payments)
+      if (!payments || payments?.length == 0) {
+        this.originRetailPayment = defaultOriginRetailPayment();
+      }else{
+        let originRetailPayment = {
+          payways: []
+        }
+        for(let payment of payments){
+          originRetailPayment.payways.push(payment.payway);
+          originRetailPayment.payAmt = payment.payAmt;
+          originRetailPayment.canRetAmt = Math.round(payment.payAmt - payment.totRAmt, 2);
+        }
+        originRetailPayment.payway = originRetailPayment.payways.join(' , ');
+        this.originRetailPayment = originRetailPayment;
+      }
+    },
+    async submitOriginRetRetail() {
+      if (!this.selectRetailId) {
+        ElMessage.warning("请选择零售单");
+        return;
+      }
+      if(this.totPayAmt != this.retTotalAmount){
+        ElMessage.warning("实际退款和应退款不相等");
+        return;
+      }
+      const api = useApi();
+      let res = await api.custom("/api/submitOriginRetRetail", {
+        ...this.originRetRetail,
+      });
+      console.log(
+        "🚀 ~ file: retail.ts ~ line 202 ~ submitOriginRetRetail ~ res",
+        res
+      );
+    },
     async fetchHomeGrid() {
       const auth = useAuthStore();
       const date = useDateStore();
@@ -272,6 +387,9 @@ export const useRetailStore = defineStore("retail", {
       } else {
         this.payments.push(payment);
       }
+    },
+    async removePayment(index){
+      this.payments.splice(index, 1);
     },
     async rePay() {
       this.payments = defaultPayment();
