@@ -108,6 +108,12 @@ let defaultOriginRetailPayment = () => {
     canRetAmt: 0,
   };
 };
+
+export enum RetailType {
+  SALE,
+  RET,
+}
+
 export const useRetailStore = defineStore("retail", {
   state: () => {
     const storeStore = userStoreStore();
@@ -115,6 +121,7 @@ export const useRetailStore = defineStore("retail", {
       tableId: 12964,
       homeChart: [],
       homeGrid: {},
+      type: RetailType.SALE,
       marketing: false,
       localBillCount: 1,
       retailFilter: {
@@ -192,19 +199,19 @@ export const useRetailStore = defineStore("retail", {
         userId: auth.user.uid,
         originRetailId: state.selectRetailId,
         items,
-        payments: state.payments
+        payments: state.payments,
       };
     },
-    retTotalQty(state){
-      return this.originRetRetail.items.reduce((a,b) => (a+b.qty), 0);
+    retTotalQty(state) {
+      return this.originRetRetail.items.reduce((a, b) => a + b.qty, 0);
     },
-    retTotalAmount(state){
+    retTotalAmount(state) {
       let items = [];
-      for(let itemId in state.selectRetailItem){
+      for (let itemId in state.selectRetailItem) {
         items.push(state.selectRetailItem[itemId]);
       }
-      return items.reduce((a,b) => (a+b.priceActual), 0);
-    }
+      return items.reduce((a, b) => a + b.priceActual, 0);
+    },
   },
   actions: {
     async queryRetailList() {
@@ -226,19 +233,25 @@ export const useRetailStore = defineStore("retail", {
       let payments = await api.noPage("pos/retailpayitem_list", {
         retailId: row.id,
       });
-      console.log("🚀 ~ file: retail.ts ~ line 216 ~ queryRetailItemList ~ payments", payments)
+      console.log(
+        "🚀 ~ file: retail.ts ~ line 216 ~ queryRetailItemList ~ payments",
+        payments
+      );
       if (!payments || payments?.length == 0) {
         this.originRetailPayment = defaultOriginRetailPayment();
-      }else{
+      } else {
         let originRetailPayment = {
-          payways: []
-        }
-        for(let payment of payments){
+          payways: [],
+        };
+        for (let payment of payments) {
           originRetailPayment.payways.push(payment.payway);
           originRetailPayment.payAmt = payment.payAmt;
-          originRetailPayment.canRetAmt = Math.round(payment.payAmt - payment.totRAmt, 2);
+          originRetailPayment.canRetAmt = Math.round(
+            payment.payAmt - payment.totRAmt,
+            2
+          );
         }
-        originRetailPayment.payway = originRetailPayment.payways.join(' , ');
+        originRetailPayment.payway = originRetailPayment.payways.join(" , ");
         this.originRetailPayment = originRetailPayment;
       }
     },
@@ -247,7 +260,7 @@ export const useRetailStore = defineStore("retail", {
         ElMessage.warning("请选择零售单");
         return;
       }
-      if(this.totPayAmt != this.retTotalAmount){
+      if (this.totPayAmt != this.retTotalAmount) {
         ElMessage.warning("实际退款和应退款不相等");
         return;
       }
@@ -315,6 +328,9 @@ export const useRetailStore = defineStore("retail", {
         let sku = await product.fetchSkuFull(skuCode);
         let { price, good } = sku;
         let qty = skus[skuCode];
+        qty = Number(
+          RetailType.SALE == this.type ? Math.abs(qty) : -Math.abs(qty)
+        );
         this.pos.items.push({
           good,
           qty,
@@ -330,15 +346,36 @@ export const useRetailStore = defineStore("retail", {
           vipIntegralDisAmount: 0,
         });
       }
-      await this.dealMarketing();
+      if (this.type == RetailType.SALE) {
+        await this.dealMarketing();
+      }
+      this.calcTotal();
+      
+    },
+    async calcTotal() {
+      for (const item of this.pos.items) {
+        item.amount = item.qty * item.price;
+        item.actAmount = item.qty * item.actPrice;
+      }
+      this.pos.totAmount = this.pos.items.reduce((a, b) => a + b.amount, 0);
+      this.pos.totActAmount = this.pos.items.reduce((a, b) => a + b.actAmount, 0);
+      this.pos.totQty = this.pos.items.reduce((a, b) => a + Number(b.qty), 0);
     },
     async changeRowItemField(index, key, value) {
       this.pos.items[index][key] = value;
-      await this.dealMarketing();
+      if (this.type == RetailType.SALE) {
+        await this.dealMarketing();
+      }
+      this.calcTotal();
+      
     },
     async delRetailItem(itemIndex) {
       this.pos.items.splice(itemIndex, 1);
-      await this.dealMarketing();
+      if (this.type == RetailType.SALE) {
+        await this.dealMarketing();
+      }
+      this.calcTotal();
+      
     },
     async dealMarketing() {
       const api = useApi();
@@ -388,7 +425,7 @@ export const useRetailStore = defineStore("retail", {
         this.payments.push(payment);
       }
     },
-    async removePayment(index){
+    async removePayment(index) {
       this.payments.splice(index, 1);
     },
     async rePay() {

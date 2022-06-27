@@ -141,6 +141,22 @@
             placeholder="请输入条码"
           />
           <button @click="queryAndPutItem" class="btn">查询</button>
+          <div class="inline-block" v-if="retailStore.type == RetailType.RET" @click="taggleRetailMode" >
+            <div
+              title="零售退货"
+              class="cursor-pointer select-none text-red-500 text-xl font-bold border border-4px w-40px h-40px flex items-center justify-center rounded-full border-red-500"
+            >
+              退
+            </div>
+          </div>
+          <div class="inline-block" v-if="retailStore.type == RetailType.SALE" @click="taggleRetailMode" >
+            <div
+              title="正常零售"
+              class="cursor-pointer select-none text-blue-500 text-xl font-bold border border-4px w-40px h-40px flex items-center justify-center rounded-full border-blue-500"
+            >
+              销
+            </div>
+          </div>
         </div>
       </div>
       <div
@@ -170,7 +186,10 @@
             <div class="square"></div>
             <div>原单退货</div>
           </div>
-          <div class="flex flex-col items-center space-y-2">
+          <div
+            class="flex flex-col items-center space-y-2"
+            @click="setRetRetailMode"
+          >
             <div class="square"></div>
             <div>非原单退货</div>
           </div>
@@ -257,7 +276,12 @@
       </div>
     </div>
   </div>
-  <el-dialog id="d-pdt" class="no-drag" title="商品输入" v-model="matrixDialogVisible">
+  <el-dialog
+    id="d-pdt"
+    class="no-drag"
+    title="商品输入"
+    v-model="matrixDialogVisible"
+  >
     <div class="space-y-5">
       <div class="flex space-x-10">
         <div>
@@ -333,7 +357,12 @@
     <el-button type="primary" @click="closeEmployeeDialog">保存</el-button>
     <el-button @click="cancelEmployee">取消</el-button>
   </el-dialog>
-  <el-dialog id="d-vip" class="no-drag" v-model="vipDialogVisible" title="新增会员">
+  <el-dialog
+    id="d-vip"
+    class="no-drag"
+    v-model="vipDialogVisible"
+    title="新增会员"
+  >
     <el-form
       :model="vipForm"
       :rules="vipRules"
@@ -720,7 +749,7 @@ import { Icon } from "@iconify/vue";
 import { onMounted, watch, computed, ref, Ref } from "vue";
 import { useVipStore } from "@/stores/vip";
 import { useEmployeeStore } from "@/stores/employee";
-import { useRetailStore } from "@/stores/retail";
+import { useRetailStore, RetailType } from "@/stores/retail";
 import { storeToRefs } from "pinia";
 import { useProductStore } from "@/stores/product";
 import { usePaywayStore } from "@/stores/payway";
@@ -1023,6 +1052,20 @@ let closeRetPayDialog = () => {
 
 let removePayment = (index) => {
   retailStore.removePayment(index);
+};
+
+let taggleRetailMode = () => {
+  if (retailStore.type == RetailType.RET) {
+    retailStore.type = RetailType.SALE;
+  } else {
+    retailStore.type = RetailType.RET;
+  }
+  newRetail();
+};
+
+let setRetRetailMode = () => {
+  taggleRetailMode();
+  newRetail();
 };
 </script>
 
