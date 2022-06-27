@@ -969,7 +969,7 @@ let deleteItem = async (itemIndex) => {
   ElMessage.success("明细删除成功！");
 };
 
-let originRetVisable = ref(true);
+let originRetVisable = ref(false);
 let retPayDialogVisible = ref(false);
 
 let toUpper = (e) => {
