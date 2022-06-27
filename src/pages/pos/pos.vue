@@ -1,6 +1,9 @@
 <template>
   <div class="px-3 space-y-3 text-13px">
-    <div class="box space-x-3 w-full flex items-center bg-white shadow rounded">
+    <div
+      id="vip"
+      class="box space-x-3 w-full flex items-center bg-white shadow rounded"
+    >
       <input placeholder="请输入会员卡号或者手机号" v-model="vipKeyWord" />
       <button class="btn" @click="queryVip">查询</button>
       <button class="btn" @click="openVipDialog">新增VIP</button>
@@ -21,7 +24,7 @@
         class="flex-grow h-full flex flex-col divide-y bg-white rounded shadow"
         v-loading="retailStore.marketing"
       >
-        <div class="flex-grow w-full overflow-auto p-5">
+        <div id="content" class="flex-grow w-full overflow-auto p-5">
           <table class="headfix w-full">
             <thead class="text-gray-600">
               <tr>
@@ -108,7 +111,7 @@
             </tbody>
           </table>
         </div>
-        <div class="box space-x-3 relative">
+        <div id="pdt-input" class="box space-x-3 relative">
           <div
             class="absolute bottom-90px w-500px shadow border rounded p-30px"
             v-show="pdtOptionsVisible"
@@ -141,6 +144,7 @@
         </div>
       </div>
       <div
+        id="left-side"
         class="h-full overflow-auto flex flex-col bg-white rounded shadow space-y-3 px-5"
       >
         <div class="grid grid-cols-3 gap-3 mt-10">
@@ -253,7 +257,7 @@
       </div>
     </div>
   </div>
-  <el-dialog class="no-drag" title="商品输入" v-model="matrixDialogVisible">
+  <el-dialog id="d-pdt" class="no-drag" title="商品输入" v-model="matrixDialogVisible">
     <div class="space-y-5">
       <div class="flex space-x-10">
         <div>
@@ -308,6 +312,7 @@
     </div>
   </el-dialog>
   <el-dialog
+    id="d-emp"
     class="no-drag"
     width="300px"
     v-model="employeeDialogVisible"
@@ -328,7 +333,7 @@
     <el-button type="primary" @click="closeEmployeeDialog">保存</el-button>
     <el-button @click="cancelEmployee">取消</el-button>
   </el-dialog>
-  <el-dialog class="no-drag" v-model="vipDialogVisible" title="新增会员">
+  <el-dialog id="d-vip" class="no-drag" v-model="vipDialogVisible" title="新增会员">
     <el-form
       :model="vipForm"
       :rules="vipRules"
@@ -389,6 +394,7 @@
     </el-form>
   </el-dialog>
   <el-dialog
+    id="d-payment"
     custom-class="no-drag"
     width="600px"
     v-model="payDialogVisible"
@@ -432,10 +438,13 @@
             <input class="py-3 px-2 w-120px" v-model.number="payment.payAmt" />
           </div>
           <div v-if="index > 0">
-            <Icon class="cursor-pointer" @click="removePayment(index)" icon="material-symbols:close-rounded" />
+            <Icon
+              class="cursor-pointer"
+              @click="removePayment(index)"
+              icon="material-symbols:close-rounded"
+            />
           </div>
-          <div v-else>
-          </div>
+          <div v-else></div>
         </div>
       </div>
       <div class="flex space-x-5 w-max-600px overflow-x-auto">
@@ -456,6 +465,7 @@
     </div>
   </el-dialog>
   <el-dialog
+    id="d-origin-ret"
     custom-class="no-drag"
     width="1200px"
     v-model="originRetVisable"
@@ -637,6 +647,7 @@
     </div>
   </el-dialog>
   <el-dialog
+    id="d-origin-ret-pay"
     custom-class="no-drag"
     width="600px"
     v-model="retPayDialogVisible"
@@ -674,10 +685,13 @@
             <input class="py-3 px-2 w-120px" v-model.number="payment.payAmt" />
           </div>
           <div v-if="index > 0">
-            <Icon class="cursor-pointer" @click="removePayment(index)" icon="material-symbols:close-rounded" />
+            <Icon
+              class="cursor-pointer"
+              @click="removePayment(index)"
+              icon="material-symbols:close-rounded"
+            />
           </div>
-          <div v-else>
-          </div>
+          <div v-else></div>
         </div>
       </div>
       <div class="flex space-x-5 w-max-600px overflow-x-auto">
@@ -997,7 +1011,7 @@ let submitOriginRetRetail = async () => {
 let openRetPayDialog = () => {
   retailStore.rePay();
   retPayDialogVisible.value = true;
-}
+};
 
 let reRetPay = () => {
   retailStore.rePay();
@@ -1009,8 +1023,7 @@ let closeRetPayDialog = () => {
 
 let removePayment = (index) => {
   retailStore.removePayment(index);
-}
-
+};
 </script>
 
 <style scoped>
