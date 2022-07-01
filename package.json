@@ -1,6 +1,6 @@
 {
   "name": "CloudHappy-POS",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "CloudHappy-POS",
   "main": "dist/electron-main/index.js",
   "repository": "https://github.com/caoxiemeihao/vite-plugin-electron-quick-start.git",
