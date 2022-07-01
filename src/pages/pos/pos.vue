@@ -988,7 +988,7 @@
                 height="200"
                 stripe
                 border
-                :data="currentOfflineRetail.items"
+                :data="retailStore.currentOfflineRetail.items"
               >
                 <el-table-column
                   prop="good.spuCode"
@@ -1028,13 +1028,13 @@
                   <li class="flex items-center">
                     <div class="payment-label">付款方式</div>
                     <div class="text-xl">
-                      {{ offlinePayment.payway }}
+                      {{ retailStore.offlinePayment.payway }}
                     </div>
                   </li>
                   <li class="flex items-center">
                     <div class="payment-label">付款金额</div>
                     <div class="text-xl">
-                      {{ offlinePayment.payAmt }}
+                      {{ retailStore.offlinePayment.payAmt }}
                     </div>
                   </li>
                   <!-- <li class="flex items-center">
@@ -1390,6 +1390,7 @@ let setRetRetailMode = () => {
 const retailQueryVisable = ref(true);
 
 const openRetailQueryDialog = () => {
+  retailStore.currentOfflineRetail = {} 
   retailQueryVisable.value = true;
 };
 
@@ -1410,19 +1411,10 @@ const queryDBRetail = async () => {
   });
 };
 
-let currentOfflineRetail = ref({
-  items: []
-})
-
-let offlinePayment = ref({
-  payway: '',
-  payAmt: 0,
-})
 
 let offlineRowClick = (row, column, event) =>{
   console.log("🚀 ~ file: pos.vue ~ line 1424 ~ offlineRowClick ~ row", row)
-  currentOfflineRetail.value = row;
-  offlinePayment.value = retailStore.getPaymentSummary(row.payments);
+  retailStore.currentOfflineRetail = row;
 }
 
 </script>

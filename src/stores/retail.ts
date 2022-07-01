@@ -139,6 +139,7 @@ export const useRetailStore = defineStore("retail", {
       selectRetailId: null,
       selectRetailItem: {},
       originRetailPayment: defaultOriginRetailPayment(),
+      currentOfflineRetail: {},
       pos: {
         ...defaultMarketingRetail(),
         storeCode: storeStore.code,
@@ -147,6 +148,9 @@ export const useRetailStore = defineStore("retail", {
     };
   },
   getters: {
+    offlinePayment(state){
+      return this.getPaymentSummary(state.currentOfflineRetail.payments);
+    },
     totPayAmt(state) {
       return state.payments.reduce((sum, item) => {
         return sum + Number(item.payAmt);
@@ -288,7 +292,7 @@ export const useRetailStore = defineStore("retail", {
         this.originRetailPayment = originRetailPayment;
       }
     },
-    getPaymentSummary(payments){
+    getPaymentSummary(payments = []){
       let  originRetailPayment = defaultOriginRetailPayment();
       if (!payments || payments?.length == 0) {
         return originRetailPayment;
