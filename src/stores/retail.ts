@@ -10,6 +10,7 @@ import _, { result } from "lodash";
 import { useDateStore } from "./date";
 import { insert } from "~/electron-main/common/db";
 import { userStoreStore } from "./store";
+import { db } from "~/electron-main/common/db";
 import {
   rendererInvoke,
   rendererSend,
@@ -78,6 +79,7 @@ let defaultMarketingRetail = () => ({
   billdate: moment().format("YYYY-MM-DD"),
   storeCode: "",
   salesrepId: null,
+  employee: null,
   totQty: 0,
   totAmount: 0,
   totActAmount: 0, // 实际金额
@@ -104,6 +106,7 @@ let defaultPayment = () => {
 let defaultOriginRetailPayment = () => {
   return {
     payway: "无",
+    payways: [],
     payAmt: 0,
     canRetAmt: 0,
   };
@@ -129,6 +132,7 @@ export const useRetailStore = defineStore("retail", {
         phone: "",
         employeeId: "",
         billdate: null,
+        status: "2",
       },
       retailList: [],
       retailItemList: [],
@@ -214,6 +218,35 @@ export const useRetailStore = defineStore("retail", {
     },
   },
   actions: {
+    async queryDBRetail(
+      filter = {
+        isHang: null,
+        isPay: null,
+        isPush: null,
+      }
+    ) {
+      let filters = [];
+      let filterStr = ''
+      if (filter.isHang == 0 || filter.isHang == 1) {
+        filters.push(` is_hang = ${filter.isHang}`);
+      }
+      if (filter.isPay == 0 || filter.isPay == 1) {
+        filters.push(` is_pay = ${filter.isPay}`);
+      }
+      if (filter.isPush == 0 || filter.isPush == 1) {
+        filters.push(` is_push = ${filter.isPush}`);
+      }
+      if (filters.length > 0) {
+        filterStr = ' where ' +filters.join(" and ");
+      }
+      let retails = db.prepare(
+        `SELECT * FROM pos_retail ${filterStr}`
+      ).all();
+      console.log("🚀 ~ file: retail.ts ~ line 243 ~ retails", retails)
+      return (retails || []).map((e) => {
+        return JSON.parse(e.retail_json);
+      });
+    },
     async queryRetailList() {
       const api = useApi();
       const auth = useAuthStore();
@@ -253,6 +286,19 @@ export const useRetailStore = defineStore("retail", {
         }
         originRetailPayment.payway = originRetailPayment.payways.join(" , ");
         this.originRetailPayment = originRetailPayment;
+      }
+    },
+    getPaymentSummary(payments){
+      let  originRetailPayment = defaultOriginRetailPayment();
+      if (!payments || payments?.length == 0) {
+        return originRetailPayment;
+      } else {
+        for (let payment of payments) {
+          originRetailPayment.payways.push(payment.payway || payment.name);
+          originRetailPayment.payAmt = payment.payAmt;
+        }
+        originRetailPayment.payway = originRetailPayment.payways.join(" , ");
+        return originRetailPayment;
       }
     },
     async submitOriginRetRetail() {
@@ -350,7 +396,6 @@ export const useRetailStore = defineStore("retail", {
         await this.dealMarketing();
       }
       this.calcTotal();
-      
     },
     async calcTotal() {
       for (const item of this.pos.items) {
@@ -358,7 +403,10 @@ export const useRetailStore = defineStore("retail", {
         item.actAmount = item.qty * item.actPrice;
       }
       this.pos.totAmount = this.pos.items.reduce((a, b) => a + b.amount, 0);
-      this.pos.totActAmount = this.pos.items.reduce((a, b) => a + b.actAmount, 0);
+      this.pos.totActAmount = this.pos.items.reduce(
+        (a, b) => a + b.actAmount,
+        0
+      );
       this.pos.totQty = this.pos.items.reduce((a, b) => a + Number(b.qty), 0);
     },
     async changeRowItemField(index, key, value) {
@@ -367,7 +415,6 @@ export const useRetailStore = defineStore("retail", {
         await this.dealMarketing();
       }
       this.calcTotal();
-      
     },
     async delRetailItem(itemIndex) {
       this.pos.items.splice(itemIndex, 1);
@@ -375,7 +422,6 @@ export const useRetailStore = defineStore("retail", {
         await this.dealMarketing();
       }
       this.calcTotal();
-      
     },
     async dealMarketing() {
       const api = useApi();

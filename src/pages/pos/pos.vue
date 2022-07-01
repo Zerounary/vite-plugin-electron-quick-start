@@ -141,7 +141,11 @@
             placeholder="请输入条码"
           />
           <button @click="queryAndPutItem" class="btn">查询</button>
-          <div class="inline-block" v-if="retailStore.type == RetailType.RET" @click="taggleRetailMode" >
+          <div
+            class="inline-block"
+            v-if="retailStore.type == RetailType.RET"
+            @click="taggleRetailMode"
+          >
             <div
               title="零售退货"
               class="cursor-pointer select-none text-red-500 text-xl font-bold border border-4px w-40px h-40px flex items-center justify-center rounded-full border-red-500"
@@ -149,7 +153,11 @@
               退
             </div>
           </div>
-          <div class="inline-block" v-if="retailStore.type == RetailType.SALE" @click="taggleRetailMode" >
+          <div
+            class="inline-block"
+            v-if="retailStore.type == RetailType.SALE"
+            @click="taggleRetailMode"
+          >
             <div
               title="正常零售"
               class="cursor-pointer select-none text-blue-500 text-xl font-bold border border-4px w-40px h-40px flex items-center justify-center rounded-full border-blue-500"
@@ -193,7 +201,10 @@
             <div class="square"></div>
             <div>非原单退货</div>
           </div>
-          <div class="flex flex-col items-center space-y-2">
+          <div
+            class="flex flex-col items-center space-y-2"
+            @click="openRetailQueryDialog"
+          >
             <div class="square"></div>
             <div>订单查询</div>
           </div>
@@ -354,7 +365,7 @@
         >{{ item.name }}</el-radio
       >
     </el-radio-group>
-    <el-button type="primary" @click="closeEmployeeDialog">保存</el-button>
+    <el-button type="primary" @click="employeeDialogSave">保存</el-button>
     <el-button @click="cancelEmployee">取消</el-button>
   </el-dialog>
   <el-dialog
@@ -742,6 +753,311 @@
       <el-button size="large" @click="closeRetPayDialog">取消</el-button>
     </div>
   </el-dialog>
+  <el-dialog
+    id="d-retail-query"
+    custom-class="no-drag"
+    width="1200px"
+    v-model="retailQueryVisable"
+    title="订单查询"
+  >
+    <el-tabs>
+      <el-tab-pane label="远程单据">
+        <div class="space-y-5">
+          <el-form :inline="true">
+            <el-form-item label="销售店铺：">
+              {{ storeStore.name }}
+            </el-form-item>
+            <el-form-item label="小票编号：">
+              <el-input v-model="retailStore.retailFilter.refno" />
+            </el-form-item>
+            <el-form-item label="手机号：">
+              <el-input v-model="retailStore.retailFilter.phone" />
+            </el-form-item>
+            <el-form-item label="营业员：">
+              <el-select
+                clearable
+                v-model="retailStore.retailFilter.employeeId"
+              >
+                <el-option
+                  v-for="item in employeeStore.employee"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                  >{{ item.name }}</el-option
+                >
+              </el-select>
+            </el-form-item>
+            <el-form-item label="销售日期：">
+              <el-date-picker
+                type="daterange"
+                value-format="YYYYMMDD"
+                v-model="retailStore.retailFilter.billdate"
+              >
+              </el-date-picker>
+              <!-- <el-radio-group>
+            <el-radio-button>不限</el-radio-button>
+            <el-radio-button>今天</el-radio-button>
+            <el-radio-button>昨天</el-radio-button>
+            <el-radio-button>本周</el-radio-button>
+            <el-radio-button>上周</el-radio-button>
+            <el-radio-button>本月</el-radio-button>
+            <el-radio-button>指定日期</el-radio-button>
+          </el-radio-group> -->
+            </el-form-item>
+            <el-form-item label="提交状态：">
+              <el-select clearable v-model="retailStore.retailFilter.status">
+                <el-option label="未提交" value="1"></el-option>
+                <el-option label="已提交" value="2"></el-option>
+                <el-option label="待批" value="3"></el-option>
+                <el-option label="待取消" value="4"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="retailStore.queryRetailList()"
+                >查询</el-button
+              >
+            </el-form-item>
+          </el-form>
+          <el-table
+            height="300"
+            stripe
+            border
+            highlight-current-row
+            :data="retailStore.retailList"
+            @row-click="rowClick"
+          >
+            <el-table-column
+              prop="billdate"
+              label="销售日期"
+              width=""
+            ></el-table-column>
+            <el-table-column
+              prop="docno"
+              label="小票编号"
+              width=""
+            ></el-table-column>
+            <el-table-column
+              prop="employee"
+              label="营业员"
+              width=""
+            ></el-table-column>
+            <el-table-column prop="vip" label="VIP" width=""></el-table-column>
+            <el-table-column
+              prop="totQty"
+              label="数量"
+              width=""
+            ></el-table-column>
+            <el-table-column
+              prop="actAmount"
+              label="成交金额"
+              width=""
+            ></el-table-column>
+            <el-table-column
+              prop="storeName"
+              label="店仓"
+              width=""
+            ></el-table-column>
+          </el-table>
+          <el-row :gutter="10">
+            <el-col :span="18">
+              <el-table
+                height="200"
+                stripe
+                border
+                :data="retailStore.retailItemList"
+              >
+                <el-table-column
+                  prop="spuCode"
+                  label="款号"
+                  width=""
+                ></el-table-column>
+                <el-table-column
+                  prop="spuName"
+                  label="品名"
+                  width=""
+                ></el-table-column>
+                <el-table-column
+                  prop="skuCode"
+                  label="条码"
+                  width=""
+                ></el-table-column>
+                <el-table-column
+                  prop="colorName"
+                  label="颜色"
+                  width=""
+                ></el-table-column>
+                <el-table-column
+                  prop="sizeName"
+                  label="尺码"
+                  width=""
+                ></el-table-column>
+                <el-table-column
+                  prop="qty"
+                  label="数量"
+                  width=""
+                ></el-table-column>
+                <el-table-column
+                  prop="priceActual"
+                  label="成交价"
+                  width=""
+                ></el-table-column>
+                <el-table-column
+                  prop="actAmount"
+                  label="成交金额"
+                  width=""
+                ></el-table-column>
+              </el-table>
+            </el-col>
+            <el-col :span="6">
+              <el-card title="付款方式">
+                <ul class="space-y-3">
+                  <li class="flex items-center">
+                    <div class="payment-label">付款方式</div>
+                    <div class="text-xl">
+                      {{ retailStore.originRetailPayment.payway }}
+                    </div>
+                  </li>
+                  <li class="flex items-center">
+                    <div class="payment-label">付款金额</div>
+                    <div class="text-xl">
+                      {{ retailStore.originRetailPayment.payAmt }}
+                    </div>
+                  </li>
+                  <li class="flex items-center">
+                    <div class="payment-label">可退金额</div>
+                    <div class="text-xl">
+                      {{ retailStore.originRetailPayment.canRetAmt }}
+                    </div>
+                  </li>
+                </ul>
+              </el-card>
+            </el-col>
+          </el-row>
+        </div>
+      </el-tab-pane>
+      <el-tab-pane label="离线单据">
+        <div class="space-y-5">
+          <el-form :inline="true">
+            <el-form-item label="挂单状态：">
+              <el-select clearable v-model="isHang">
+                <el-option label="未挂单" value="0"></el-option>
+                <el-option label="已挂单" value="1"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="付款状态：">
+              <el-select clearable v-model="isPay">
+                <el-option label="未付款" value="0"></el-option>
+                <el-option label="已付款" value="1"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="推送状态：">
+              <el-select clearable v-model="isPush">
+                <el-option label="未推送" value="0"></el-option>
+                <el-option label="已推送" value="1"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="queryDBRetail">查询</el-button>
+            </el-form-item>
+          </el-form>
+          <el-table stripe border height="300" highlight-current-row :data="dbRetailList" @row-click="offlineRowClick">
+            <el-table-column prop="docno" label="小票号"></el-table-column>
+            <el-table-column prop="billdate" label="单据日期"></el-table-column>
+            <el-table-column prop="vip.mobil" label="会员"></el-table-column>
+            <el-table-column
+              prop="employee.name"
+              label="营业员"
+            ></el-table-column>
+            <el-table-column prop="totQty" label="总数量"></el-table-column>
+            <el-table-column
+              prop="totAmount"
+              label="总零售额"
+            ></el-table-column>
+            <el-table-column
+              prop="totActAmount"
+              label="总成交额"
+            ></el-table-column>
+            <el-table-column
+              prop="totDisAmount"
+              label="总折扣额"
+            ></el-table-column>
+          </el-table>
+          <el-row :gutter="10">
+            <el-col :span="18">
+              <el-table
+                height="200"
+                stripe
+                border
+                :data="currentOfflineRetail.items"
+              >
+                <el-table-column
+                  prop="good.spuCode"
+                  label="款号"
+                  width=""
+                ></el-table-column>
+                <el-table-column
+                  prop="good.spuName"
+                  label="品名"
+                  width=""
+                ></el-table-column>
+                <el-table-column
+                  prop="good.skuCode"
+                  label="条码"
+                  width=""
+                ></el-table-column>
+                <el-table-column
+                  prop="qty"
+                  label="数量"
+                  width=""
+                ></el-table-column>
+                <el-table-column
+                  prop="actPrice"
+                  label="成交价"
+                  width=""
+                ></el-table-column>
+                <el-table-column
+                  prop="actAmount"
+                  label="成交金额"
+                  width=""
+                ></el-table-column>
+              </el-table>
+            </el-col>
+            <el-col :span="6">
+              <el-card title="付款方式">
+                <ul class="space-y-3">
+                  <li class="flex items-center">
+                    <div class="payment-label">付款方式</div>
+                    <div class="text-xl">
+                      {{ offlinePayment.payway }}
+                    </div>
+                  </li>
+                  <li class="flex items-center">
+                    <div class="payment-label">付款金额</div>
+                    <div class="text-xl">
+                      {{ offlinePayment.payAmt }}
+                    </div>
+                  </li>
+                  <!-- <li class="flex items-center">
+                    <div class="payment-label">可退金额</div>
+                    <div class="text-xl">
+                      {{ offlinePayment.canRetAmt }}
+                    </div>
+                  </li> -->
+                </ul>
+              </el-card>
+            </el-col>
+          </el-row>
+        </div>
+      </el-tab-pane>
+    </el-tabs>
+
+    <div class="pt-5 text-right">
+      <el-button size="large" type="primary" @click="chooseRetail"
+        >确定</el-button
+      >
+      <el-button size="large" @click="originRetVisable = false">取消</el-button>
+    </div>
+  </el-dialog>
 </template>
 
 <script setup lang="ts">
@@ -820,13 +1136,16 @@ const openEmployeeDialog = () => {
   employeeDialogVisible.value = true;
 };
 
-const closeEmployeeDialog = () => {
+const employeeDialogSave = () => {
+  retailStore.pos.employee = employeeStore.employee.find(
+    (e) => e.id == retailStore.pos.salesrepId
+  );
   employeeDialogVisible.value = false;
 };
 
 const cancelEmployee = () => {
   retailStore.pos.salesrepId = null;
-  closeEmployeeDialog();
+  employeeDialogSave();
 };
 
 onMounted(async () => {
@@ -1067,6 +1386,45 @@ let setRetRetailMode = () => {
   taggleRetailMode();
   newRetail();
 };
+
+const retailQueryVisable = ref(true);
+
+const openRetailQueryDialog = () => {
+  retailQueryVisable.value = true;
+};
+
+const chooseRetail = () => {
+  retailQueryVisable.value = false;
+};
+
+const isHang = ref();
+const isPay = ref();
+const isPush = ref();
+const dbRetailList = ref([]);
+
+const queryDBRetail = async () => {
+  dbRetailList.value = await retailStore.queryDBRetail({
+    isHang: isHang.value,
+    isPay: isPay.value,
+    isPush: isPush.value,
+  });
+};
+
+let currentOfflineRetail = ref({
+  items: []
+})
+
+let offlinePayment = ref({
+  payway: '',
+  payAmt: 0,
+})
+
+let offlineRowClick = (row, column, event) =>{
+  console.log("🚀 ~ file: pos.vue ~ line 1424 ~ offlineRowClick ~ row", row)
+  currentOfflineRetail.value = row;
+  offlinePayment.value = retailStore.getPaymentSummary(row.payments);
+}
+
 </script>
 
 <style scoped>
