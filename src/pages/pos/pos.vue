@@ -1386,7 +1386,7 @@ let setRetRetailMode = () => {
   newRetail();
 };
 
-const retailQueryVisable = ref(true);
+const retailQueryVisable = ref(false);
 
 const openRetailQueryDialog = () => {
   retailStore.currentOfflineRetail = {} 
