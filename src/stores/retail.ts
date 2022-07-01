@@ -122,6 +122,7 @@ export const useRetailStore = defineStore("retail", {
     const storeStore = userStoreStore();
     return {
       tableId: 12964,
+      disabled: false,
       homeChart: [],
       homeGrid: {},
       type: RetailType.SALE,
@@ -222,6 +223,16 @@ export const useRetailStore = defineStore("retail", {
     },
   },
   actions: {
+    async queryPosRetail(){
+      if(!this.selectRetailId){
+        ElMessage.warning("请选择零售单据");
+      }
+      const api = useApi();
+      let res = await api.custom(`/api/marketing-retail-query?id=${this.selectRetailId}`);
+      console.log("🚀 ~ file: retail.ts ~ line 233 ~ queryPosRetail ~ res", res)
+      this.pos = res;
+      
+    },
     async removeDBRetail(docno){
       db.prepare(
         `DELETE FROM pos_retail WHERE id = '${docno}'`

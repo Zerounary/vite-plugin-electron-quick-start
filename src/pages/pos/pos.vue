@@ -1396,11 +1396,14 @@ const openRetailQueryDialog = () => {
   retailQueryVisable.value = true;
 };
 
-const chooseRetail = () => {
+const chooseRetail = async () => {
   if(retailStore.currentOfflineRetail.docno){
     retailStore.pos = retailStore.currentOfflineRetail;
     vipStore.vip = retailStore.currentOfflineRetail.vip;
     retailStore.removeDBRetail(retailStore.currentOfflineRetail.docno);
+  }else{
+    await retailStore.queryPosRetail()
+    vipStore.vip = retailStore.pos.vip;
   }
   retailQueryVisable.value = false;
 };
