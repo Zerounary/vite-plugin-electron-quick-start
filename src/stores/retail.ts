@@ -222,6 +222,11 @@ export const useRetailStore = defineStore("retail", {
     },
   },
   actions: {
+    async removeDBRetail(docno){
+      db.prepare(
+        `DELETE FROM pos_retail WHERE id = '${docno}'`
+      ).run();
+    },
     async queryDBRetail(
       filter = {
         isHang: null,

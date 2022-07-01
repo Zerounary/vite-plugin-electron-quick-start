@@ -1050,12 +1050,11 @@
         </div>
       </el-tab-pane>
     </el-tabs>
-
     <div class="pt-5 text-right">
       <el-button size="large" type="primary" @click="chooseRetail"
         >确定</el-button
       >
-      <el-button size="large" @click="originRetVisable = false">取消</el-button>
+      <el-button size="large" @click="retailQueryVisable = false">取消</el-button>
     </div>
   </el-dialog>
 </template>
@@ -1391,10 +1390,18 @@ const retailQueryVisable = ref(true);
 
 const openRetailQueryDialog = () => {
   retailStore.currentOfflineRetail = {} 
+  retailStore.retailList = [];
+  retailStore.retailItemList = [];
+  dbRetailList.value = [];
   retailQueryVisable.value = true;
 };
 
 const chooseRetail = () => {
+  if(retailStore.currentOfflineRetail.docno){
+    retailStore.pos = retailStore.currentOfflineRetail;
+    vipStore.vip = retailStore.currentOfflineRetail.vip;
+    retailStore.removeDBRetail(retailStore.currentOfflineRetail.docno);
+  }
   retailQueryVisable.value = false;
 };
 
