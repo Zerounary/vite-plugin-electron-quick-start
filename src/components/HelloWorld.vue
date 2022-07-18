@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useAppStore } from "@/stores/app";
+import { useKoaStore } from "../stores/koa";
 import { useApi } from "@/stores/api";
 // import { storeToRefs } from "pinia"
 import { rendererSend } from "~/electron-main/common/ipcRender";
@@ -12,6 +13,19 @@ defineProps<{ msg: string }>();
 
 const counterStore = useAppStore();
 const api = useApi();
+const koaStore = useKoaStore();
+
+let startServer = () => {
+  if (koaStore.isStarted) {
+    koaStore.stop();
+  } else {
+    koaStore.start();
+  }
+};
+
+let serverStatus = computed(() => {
+  return (!koaStore.isStarted ? "Start" : "Stop") + " Koa";
+});
 
 api.test();
 
@@ -44,6 +58,7 @@ let quit = () => {
   <el-button type="primary" @click="counterStore.increment()"
     >count is: {{ counterStore.count }}</el-button
   >
+  <el-button @click="startServer">{{ serverStatus }}</el-button>
   <el-button type="danger" @click="quit">quit</el-button>
   <p>
     Edit
